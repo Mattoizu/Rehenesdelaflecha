@@ -701,3 +701,20 @@ button[data-edit-item] { font-size: .82rem; }
   color: var(--gold);
   background: rgba(123, 87, 42, .12);
 }
+
+/* ── Coin weight ───────────────────────────────────────────────────── */
+.coin-weight {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-align: center;
+}
+.coin-weight-note {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: .72rem;
+  text-align: center;
+}

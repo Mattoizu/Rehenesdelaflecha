@@ -263,8 +263,8 @@ const ITEM_DATABASE = [
   ['cerradura', 'Cerradura', 'Utilidad', 1, 10, 'CD 15 con herramientas de ladron para abrir sin llave.', 'General'],
   ['cesta', 'Cesta', 'Utilidad', 2, 0.4, 'Contenedor de mimbre. 4 PP.', 'General'],
   ['cofre', 'Cofre', 'Utilidad', 25, 5, 'Contenedor de madera y metal. 5 PO.', 'General'],
-  ['cuerda-canamo', 'Cuerda de canamo (15 m)', 'Consumible', 10, 1, 'Aguanta 1.000 lb. Se gasta con el uso. 1 PO.', 'General'],
-  ['cuerda-seda', 'Cuerda de seda (15 m)', 'Consumible', 5, 10, 'Aguanta 750 lb. Mas ligera. 10 PO.', 'General'],
+  ['cuerda-canamo', 'Cuerda de canamo (15 m)', 'Consumible', 0.67, 1, 'Aguanta 1.000 lb. Se gasta con el uso. 1 PO.', 'General'],
+  ['cuerda-seda', 'Cuerda de seda (15 m)', 'Consumible', 0.33, 10, 'Aguanta 750 lb. Mas ligera. 10 PO.', 'General'],
   ['cubo', 'Cubo', 'Utilidad', 2, 0.5, 'Cubo de metal o madera. 5 PP.', 'General'],
   ['escalera', 'Escalera (3 m)', 'Utilidad', 25, 0.1, 'Escalera de madera de 10 pies (3 m). 1 PP.', 'General'],
   ['espejo-acero', 'Espejo de acero', 'Utilidad', 0.5, 5, 'Ver alrededor de esquinas o en oscuridad con luz. 5 PO.', 'General'],
@@ -416,13 +416,25 @@ function piesAMetros(text) {
   });
 }
 const WEIGHT_BY_ITEM = {
-  "espada-ancestral": 3, "cota-malla": 55, escudo: 6, jabalina: 2, "simbolo-sagrado": 1,
-  mochila: 5, petate: 7, "utensilios-cocina": 1, yesquero: 1, antorcha: 1, racion: 2,
-  odre: 5, "cuerda-canamo": 10, "ropa-comun": 3, "martillo-jesucristo": 2, lanza: 3,
-  sombrero: 0, "collar-padre": 0, "arco-largo": 2, flecha: 0.05, "espada-corta": 2,
-  cuero: 10, "carcaj-vaelor": 1, "cuchillo-pequeno": 1, espadon: 6, "hacha-mano": 2,
-  "tatuaje-belfegor": 0, palanca: 5, martillo: 3, piton: 0.25, tajo: 6, "espada-larga": 3,
-  "calavera-magica": 1, "tomahawk-enano": 2, "herramientas-herrero": 20, "ropa-viajero": 4,
+  // Armas
+  "espada-ancestral": 3, "espada-larga": 3, "espada-corta": 2, espadon: 6,
+  "martillo-jesucristo": 2, "martillo-guerra": 2, martillo: 3,
+  lanza: 3, jabalina: 2, "hacha-mano": 2, "hacha-guerra": 4, "hacha-dos-manos": 7,
+  "arco-largo": 2, "arco-corto": 2, flecha: 0.05, virotes: 0.075,
+  tajo: 6, "tomahawk-enano": 2, "cuchillo-pequeno": 0.5, daga: 1,
+  // Armaduras
+  "cota-malla": 55, cuero: 10, "cuero-tachonado": 13, coraza: 20,
+  "armadura-placas": 65, "armadura-bandas": 55, "cota-guarnecida": 40,
+  "media-armadura": 20, pieles: 45, "cota-escamas": 45,
+  escudo: 6,
+  // Equipo personal
+  "simbolo-sagrado": 1, "carcaj-vaelor": 1, sombrero: 0.5, "collar-padre": 0.1,
+  "calavera-magica": 1, "tatuaje-belfegor": 0,
+  // Mochila y utilidades — pesos oficiales PHB
+  mochila: 5, petate: 7, "utensilios-cocina": 8, yesquero: 1,
+  antorcha: 1, racion: 2, odre: 5, "cuerda-canamo": 0.67, "cuerda-seda": 0.33,
+  palanca: 5, piton: 0.25, "ropa-comun": 3, "ropa-viajero": 4, "ropa-calidad": 6,
+  "herramientas-herrero": 8, "libro-edena-ruh": 0.5,
 };
 
 const campaign = {
@@ -548,7 +560,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros de liquido.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
       ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado. Recuerdo de tu servicio.", "other", 0, 0],
       ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado. Recuerdo de una batalla anterior.", "other", 0.5, 0],
       ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
@@ -588,7 +600,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
       ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado.", "other", 0, 0],
       ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado.", "other", 0.5, 0],
       ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
@@ -626,7 +638,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
       ["libro-edena-ruh", "Libro de los Edena Ruh", 1, "Historia", "Libro con historias, cuentos infantiles y palabras de aliento de la troupe Edena Ruh en su ultima pagina.", "other", 0.5, 0],
       ["cuchillo-pequeno", "Cuchillo pequeno", 1, "Equipo", "1d4 perforante. Objeto de tu trasfondo de huerfano.", "off-hand", 0.5, 1],
       ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Historia", "Mapa con lugares importantes de la ciudad donde creciste con los Edena Ruh.", "other", 0, 0],
@@ -666,7 +678,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 0, ppt: 0 },
     equipped: ["espadon", "cota-malla", "tatuaje-belfegor"],
@@ -703,7 +715,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
       ["herramientas-herrero", "Herramientas de herrero", 1, "Historia", "Herramientas de artesano para trabajar metal. Las de Amber son enanas, herencia de Regrus.", "other", 8, 20],
       ["carta-gremio", "Carta de presentacion del gremio", 1, "Historia", "Documento de tu trasfondo de artesana gremial. Acredita tu oficio de herrera.", "other", 0, 0],
       ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Ropa resistente y comoda para el camino.", "other", 4, 2],
@@ -1118,15 +1130,26 @@ function renderInventory() {
   item.currency ||= { ...EMPTY_CURRENCY };
 
   // Currency
-  document.querySelector("#currency-grid").innerHTML = Object.entries(CURRENCY_LABELS).map(([key, label]) => `
+  const totalCoins = Object.values(item.currency || {}).reduce((s, v) => s + (v || 0), 0);
+  const coinWeight = totalCoins / 50;
+  document.querySelector("#currency-grid").innerHTML = Object.entries(CURRENCY_LABELS).map(([key, label]) => {
+    const qty = item.currency[key] || 0;
+    const w = (qty / 50).toFixed(2);
+    const weightNote = qty > 0 ? `<small class="coin-weight">${w} lb</small>` : "";
+    return `
     <article class="currency-item">
       <span>${label}</span>
       <div>
         <button class="currency-button" data-currency="${key}" data-currency-delta="-1" type="button">-</button>
-        <strong>${item.currency[key] || 0}</strong>
+        <strong>${qty}</strong>
         <button class="currency-button" data-currency="${key}" data-currency-delta="1" type="button">+</button>
       </div>
-    </article>`).join("");
+      ${weightNote}
+    </article>`;
+  }).join("");
+  // Show total coin weight below grid
+  const coinWeightEl = document.querySelector("#coin-weight-total");
+  if (coinWeightEl) coinWeightEl.textContent = totalCoins > 0 ? `${totalCoins} monedas = ${coinWeight.toFixed(2)} lb` : "";
 
   // Carry weight
   const weight = carriedWeight(item);
