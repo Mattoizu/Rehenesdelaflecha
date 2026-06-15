@@ -792,7 +792,18 @@ function mergeInventory(characterId, initialInventory, storedInventory) {
   return [
     ...initialInventory.map((item) => {
       const stored = storedById.get(item[0]);
-      return stored ? [item[0], item[1], stored[2], item[3], item[4]] : clone(item);
+      if (!stored) return clone(item);
+      // Take quantity and value from stored, everything else from initial (so weight/slot/desc always up to date)
+      return [
+        item[0],           // id
+        item[1],           // name (official)
+        stored[2],         // quantity (player-controlled)
+        item[3],           // category (official)
+        item[4],           // description (official)
+        item[5] ?? stored[5] ?? "",    // slot (official)
+        item[6] ?? stored[6] ?? 0,    // weight (official)
+        stored[7] ?? item[7] ?? 0,    // value (player can edit, fallback to official)
+      ];
     }),
     ...storedInventory.filter((item) => !initialInventory.some((initial) => initial[0] === item[0]) && !(retiredItems[characterId] || []).includes(item[0])),
   ];
