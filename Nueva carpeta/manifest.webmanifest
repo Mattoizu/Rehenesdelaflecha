@@ -1,0 +1,17 @@
+{
+  "name": "La Ciudadela Sombria | Aventureros",
+  "short_name": "Ciudadela PJ",
+  "description": "Bitacora interactiva para los jugadores de La Ciudadela Sombria.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#100b0b",
+  "theme_color": "#130d0c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
