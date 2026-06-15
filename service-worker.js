@@ -1,4 +1,4 @@
-const CACHE_NAME = "ciudadela-jugadores-v16";
+const CACHE_NAME = "ciudadela-jugadores-v17";
 const APP_FILES = [
   "./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg",
   "./grupo1.jpeg", "./grupo2.jpeg", "./grupo3.jpeg",
@@ -15,5 +15,8 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 self.addEventListener("fetch", (event) => {
+  // Solo cachear archivos propios — nunca interceptar Firebase ni requests externas
+  const url = new URL(event.request.url);
+  if (url.origin !== location.origin) return;
   event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
 });
