@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#130d0c" />
+    <meta name="description" content="Bitacora interactiva para los jugadores de La Ciudadela Sombria." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>La Ciudadela Sombria | Aventureros</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <button class="brand-button" data-go="home-view" aria-label="Volver al inicio">
+        <span class="brand-mark">CS</span>
+        <span>
+          <small>Bitacora de aventureros</small>
+          <strong>La Ciudadela Sombria</strong>
+        </span>
+      </button>
+      <button class="ghost-button hidden" id="back-button" type="button">Volver</button>
+    </header>
+
+    <main>
+      <section class="view active" id="home-view">
+        <article class="hero-card">
+          <p class="eyebrow">Capitulo I - Sesion 5</p>
+          <h1>La llave y el sacerdote dragon</h1>
+          <p>Calcryx fue devuelta con vida, Amber quedo libre y Yusdrayl entrego la llave draconica. Tras el descanso en territorio kobold, la compania abrio nuevas salas antiguas, sobrevivio al orbe musical y derribo a un sacerdote dragon fallido que solo murio al arder.</p>
+          <div class="chip-row">
+            <span class="chip">Nivel 1</span>
+            <span class="chip danger">Nilux y Galahad agotados</span>
+            <span class="chip">Llave draconica conseguida</span>
+          </div>
+        </article>
+
+        <section class="section-block character-entry">
+          <p class="eyebrow">Acceso rapido</p>
+          <h2>Elige tu aventurero</h2>
+          <div class="character-grid" id="character-grid"></div>
+        </section>
+
+        <section class="session-board" id="session-board"></section>
+
+        <section class="episode-grid">
+          <article class="episode-card">
+            <p class="eyebrow">Anteriormente</p>
+            <h2>Calcryx vuelve al trono</h2>
+            <p>El grupo encontro a Calcryx, sobrevivio a su aliento helado, la dejo inconsciente y huyo hacia Yusdrayl mientras los goblins corrian a avisar a su lider.</p>
+          </article>
+          <article class="episode-card next-card">
+            <p class="eyebrow">Proxima sesion</p>
+            <h2>Despues del sarcofago</h2>
+            <p>El sacerdote dragon fallido fue destruido con fuego. La compania tiene botin nuevo, una antorcha verde eterna y mas preguntas sobre las ruinas draconicas.</p>
+          </article>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">En pocas palabras</p>
+          <h2>La situacion actual</h2>
+          <div class="objective-grid" id="current-objectives"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Hilos de la historia</p>
+          <h2>Misiones y rumores</h2>
+          <div class="quest-grid" id="quest-board"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Solo lo descubierto</p>
+          <h2>Lugares conocidos</h2>
+          <div class="known-map" id="known-map"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Pistas reunidas</p>
+          <h2>Saberes descubiertos</h2>
+          <div class="lore-grid" id="known-lore"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Mesa de investigacion</p>
+          <h2>Lo que saben y lo que falta</h2>
+          <div class="intel-board" id="intel-board"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Rostros conocidos</p>
+          <h2>Personajes de la historia</h2>
+          <div class="card-grid" id="known-npcs"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Ilustraciones del grupo</p>
+          <h2>Galeria de la compania</h2>
+          <div class="gallery-grid" id="campaign-gallery"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">Lo que el grupo recuerda</p>
+          <h2>Bitacora de la compania</h2>
+          <div class="timeline" id="timeline"></div>
+        </section>
+
+        <section class="section-block">
+          <p class="eyebrow">La mesa tambien se recuerda asi</p>
+          <h2>Momentos de la compania</h2>
+          <div class="moment-grid" id="campaign-moments"></div>
+        </section>
+
+        <section class="quote-card" id="campaign-quote"></section>
+        <section class="knowledge-note">
+          <strong>Bitacora de jugadores</strong>
+          <span>Esta pagina muestra solamente lugares, rumores y personajes que la compania ya conoce.</span>
+        </section>
+      </section>
+
+      <section class="view" id="character-view">
+        <article class="profile-hero" id="profile-hero"></article>
+        <nav class="profile-tabs" aria-label="Secciones del personaje">
+          <button class="profile-tab active" data-tab="summary-panel">Resumen</button>
+          <button class="profile-tab" data-tab="sheet-panel">Ficha</button>
+          <button class="profile-tab" data-tab="inventory-panel">Inventario</button>
+          <button class="profile-tab" data-tab="level-panel">Subir nivel</button>
+          <button class="profile-tab" data-tab="memories-panel">Recuerdos</button>
+        </nav>
+
+        <section class="tab-panel active" id="summary-panel">
+          <div class="stat-grid" id="summary-stats"></div>
+          <div class="two-column">
+            <article class="panel-card">
+              <p class="eyebrow">En combate</p>
+              <h2>Ataques y recursos</h2>
+              <div class="stack" id="combat-summary"></div>
+            </article>
+            <article class="panel-card">
+              <p class="eyebrow">Estado actual</p>
+              <h2>Notas</h2>
+              <p class="body-copy" id="current-condition"></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="sheet-panel">
+          <article class="panel-card">
+            <div class="section-title-row">
+              <div>
+                <p class="eyebrow">Datos editables</p>
+                <h2>Hoja de personaje</h2>
+              </div>
+              <button class="small-button gold-button" id="save-sheet" type="button">Guardar ficha</button>
+            </div>
+            <div class="form-grid" id="sheet-form"></div>
+          </article>
+        </section>
+
+        <section class="tab-panel" id="inventory-panel">
+          <article class="panel-card">
+            <div class="section-title-row">
+              <div>
+                <p class="eyebrow">Mochila personal</p>
+                <h2>Inventario</h2>
+              </div>
+              <button class="small-button gold-button" id="open-add-item" type="button">+ Agregar</button>
+            </div>
+            <p class="helper-copy">Los consumibles se gastan al usarlos. El equipo se equipa sin desaparecer. El boton +1 sirve para registrar compras o hallazgos repetidos.</p>
+            <section class="currency-card">
+              <div>
+                <p class="eyebrow">Monedas</p>
+                <h3>Bolsa</h3>
+              </div>
+              <div class="currency-grid" id="currency-grid"></div>
+            </section>
+            <section class="carry-card" id="carry-card"></section>
+            <div class="inventory-list" id="inventory-list"></div>
+          </article>
+          <article class="panel-card compact-card">
+            <p class="eyebrow">Registro reciente</p>
+            <h2>Actividad</h2>
+            <div class="activity-list" id="activity-list"></div>
+          </article>
+        </section>
+
+        <section class="tab-panel" id="level-panel">
+          <article class="panel-card">
+            <p class="eyebrow">Guia didactica</p>
+            <h2>Cuando subas de nivel</h2>
+            <p class="helper-copy">Estas son sugerencias para conversar con el DM. Tasha y Xanathar se consideran solo para clases y hechizos.</p>
+            <div class="recommendation-list" id="recommendation-list"></div>
+          </article>
+        </section>
+
+        <section class="tab-panel" id="memories-panel">
+          <article class="panel-card">
+            <p class="eyebrow">Historia personal</p>
+            <h2>Recuerdos y vinculos</h2>
+            <div class="stack" id="memory-list"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="item-dialog">
+      <form method="dialog" id="item-form">
+        <h2>Agregar objeto</h2>
+        <label>Nombre<input id="item-name" autocomplete="off" required /></label>
+        <label>Cantidad<input id="item-quantity" type="number" min="1" value="1" required /></label>
+        <label>Categoria
+          <select id="item-category">
+            <option>Consumible</option>
+            <option>Equipo</option>
+            <option>Utilidad</option>
+            <option>Tesoro</option>
+          </select>
+        </label>
+        <label class="hidden" id="item-slot-field">Ranura al equipar
+          <select id="item-slot">
+            <option value="main-hand">Mano principal</option>
+            <option value="off-hand">Mano secundaria</option>
+            <option value="two-hands">Dos manos</option>
+            <option value="armor">Armadura</option>
+            <option value="shield">Escudo</option>
+            <option value="focus">Foco</option>
+            <option value="head">Cabeza</option>
+            <option value="neck">Cuello</option>
+            <option value="body">Cuerpo</option>
+            <option value="back">Espalda</option>
+            <option value="belt">Cinturon</option>
+            <option value="feet">Pies</option>
+            <option value="hands">Manos</option>
+            <option value="ring-left">Anillo izquierdo</option>
+            <option value="ring-right">Anillo derecho</option>
+            <option value="other">Otro</option>
+          </select>
+        </label>
+        <label>Peso por unidad (lb)<input id="item-weight" type="number" min="0" step="0.01" value="0" /></label>
+        <label>Descripcion<textarea id="item-description"></textarea></label>
+        <div class="dialog-actions">
+          <button class="small-button" value="cancel" type="button" id="cancel-item">Cancelar</button>
+          <button class="small-button gold-button" value="default" type="submit">Agregar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
