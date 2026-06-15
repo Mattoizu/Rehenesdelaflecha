@@ -408,6 +408,24 @@ const MOCHILA_CATEGORIES = ["Utilidad", "Historia"];
 // Items that belong in the main inventory tab
 const ACTIVO_CATEGORIES = ["Equipo", "Consumible", "Tesoro"];
 
+// ── Contraseñas por personaje ──────────────────────────────────────
+const MASTER_PASSWORD = "0951";
+const CHARACTER_PASSWORDS = {
+  "arthas": null,         // sin contraseña aún
+  "miguel-angel": "1890",
+  "nilux": null,
+  "galahad": null,
+  "amber": null,
+};
+function checkPassword(characterId) {
+  const pw = CHARACTER_PASSWORDS[characterId];
+  if (!pw) return true; // sin contraseña = acceso libre
+  const input = prompt(`Contraseña para este personaje:`);
+  if (input === null) return false; // canceló
+  if (input === MASTER_PASSWORD || input === pw) return true;
+  return false;
+}
+
 // Convert feet to meters in text
 function piesAMetros(text) {
   return text.replace(/(\d+(?:\.\d+)?)\s*pies?/gi, (_, n) => {
@@ -1206,6 +1224,7 @@ function addActivity(message) {
   state.activity[activeCharacterId] = state.activity[activeCharacterId].slice(0, 8);
 }
 function activateCharacter(id) {
+  if (!checkPassword(id)) return;
   activeCharacterId = id;
   document.querySelectorAll(".profile-tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.tab === "summary-panel"));
   document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("active", panel.id === "summary-panel"));
