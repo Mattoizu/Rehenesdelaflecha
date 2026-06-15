@@ -426,3 +426,124 @@ dialog form { display: grid; gap: 12px; }
   .rest-buttons { gap: 6px; }
   .rest-btn { flex: 1; justify-content: center; font-size: .74rem; padding: 8px 10px; }
 }
+
+/* ── Inventory sub-tabs ───────────────────────────────────────────────── */
+.inv-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.inv-tab {
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel-soft);
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 750;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.inv-tab.active {
+  border-color: var(--gold-dark);
+  color: var(--gold);
+  background: rgba(123, 87, 42, .2);
+}
+.inv-panel { display: none; }
+.inv-panel.active { display: block; }
+
+/* ── Use with amount ──────────────────────────────────────────────────── */
+.use-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.use-amount-input {
+  width: 46px !important;
+  padding: 6px 5px !important;
+  text-align: center;
+  font-size: .76rem !important;
+}
+
+/* ── Item value field ─────────────────────────────────────────────────── */
+.item-value-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+.item-value-label {
+  color: var(--gold);
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.item-value-input {
+  width: 60px !important;
+  padding: 4px 6px !important;
+  font-size: .76rem !important;
+  text-align: center;
+}
+
+/* ── Loot board ───────────────────────────────────────────────────────── */
+.loot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.loot-total {
+  color: var(--gold);
+  font-size: .78rem;
+  font-weight: 800;
+}
+.loot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 9px;
+}
+.loot-card {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  padding: 11px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 11px;
+  background: rgba(123, 87, 42, .09);
+}
+.loot-qty {
+  min-width: 34px;
+  padding: 4px 0;
+  border: 1px solid var(--gold-dark);
+  border-radius: 8px;
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+.loot-card h3 {
+  margin-bottom: 3px;
+  color: #f1d294;
+  font-size: .96rem;
+}
+.loot-card p {
+  color: var(--muted);
+  font-size: .74rem;
+  line-height: 1.35;
+}
+.loot-value {
+  display: inline-block;
+  margin-top: 4px;
+  color: var(--gold);
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 520px) {
+  .loot-grid { grid-template-columns: 1fr; }
+  .use-controls { flex-wrap: wrap; }
+}

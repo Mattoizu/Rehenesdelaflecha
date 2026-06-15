@@ -115,6 +115,19 @@ const SLOT_BY_ITEM = {
   tajo: "two-hands", "espada-larga": "main-hand", "calavera-magica": "belt", "tomahawk-enano": "main-hand",
   "ropa-comun": "other", "ropa-viajero": "other",
 };
+
+// Items that belong in the "Mochila" tab (Historia/Utilidad)
+const MOCHILA_CATEGORIES = ["Utilidad", "Historia"];
+// Items that belong in the main inventory tab
+const ACTIVO_CATEGORIES = ["Equipo", "Consumible", "Tesoro"];
+
+// Convert feet to meters in text
+function piesAMetros(text) {
+  return text.replace(/(\d+(?:\.\d+)?)\s*pies?/gi, (_, n) => {
+    const m = Math.round(parseFloat(n) * 0.3 * 10) / 10;
+    return `${m} m`;
+  });
+}
 const WEIGHT_BY_ITEM = {
   "espada-ancestral": 3, "cota-malla": 55, escudo: 6, jabalina: 2, "simbolo-sagrado": 1,
   mochila: 5, petate: 7, "utensilios-cocina": 1, yesquero: 1, antorcha: 1, racion: 2,
@@ -249,9 +262,9 @@ const initialCharacters = [
       ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
       ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
       ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["insignia-rango", "Insignia de rango", 1, "Utilidad", "Recuerdo de tu trasfondo de soldado."],
-      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Utilidad", "Recuerdo de una batalla anterior."],
-      ["dados-hueso", "Dados de hueso", 1, "Utilidad", "Juego asociado a tu pasado como soldado."],
+      ["insignia-rango", "Insignia de rango", 1, "Historia", "Recuerdo de tu trasfondo de soldado."],
+      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Recuerdo de una batalla anterior."],
+      ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego asociado a tu pasado como soldado."],
       ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana."],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
@@ -279,8 +292,8 @@ const initialCharacters = [
       ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA base 16."],
       ["escudo", "Escudo", 1, "Equipo", "Porta el simbolo de tu deidad y aporta +2 a la CA mientras lo empunas."],
       ["simbolo-sagrado", "Simbolo sagrado", 1, "Equipo", "Foco para tus conjuros de clerigo."],
-      ["sombrero", "Sombrero", 1, "Equipo", "Lo encontro, se veia genial y decidio conservarlo."],
-      ["collar-padre", "Collar de su padre", 1, "Equipo", "El ultimo recuerdo de su padre."],
+      ["sombrero", "Sombrero", 1, "Historia", "Lo encontro, se veia genial y decidio conservarlo."],
+      ["collar-padre", "Collar de su padre", 1, "Historia", "El ultimo recuerdo de su padre."],
       ["mochila", "Mochila", 1, "Utilidad", "Contenedor del paquete de explorador."],
       ["petate", "Petate", 1, "Utilidad", "Equipo para descansar durante el viaje."],
       ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Equipo sencillo para preparar y comer alimentos."],
@@ -289,9 +302,9 @@ const initialCharacters = [
       ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
       ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
       ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["insignia-rango", "Insignia de rango", 1, "Utilidad", "Recuerdo de tu trasfondo de soldado."],
-      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Utilidad", "Recuerdo de una batalla anterior."],
-      ["dados-hueso", "Dados de hueso", 1, "Utilidad", "Juego asociado a tu pasado como soldado."],
+      ["insignia-rango", "Insignia de rango", 1, "Historia", "Recuerdo de tu trasfondo de soldado."],
+      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Recuerdo de una batalla anterior."],
+      ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego asociado a tu pasado como soldado."],
       ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana."],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
@@ -327,11 +340,11 @@ const initialCharacters = [
       ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
       ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
       ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["libro-edena-ruh", "Libro de los Edena Ruh", 1, "Utilidad", "Historias, cuentos infantiles y palabras de aliento de la troupe en la ultima pagina."],
+      ["libro-edena-ruh", "Libro de los Edena Ruh", 1, "Historia", "Historias, cuentos infantiles y palabras de aliento de la troupe en la ultima pagina."],
       ["cuchillo-pequeno", "Cuchillo pequeno", 1, "Equipo", "Objeto inicial de tu trasfondo de huerfano."],
-      ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Utilidad", "Marca lugares importantes de la ciudad donde creciste."],
-      ["raton-mascota", "Raton como mascota", 1, "Utilidad", "Pequeno companero de tu trasfondo de huerfano."],
-      ["recuerdo-padres", "Recuerdo de tus padres", 1, "Utilidad", "Un objeto pequeno que conservas de tu familia."],
+      ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Historia", "Marca lugares importantes de la ciudad donde creciste."],
+      ["raton-mascota", "Raton como mascota", 1, "Historia", "Pequeno companero de tu trasfondo de huerfano."],
+      ["recuerdo-padres", "Recuerdo de tus padres", 1, "Historia", "Un objeto pequeno que conservas de tu familia."],
       ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana."],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
@@ -404,8 +417,8 @@ const initialCharacters = [
       ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
       ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
       ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["herramientas-herrero", "Herramientas de herrero", 1, "Utilidad", "Herramientas de artesano para trabajar metal."],
-      ["carta-gremio", "Carta de presentacion del gremio", 1, "Utilidad", "Documento asociado a tu trasfondo de artesana gremial."],
+      ["herramientas-herrero", "Herramientas de herrero", 1, "Historia", "Herramientas de artesano para trabajar metal."],
+      ["carta-gremio", "Carta de presentacion del gremio", 1, "Historia", "Documento asociado a tu trasfondo de artesana gremial."],
       ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Vestimenta resistente para el camino."],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 15, ppt: 0 },
@@ -598,6 +611,48 @@ function renderHome() {
     <p class="eyebrow">Una frase para el camino</p>
     <blockquote>${escapeHtml(quote)}</blockquote>
     <cite>${escapeHtml(author)}</cite>`;
+  renderLootBoard();
+}
+
+function renderLootBoard() {
+  const el = document.querySelector("#loot-board");
+  if (!el) return;
+  // Aggregate Tesoro items across all characters
+  const lootMap = new Map();
+  state.characters.forEach((ch) => {
+    (ch.inventory || []).filter(e => e[3] === "Tesoro").forEach((entry) => {
+      const [id, name, qty] = entry;
+      const value = entry[7] ?? 0;
+      const key = name.toLowerCase().trim();
+      if (!lootMap.has(key)) lootMap.set(key, { name, qty: 0, value, holders: [] });
+      const rec = lootMap.get(key);
+      rec.qty += qty;
+      rec.value = Math.max(rec.value, value);
+      if (qty > 0) rec.holders.push(`${ch.name.split(" ")[0]} x${qty}`);
+    });
+  });
+  const items = [...lootMap.values()].filter(r => r.qty > 0).sort((a, b) => b.qty - a.qty);
+  if (!items.length) {
+    el.innerHTML = '<p class="helper-copy" style="padding:12px">El grupo no tiene tesoros registrados aun.</p>';
+    return;
+  }
+  const totalValue = items.reduce((s, r) => s + (r.value * r.qty), 0);
+  el.innerHTML = `
+    <div class="loot-header">
+      <span class="eyebrow">Botin del grupo</span>
+      ${totalValue > 0 ? `<span class="loot-total">${totalValue} PO estimado</span>` : ""}
+    </div>
+    <div class="loot-grid">
+      ${items.map(r => `
+        <article class="loot-card">
+          <div class="loot-qty">x${r.qty}</div>
+          <div>
+            <h3>${escapeHtml(r.name)}</h3>
+            <p>${r.holders.join(", ")}</p>
+            ${r.value > 0 ? `<span class="loot-value">${r.value} PO c/u</span>` : ""}
+          </div>
+        </article>`).join("")}
+    </div>`;
 }
 function parseResources(resources) {
   const parsed = [];
@@ -706,10 +761,50 @@ function renderSheet() {
     ${attributeFields}
     <label class="wide-field">Estado actual<textarea id="sheet-condition">${escapeHtml(item.condition)}</textarea></label>`;
 }
+function renderItemCard(entry, equipped, showEquip) {
+  const [id, name, quantity, itemCategory, description] = entry;
+  const valueField = entry[7] ?? 0;
+  const descConverted = piesAMetros(description);
+  const isConsumable = itemCategory === "Consumible";
+  const isEquip = itemCategory === "Equipo";
+  const primaryAction = isEquip
+    ? `<button class="small-button gold-button" data-equip-item="${id}">${equipped ? "Quitar" : "Equipar"}</button>`
+    : isConsumable
+      ? `<div class="use-controls">
+           <button class="small-button gold-button" data-use-item="${id}" ${quantity < 1 ? "disabled" : ""}>Usar</button>
+           <input class="use-amount-input" type="number" min="1" max="${quantity}" value="1" data-use-amount-for="${id}" />
+         </div>`
+      : "";
+  const valueHtml = itemCategory === "Tesoro" || itemCategory === "Historia" || itemCategory === "Utilidad"
+    ? `<div class="item-value-row">
+         <span class="item-value-label">Valor</span>
+         <input class="item-value-input" type="number" min="0" value="${valueField}" data-value-item="${id}" placeholder="0 PO" />
+         <span class="item-value-label">PO</span>
+       </div>`
+    : valueField > 0
+      ? `<div class="item-value-row"><span class="item-value-label">${valueField} PO</span></div>`
+      : "";
+  return `
+    <article class="inventory-item">
+      <div>
+        <h3>${escapeHtml(name)} <span class="quantity">x${quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
+        <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
+        ${valueHtml}
+      </div>
+      <div class="item-actions">
+        ${primaryAction}
+        <button class="small-button" data-add-one-item="${id}">+1</button>
+        <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
+      </div>
+    </article>`;
+}
+
 function renderInventory() {
   const item = character();
   item.equipped ||= [];
   item.currency ||= { ...EMPTY_CURRENCY };
+
+  // Currency
   document.querySelector("#currency-grid").innerHTML = Object.entries(CURRENCY_LABELS).map(([key, label]) => `
     <article class="currency-item">
       <span>${label}</span>
@@ -719,6 +814,8 @@ function renderInventory() {
         <button class="currency-button" data-currency="${key}" data-currency-delta="1" type="button">+</button>
       </div>
     </article>`).join("");
+
+  // Carry weight
   const weight = carriedWeight(item);
   const capacity = (item.attributes.Fuerza || 0) * 15;
   const weightPercent = capacity ? Math.min(100, weight / capacity * 100) : 0;
@@ -729,37 +826,41 @@ function renderInventory() {
     </div>
     <div class="carry-track"><span style="width: ${weightPercent}%"></span></div>
     <p>${weight > capacity ? "Estas superando tu capacidad de carga." : "Capacidad maxima: Fuerza x 15 lb. Cada 50 monedas pesan 1 lb."}</p>`;
-  const categoryOrder = ["Consumible", "Equipo", "Utilidad", "Tesoro"];
-  const sections = categoryOrder.map((category) => {
-    const categoryItems = item.inventory.filter((entry) => entry[3] === category);
-    if (!categoryItems.length) return "";
-    return `
-      <section class="inventory-section">
-        <h3 class="inventory-section-title">${escapeHtml(category)}</h3>
-        ${categoryItems.map((entry) => {
-          const [id, name, quantity, itemCategory, description] = entry;
-          const equipped = item.equipped.includes(id);
-          const primaryAction = itemCategory === "Equipo"
-            ? `<button class="small-button gold-button" data-equip-item="${id}">${equipped ? "Quitar" : "Equipar"}</button>`
-            : itemCategory === "Consumible"
-              ? `<button class="small-button gold-button" data-use-item="${id}" ${quantity < 1 ? "disabled" : ""}>Usar</button>`
-              : "";
-          return `
-    <article class="inventory-item">
-      <div>
-        <h3>${escapeHtml(name)} <span class="quantity">x${quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
-        <p>${itemCategory === "Equipo" ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} - ` : ""}${escapeHtml(description)}</p>
-      </div>
-      <div class="item-actions">
-        ${primaryAction}
-        <button class="small-button" data-add-one-item="${id}">+1</button>
-        <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
-      </div>
-    </article>`;
-        }).join("")}
-      </section>`;
+
+  // ── Tab: En uso (Equipo equipped + Consumibles + Tesoro) ──
+  const activoItems = item.inventory.filter(e => ACTIVO_CATEGORIES.includes(e[3]));
+  const activoOrder = ["Equipo", "Consumible", "Tesoro"];
+  const activoSections = activoOrder.map((cat) => {
+    const catItems = activoItems.filter(e => e[3] === cat);
+    if (!catItems.length) return "";
+    return `<section class="inventory-section">
+      <h3 class="inventory-section-title">${escapeHtml(cat)}</h3>
+      ${catItems.map(e => renderItemCard(e, item.equipped.includes(e[0]), true)).join("")}
+    </section>`;
   }).join("");
-  document.querySelector("#inventory-list").innerHTML = sections || '<p class="helper-copy">La mochila esta vacia.</p>';
+
+  // ── Tab: Mochila (Utilidad + Historia) ──
+  const mochilaItems = item.inventory.filter(e => MOCHILA_CATEGORIES.includes(e[3]));
+  const mochilaOrder = ["Historia", "Utilidad"];
+  const mochilaSections = mochilaOrder.map((cat) => {
+    const catItems = mochilaItems.filter(e => e[3] === cat);
+    if (!catItems.length) return "";
+    const catLabel = cat === "Historia" ? "Objetos personales" : "Utilidades";
+    return `<section class="inventory-section">
+      <h3 class="inventory-section-title">${catLabel}</h3>
+      ${catItems.map(e => renderItemCard(e, false, false)).join("")}
+    </section>`;
+  }).join("");
+
+  // Render with sub-tabs
+  document.querySelector("#inventory-list").innerHTML = `
+    <div class="inv-tabs">
+      <button class="inv-tab active" data-inv-tab="activo">En uso</button>
+      <button class="inv-tab" data-inv-tab="mochila">Mochila</button>
+    </div>
+    <div class="inv-panel active" id="inv-activo">${activoSections || '<p class="helper-copy">Sin objetos activos.</p>'}</div>
+    <div class="inv-panel" id="inv-mochila">${mochilaSections || '<p class="helper-copy">La mochila esta vacia.</p>'}</div>`;
+
   const activity = state.activity[item.id] || [];
   document.querySelector("#activity-list").innerHTML = activity.map((entry) => `<p class="activity-entry">${escapeHtml(entry)}</p>`).join("") || '<p class="helper-copy">Todavia no hay movimientos.</p>';
 }
@@ -786,13 +887,23 @@ document.addEventListener("click", (event) => {
     document.querySelectorAll(".profile-tab").forEach((button) => button.classList.toggle("active", button === tab));
     document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("active", panel.id === tab.dataset.tab));
   }
+  // Inventory sub-tabs
+  const invTab = event.target.closest("[data-inv-tab]");
+  if (invTab) {
+    document.querySelectorAll(".inv-tab").forEach(b => b.classList.toggle("active", b === invTab));
+    document.querySelectorAll(".inv-panel").forEach(p => p.classList.toggle("active", p.id === `inv-${invTab.dataset.invTab}`));
+  }
   const useButton = event.target.closest("[data-use-item]");
   if (useButton) {
-    const item = character().inventory.find(([id]) => id === useButton.dataset.useItem);
-    if (!item || item[2] < 1) return;
-    item[2] -= 1;
-    addActivity(`Usaste ${item[1]}. Quedan ${item[2]}.`);
-    saveState(); renderInventory(); showToast(`${item[1]} usado.`);
+    const itemId = useButton.dataset.useItem;
+    const inv = character().inventory.find(([id]) => id === itemId);
+    if (!inv || inv[2] < 1) return;
+    // Check if there's an amount input
+    const amountInput = document.querySelector(`[data-use-amount-for="${itemId}"]`);
+    const amount = amountInput ? Math.min(parseInt(amountInput.value) || 1, inv[2]) : 1;
+    inv[2] = Math.max(0, inv[2] - amount);
+    addActivity(`Usaste ${inv[1]} x${amount}. Quedan ${inv[2]}.`);
+    saveState(); renderInventory(); showToast(`${inv[1]} x${amount} usado.`);
   }
   const equipButton = event.target.closest("[data-equip-item]");
   if (equipButton) {
@@ -902,6 +1013,18 @@ document.addEventListener("click", (event) => {
     // Toggle: if clicking on the last used pip, unmark it; else mark up to this pip
     item.resourceUses[rIdx] = currentUsed > pIdx ? pIdx : pIdx + 1;
     saveState(); renderCharacter();
+  }
+});
+
+// Value input handler
+document.addEventListener("change", (event) => {
+  const valueInput = event.target.closest("[data-value-item]");
+  if (valueInput) {
+    const itemId = valueInput.dataset.valueItem;
+    const inv = character().inventory.find(([id]) => id === itemId);
+    if (!inv) return;
+    inv[7] = parseFloat(valueInput.value) || 0;
+    saveState();
   }
 });
 
