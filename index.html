@@ -40,8 +40,10 @@
           <div class="character-grid" id="character-grid"></div>
         </section>
 
-        <section class="section-block">
-          <div id="loot-board"></div>
+        <section class="section-block character-entry" style="cursor:pointer" data-go="loot-view">
+          <p class="eyebrow">Botin del grupo</p>
+          <h2>Baul de la compania</h2>
+          <div id="loot-preview"></div>
         </section>
 
         <section class="session-board" id="session-board"></section>
@@ -203,11 +205,35 @@
           </article>
         </section>
       </section>
+      <!-- Loot view -->
+      <section class="view" id="loot-view">
+        <div class="chest-hero">
+          <div class="chest-lid">
+            <div class="chest-lid-band"></div>
+            <div class="chest-lock">⬡</div>
+          </div>
+          <div class="chest-body">
+            <div class="chest-band"></div>
+            <div class="chest-contents" id="chest-contents"></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <p class="eyebrow">Resumen del grupo</p>
+          <div class="loot-summary" id="loot-summary"></div>
+        </div>
+      </section>
     </main>
 
     <dialog id="item-dialog">
       <form method="dialog" id="item-form">
-        <h2>Agregar objeto</h2>
+        <h2 id="item-dialog-title">Agregar objeto</h2>
+        <input type="hidden" id="item-edit-id" value="" />
+        <div class="item-search-wrap" id="item-search-wrap">
+          <label>Buscar en base de datos
+            <input id="item-search" autocomplete="off" placeholder="Espada, cuerda, pocion..." />
+          </label>
+          <div class="item-search-results hidden" id="item-search-results"></div>
+        </div>
         <label>Nombre<input id="item-name" autocomplete="off" required /></label>
         <label>Cantidad<input id="item-quantity" type="number" min="1" value="1" required /></label>
         <label>Categoria
@@ -240,12 +266,29 @@
           </select>
         </label>
         <label>Peso por unidad (lb)<input id="item-weight" type="number" min="0" step="0.01" value="0" /></label>
+        <label>Valor (PO)<input id="item-value" type="number" min="0" step="0.01" value="0" /></label>
         <label>Descripcion<textarea id="item-description"></textarea></label>
         <div class="dialog-actions">
           <button class="small-button" value="cancel" type="button" id="cancel-item">Cancelar</button>
-          <button class="small-button gold-button" value="default" type="submit">Agregar</button>
+          <button class="small-button gold-button" id="item-submit-btn" type="submit">Agregar</button>
         </div>
       </form>
+    </dialog>
+
+    <dialog id="rope-dialog">
+      <div style="padding:4px">
+        <h2 id="rope-dialog-title">Ajustar cuerda</h2>
+        <p style="color:var(--muted);font-size:.84rem;margin:8px 0 14px" id="rope-current-label"></p>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px">
+          <button class="small-button" id="rope-minus">−</button>
+          <input id="rope-amount" type="number" min="1" value="5" style="width:70px;text-align:center" />
+          <button class="small-button" id="rope-plus">+</button>
+          <span style="color:var(--muted);font-size:.8rem">metros</span>
+        </div>
+        <div class="dialog-actions">
+          <button class="small-button" id="rope-cancel">Cancelar</button>
+        </div>
+      </div>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

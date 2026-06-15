@@ -116,6 +116,111 @@ const SLOT_BY_ITEM = {
   "ropa-comun": "other", "ropa-viajero": "other",
 };
 
+const ITEM_DATABASE = [
+  ['estatuilla-jade', 'Estatuilla de jade', 'Tesoro', 1, 20, 'Figura tallada en jade oscuro con grabados draconicos.', 'Ciudadela Sombria'],
+  ['llave-draconica', 'Llave draconica', 'Tesoro', 0.5, 50, 'Llave con forma de cabeza de dragon. Abre puertas draconicas antiguas.', 'Ciudadela Sombria'],
+  ['antorcha-verde', 'Antorcha de llama verde eterna', 'Tesoro', 1, 150, 'Antorcha magica de llama verde que nunca se apaga.', 'Ciudadela Sombria'],
+  ['pergamino-curacion', 'Pergamino de curar heridas', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: restaura 1d8+1 PG al lanzarlo.', 'Ciudadela Sombria'],
+  ['pergamino-llama', 'Pergamino de manos ardientes', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: inflige 5d6 de fuego en cono de 4.5 m.', 'Ciudadela Sombria'],
+  ['pergamino-oscuridad', 'Pergamino de oscuridad', 'Consumible', 0.1, 50, 'Conjuro de nivel 2: crea una esfera de oscuridad magica de 4.5 m.', 'Ciudadela Sombria'],
+  ['pocion-curacion', 'Pocion de curacion', 'Consumible', 0.5, 50, 'Restaura 2d4+2 PG al beberla.', 'Ciudadela Sombria'],
+  ['pocion-curacion-mayor', 'Pocion de curacion mayor', 'Consumible', 0.5, 300, 'Restaura 4d4+4 PG al beberla.', 'General'],
+  ['fruta-curativa', 'Fruta curativa de la Ciudadela', 'Consumible', 0.2, 200, 'Fruta magica que restaura 1d8+1 PG. Se dice que proviene de las profundidades de la Ciudadela.', 'Ciudadela Sombria'],
+  ['vara-veneno', 'Vara envenada', 'Equipo', 2, 25, 'Vara corta con veneno de serpiente. Usado por los goblins de la Ciudadela.', 'Ciudadela Sombria'],
+  ['monedas-goblin', 'Bolsa de monedas goblin', 'Tesoro', 0.5, 15, 'Bolsa con mezcla de PC y PO robadas por los goblins.', 'Ciudadela Sombria'],
+  ['amuleto-dracnico', 'Amuleto draconico', 'Tesoro', 0.2, 75, 'Amuleto de plata con simbolo draconico grabado.', 'Ciudadela Sombria'],
+  ['copa-plata-draconico', 'Copa de plata draconica', 'Tesoro', 0.8, 40, 'Copa ceremonial de plata con motivos draconicos.', 'Ciudadela Sombria'],
+  ['anillo-bronce', 'Anillo de bronce', 'Tesoro', 0.1, 10, 'Anillo simple de bronce con grabados geometricos.', 'Ciudadela Sombria'],
+  ['gema-roja', 'Gema roja pulida', 'Tesoro', 0.1, 50, 'Piedra semipreciosa de color rojo intenso.', 'General'],
+  ['gema-azul', 'Gema azul pulida', 'Tesoro', 0.1, 50, 'Piedra semipreciosa de color azul profundo.', 'General'],
+  ['daga-plata', 'Daga de plata', 'Equipo', 1, 20, 'Daga con hoja de plata. Efectiva contra licantropos y criaturas con resistencia a armas normales.', 'General'],
+  ['aceite-flask', 'Frasco de aceite', 'Consumible', 1, 0.1, 'Aceite inflamable. Cubre 1.5 m2. Inflige 5 de fuego si se enciende.', 'General'],
+  ['relicario-duergar', 'Relicario duergar', 'Tesoro', 0.3, 80, 'Relicario de hierro negro con gemas diminutas, trabajo tipico duergar.', 'Forja de la Furia'],
+  ['lingote-adamantita', 'Lingote de adamantita', 'Tesoro', 5, 500, 'Lingote del metal mas duro conocido. Muy valioso para herreros de elite.', 'Forja de la Furia'],
+  ['martillo-forja-magico', 'Martillo de forja magico', 'Equipo', 10, 350, 'Martillo de forja con encantamiento menor. Otorga ventaja en tiradas de herrero.', 'Forja de la Furia'],
+  ['hacha-enana-antigua', 'Hacha enana antigua', 'Equipo', 7, 120, 'Hacha de batalla enana con runas talladas. 1d8 cortante.', 'Forja de la Furia'],
+  ['escudo-runico', 'Escudo runico', 'Equipo', 6, 200, 'Escudo enano con runas de proteccion. +2 CA.', 'Forja de la Furia'],
+  ['collar-clan-enano', 'Collar del clan Glitterhame', 'Tesoro', 0.2, 90, 'Collar de clan enano con emblema familiar tallado en acero.', 'Forja de la Furia'],
+  ['pergamino-runas', 'Pergamino de runas', 'Tesoro', 0.1, 100, 'Pergamino con instrucciones de forja en antiguo enano.', 'Forja de la Furia'],
+  ['gema-fuego', 'Gema de fuego', 'Tesoro', 0.1, 150, 'Piedra preciosa con un punto de luz interior que recuerda al fuego.', 'Forja de la Furia'],
+  ['pocion-fuerza-gigante', 'Pocion de fuerza de gigante de colina', 'Consumible', 0.5, 200, 'Tu puntuacion de Fuerza se convierte en 21 durante 1 hora.', 'Forja de la Furia'],
+  ['lingote-hierro-negro', 'Lingote de hierro negro', 'Tesoro', 5, 25, 'Hierro de alta calidad extraido en las forjas profundas.', 'Forja de la Furia'],
+  ['mapa-forja', 'Mapa de la Forja de la Furia', 'Tesoro', 0.1, 200, 'Mapa parcial de los tuneles y camaras de la Forja. Util para la expedicion.', 'Forja de la Furia'],
+  ['espada-larga', 'Espada larga', 'Equipo', 3, 15, '1d8 cortante (1d10 a dos manos). Versatil.', 'General'],
+  ['espada-corta', 'Espada corta', 'Equipo', 2, 10, '1d6 perforante. Ligera, sutil.', 'General'],
+  ['espadon', 'Espadon', 'Equipo', 6, 50, '2d6 cortante. Pesada, dos manos.', 'General'],
+  ['daga', 'Daga', 'Equipo', 1, 2, '1d4 perforante. Ligera, sutil, arrojadiza (alcance 6/18 m).', 'General'],
+  ['hacha-mano', 'Hacha de mano', 'Equipo', 2, 5, '1d6 cortante. Ligera, arrojadiza (alcance 6/18 m).', 'General'],
+  ['hacha-batalla', 'Hacha de batalla', 'Equipo', 4, 10, '1d8 cortante (1d10 a dos manos). Versatil.', 'General'],
+  ['martillo-guerra', 'Martillo de guerra', 'Equipo', 2, 15, '1d8 contundente (1d10 a dos manos). Versatil.', 'General'],
+  ['lanza', 'Lanza', 'Equipo', 3, 1, '1d6 perforante. Versatil (1d8), arrojadiza (alcance 6/18 m).', 'General'],
+  ['jabalina', 'Jabalina', 'Equipo', 2, 0.5, '1d6 perforante. Arrojadiza (alcance 9/36 m).', 'General'],
+  ['alabarda', 'Alabarda', 'Equipo', 6, 20, '1d10 cortante. Pesada, dos manos, alcance.', 'General'],
+  ['arco-largo', 'Arco largo', 'Equipo', 2, 50, '1d8 perforante. Municion (alcance 45/180 m), pesado, dos manos.', 'General'],
+  ['arco-corto', 'Arco corto', 'Equipo', 2, 25, '1d6 perforante. Municion (alcance 24/96 m), dos manos.', 'General'],
+  ['ballesta-ligera', 'Ballesta ligera', 'Equipo', 5, 25, '1d8 perforante. Municion (alcance 24/96 m), dos manos.', 'General'],
+  ['mazo', 'Mazo', 'Equipo', 4, 5, '1d6 contundente.', 'General'],
+  ['garrote', 'Garrote', 'Equipo', 2, 0.1, '1d4 contundente. Ligero.', 'General'],
+  ['cayado', 'Cayado', 'Equipo', 4, 0.2, '1d6 contundente (1d8 a dos manos). Versatil.', 'General'],
+  ['tridente', 'Tridente', 'Equipo', 4, 5, '1d6 perforante (1d8 a dos manos). Versatil, arrojadizo (alcance 6/18 m).', 'General'],
+  ['tomahawk', 'Tomahawk', 'Equipo', 2, 5, '1d6 cortante. Ligero, arrojadizo (alcance 6/18 m).', 'General'],
+  ['armadura-cuero', 'Armadura de cuero', 'Equipo', 10, 10, 'CA 11 + mod. Destreza. Armadura ligera.', 'General'],
+  ['armadura-cuero-tachonado', 'Armadura de cuero tachonado', 'Equipo', 13, 45, 'CA 12 + mod. Destreza. Armadura ligera.', 'General'],
+  ['cota-malla', 'Cota de malla', 'Equipo', 55, 75, 'CA 16. Fuerza 13. Armadura pesada.', 'General'],
+  ['camisote-anillas', 'Camisote de anillas', 'Equipo', 40, 30, 'CA 14. Desventaja en Sigilo. Armadura media.', 'General'],
+  ['armadura-escamas', 'Armadura de escamas', 'Equipo', 45, 50, 'CA 14 + mod. Destreza (max 2). Desventaja en Sigilo. Armadura media.', 'General'],
+  ['coraza', 'Coraza', 'Equipo', 20, 400, 'CA 14 + mod. Destreza (max 2). Armadura media.', 'General'],
+  ['armadura-placas', 'Armadura de placas', 'Equipo', 65, 1500, 'CA 18. Fuerza 15. Desventaja en Sigilo. Armadura pesada.', 'General'],
+  ['escudo', 'Escudo', 'Equipo', 6, 10, '+2 CA mientras lo empunas.', 'General'],
+  ['mochila', 'Mochila', 'Utilidad', 5, 2, 'Capacidad: 30 lb o 1 pie cubico.', 'General'],
+  ['odre', 'Odre', 'Utilidad', 5, 0.2, 'Capacidad: 4 litros de liquido.', 'General'],
+  ['cuerda-canamo', 'Cuerda de canamo (15 m)', 'Consumible', 10, 1, 'Cuerda resistente. Aguanta 1000 lb. Se gasta con el uso.', 'General'],
+  ['cuerda-seda', 'Cuerda de seda (15 m)', 'Consumible', 5, 10, 'Cuerda de seda ligera. Aguanta 750 lb.', 'General'],
+  ['antorcha', 'Antorcha', 'Consumible', 1, 0.01, 'Ilumina 6 m de luz brillante y 6 m de luz tenue. Dura 1 hora.', 'General'],
+  ['racion', 'Racion de viaje', 'Consumible', 2, 0.5, 'Comida seca para un dia.', 'General'],
+  ['yesquero', 'Yesquero', 'Utilidad', 1, 0.5, 'Permite encender fuego en 1 accion.', 'General'],
+  ['palanca', 'Palanca', 'Utilidad', 5, 0.2, 'Otorga ventaja en pruebas de Fuerza para abrir objetos.', 'General'],
+  ['martillo', 'Martillo', 'Utilidad', 3, 1, 'Herramienta para clavar pitones y reparar.', 'General'],
+  ['piton', 'Piton', 'Consumible', 0.25, 0.05, 'Clavo de hierro para asegurar cuerda o bloquear puertas.', 'General'],
+  ['petate', 'Petate', 'Utilidad', 7, 0.1, 'Para dormir. Necesario para descanso largo.', 'General'],
+  ['lupa', 'Lupa', 'Utilidad', 0, 100, 'Otorga ventaja en pruebas de Percepcion o Historia para examinar objetos pequenos.', 'General'],
+  ['espejo-acero', 'Espejo de acero', 'Utilidad', 0.5, 5, 'Espejo pulido de acero. Util para ver alrededor de esquinas.', 'General'],
+  ['cuerda-escalada', 'Garfio', 'Utilidad', 4, 2, 'Gancho de hierro para trepar muros o asegurar cuerdas.', 'General'],
+  ['frasco-vidrio', 'Frasco de vidrio', 'Utilidad', 1, 1, 'Contenedor de vidrio. Capacidad: medio litro.', 'General'],
+  ['bolsa-componentes', 'Bolsa de componentes', 'Utilidad', 2, 25, 'Bolsa con materiales para lanzar conjuros.', 'General'],
+  ['simbolo-sagrado', 'Simbolo sagrado', 'Equipo', 1, 5, 'Foco para conjuros divinos. Puede ser llevado o sostenido.', 'General'],
+  ['libro-hechizos', 'Libro de hechizos', 'Utilidad', 3, 50, 'Libro con 6 conjuros de nivel 1. Necesario para el mago.', 'General'],
+  ['veneno-basico', 'Veneno basico (frasco)', 'Consumible', 0, 100, 'Aplica en arma o municion. El objetivo hace tirada de CON CD 10 o recibe 1d4 veneno.', 'General'],
+  ['bola-acero', 'Bolas de acero (20)', 'Consumible', 2, 1, 'Esparcidas en el suelo, criaturas que pasen hacen prueba CD 10 DEX o caen.', 'General'],
+  ['vela', 'Vela', 'Consumible', 0, 0.01, 'Ilumina 1.5 m de luz tenue. Dura 1 hora.', 'General'],
+  ['tinta', 'Tinta (frasco)', 'Utilidad', 0, 10, 'Frasco de tinta negra.', 'General'],
+  ['pluma', 'Pluma', 'Utilidad', 0, 0.02, 'Pluma para escribir.', 'General'],
+  ['papel', 'Papel (hoja)', 'Utilidad', 0, 0.2, 'Hoja de papel de calidad.', 'General'],
+  ['pergamino', 'Pergamino (hoja)', 'Utilidad', 0, 0.1, 'Hoja de pergamino para escribir.', 'General'],
+  ['cadena', 'Cadena (3 m)', 'Utilidad', 10, 5, 'Cadena de hierro. CD Fuerza 20 para romper.', 'General'],
+  ['trampa-caza', 'Trampa de caza', 'Utilidad', 25, 5, 'Trampa de hierro con dientes. Inmoviliza al que la pise (CD FUE 13 para escapar).', 'General'],
+  ['palillo-madera', 'Palillos de madera (10)', 'Utilidad', 1, 0.01, 'Palillos utiles para marcar caminos o bloquear mecanismos.', 'General'],
+  ['agua-bendita', 'Agua bendita (frasco)', 'Consumible', 1, 25, 'Inflige 2d6 de dano radiante a muertos vivientes y demonios.', 'General'],
+  ['flecha', 'Flechas (20)', 'Consumible', 1, 1, 'Municion para arco largo o corto.', 'General'],
+  ['perno-ballesta', 'Pernos de ballesta (20)', 'Consumible', 1.5, 1, 'Municion para ballesta.', 'General'],
+  ['utensilios-cocina', 'Utensilios de cocina', 'Utilidad', 1, 1, 'Olla, platos y cubiertos basicos para cocinar.', 'General'],
+  ['ropa-comun', 'Ropa comun', 'Equipo', 3, 0.5, 'Vestimenta cotidiana sencilla.', 'General'],
+  ['ropa-viajero', 'Ropa de viajero', 'Equipo', 4, 2, 'Ropa resistente y comoda para el camino.', 'General'],
+  ['ropa-fina', 'Ropa fina', 'Equipo', 6, 15, 'Ropa elegante apropiada para eventos sociales.', 'General'],
+  ['tienda-campana', 'Tienda de campana (2 personas)', 'Utilidad', 20, 2, 'Refugio simple para dos personas.', 'General'],
+  ['capa', 'Capa', 'Equipo', 1, 0.5, 'Capa de tela resistente.', 'General'],
+  ['kit-primeros-auxilios', 'Kit de primeros auxilios', 'Utilidad', 3, 5, 'Contiene vendas, unguentos y herramientas basicas. Permite estabilizar a criatura a 0 PG con accion.', 'General'],
+  ['herramientas-ladron', 'Herramientas de ladron', 'Utilidad', 1, 25, 'Pinchos y ganzuas para forzar cerraduras. Requiere competencia.', 'General'],
+  ['herramientas-herrero', 'Herramientas de herrero', 'Utilidad', 20, 20, 'Yunque, martillos y tenazas para trabajo en metal.', 'General'],
+  ['kit-escalada', 'Kit de escalada', 'Utilidad', 12, 25, 'Garfio, pitones y correas. Otorga ventaja en trepar y permite descansar en una pared.', 'General'],
+  ['kit-disfraz', 'Kit de disfraz', 'Utilidad', 3, 25, 'Cosmeticos, pelucas y ropa variada para disfraces.', 'General'],
+  ['instrumento-musica', 'Instrumento musical', 'Utilidad', 2, 15, 'Flauta, laud u otro instrumento basico.', 'General'],
+  ['caballo', 'Caballo de carga', 'Utilidad', 0, 50, 'Caballo entrenado. Velocidad 12 m. Puede cargar hasta 540 lb.', 'General'],
+  ['burro', 'Burro/Mula', 'Utilidad', 0, 8, 'Animal de carga. Velocidad 12 m. Puede cargar 420 lb.', 'General'],
+  ['carreta', 'Carreta', 'Utilidad', 0, 15, 'Vehiculo de madera con 2 ruedas. Capacidad 200 kg.', 'General'],
+  ['bote-remos', 'Bote de remos', 'Utilidad', 0, 50, 'Bote simple para 4 personas. Velocidad 4.5 m remando.', 'General'],
+];
+
 // Items that belong in the "Mochila" tab (Historia/Utilidad)
 const MOCHILA_CATEGORIES = ["Utilidad", "Historia"];
 // Items that belong in the main inventory tab
@@ -615,7 +720,13 @@ function renderHome() {
 }
 
 function renderLootBoard() {
-  const el = document.querySelector("#loot-board");
+  // Update home preview
+  const preview = document.querySelector("#loot-preview");
+  const chestEl = document.querySelector("#chest-contents");
+  const summaryEl = document.querySelector("#loot-summary");
+
+  // Aggregate Tesoro items across all characters
+  const el = preview || chestEl;
   if (!el) return;
   // Aggregate Tesoro items across all characters
   const lootMap = new Map();
@@ -637,22 +748,30 @@ function renderLootBoard() {
     return;
   }
   const totalValue = items.reduce((s, r) => s + (r.value * r.qty), 0);
-  el.innerHTML = `
-    <div class="loot-header">
-      <span class="eyebrow">Botin del grupo</span>
-      ${totalValue > 0 ? `<span class="loot-total">${totalValue} PO estimado</span>` : ""}
-    </div>
-    <div class="loot-grid">
-      ${items.map(r => `
-        <article class="loot-card">
-          <div class="loot-qty">x${r.qty}</div>
-          <div>
-            <h3>${escapeHtml(r.name)}</h3>
-            <p>${r.holders.join(", ")}</p>
-            ${r.value > 0 ? `<span class="loot-value">${r.value} PO c/u</span>` : ""}
-          </div>
-        </article>`).join("")}
-    </div>`;
+  const lootHtml = items.length ? items.map(r => `
+    <article class="loot-card">
+      <div class="loot-qty">x${r.qty}</div>
+      <div>
+        <h3>${escapeHtml(r.name)}</h3>
+        <p>${r.holders.join(", ")}</p>
+        ${r.value > 0 ? `<span class="loot-value">${r.value} PO c/u</span>` : ""}
+      </div>
+    </article>`).join("") : '<p class="helper-copy" style="padding:8px">Sin tesoros aun.</p>';
+
+  // Home preview: just count
+  if (preview) {
+    preview.innerHTML = items.length
+      ? `<p style="color:var(--muted);font-size:.82rem;margin-top:6px">${items.length} tipo${items.length !== 1 ? "s" : ""} de tesoro · ${items.reduce((s,r)=>s+r.qty,0)} objetos${totalValue > 0 ? ` · ${totalValue} PO estimado` : ""}</p>`
+      : '<p style="color:var(--muted);font-size:.82rem;margin-top:6px">El baul esta vacio.</p>';
+  }
+
+  // Chest view
+  if (chestEl) {
+    chestEl.innerHTML = `<div class="loot-grid">${lootHtml}</div>`;
+  }
+  if (summaryEl && totalValue > 0) {
+    summaryEl.innerHTML = `<p class="eyebrow" style="margin-bottom:4px">Valor total estimado</p><p style="color:var(--gold);font-family:Georgia,serif;font-size:1.6rem;font-weight:700">${totalValue} PO</p>`;
+  }
 }
 function parseResources(resources) {
   const parsed = [];
@@ -767,6 +886,7 @@ function renderItemCard(entry, equipped, showEquip) {
   const descConverted = piesAMetros(description);
   const isConsumable = itemCategory === "Consumible";
   const isEquip = itemCategory === "Equipo";
+  const isRope = /cuerda|soga/i.test(name);
   const primaryAction = isEquip
     ? `<button class="small-button gold-button" data-equip-item="${id}">${equipped ? "Quitar" : "Equipar"}</button>`
     : isConsumable
@@ -775,15 +895,9 @@ function renderItemCard(entry, equipped, showEquip) {
            <input class="use-amount-input" type="number" min="1" max="${quantity}" value="1" data-use-amount-for="${id}" />
          </div>`
       : "";
-  const valueHtml = itemCategory === "Tesoro" || itemCategory === "Historia" || itemCategory === "Utilidad"
-    ? `<div class="item-value-row">
-         <span class="item-value-label">Valor</span>
-         <input class="item-value-input" type="number" min="0" value="${valueField}" data-value-item="${id}" placeholder="0 PO" />
-         <span class="item-value-label">PO</span>
-       </div>`
-    : valueField > 0
-      ? `<div class="item-value-row"><span class="item-value-label">${valueField} PO</span></div>`
-      : "";
+  const valueHtml = valueField > 0
+    ? `<span class="item-value-tag">${valueField} PO</span>`
+    : "";
   return `
     <article class="inventory-item">
       <div>
@@ -793,7 +907,9 @@ function renderItemCard(entry, equipped, showEquip) {
       </div>
       <div class="item-actions">
         ${primaryAction}
+        ${isRope ? `<button class="small-button" data-rope-item="${id}">~ m</button>` : ''}
         <button class="small-button" data-add-one-item="${id}">+1</button>
+        <button class="small-button" data-edit-item="${id}">✎</button>
         <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
       </div>
     </article>`;
@@ -951,6 +1067,19 @@ document.addEventListener("click", (event) => {
     addActivity(`Tiraste ${item[1]}.`);
     saveState(); renderInventory(); showToast(`${item[1]} eliminado.`);
   }
+  const editButton = event.target.closest("[data-edit-item]");
+  if (editButton) openItemDialog(editButton.dataset.editItem);
+
+  const ropeButton = event.target.closest("[data-rope-item]");
+  if (ropeButton) {
+    const inv = character().inventory.find(([id]) => id === ropeButton.dataset.ropeItem);
+    if (!inv) return;
+    const dlg = document.querySelector("#rope-dialog");
+    document.querySelector("#rope-dialog-title").textContent = inv[1];
+    document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
+    dlg._ropeId = ropeButton.dataset.ropeItem;
+    dlg.showModal();
+  }
 });
 document.querySelector("#back-button").addEventListener("click", () => showView("home-view"));
 document.querySelector("#save-sheet").addEventListener("click", () => {
@@ -963,10 +1092,74 @@ document.querySelector("#save-sheet").addEventListener("click", () => {
   addActivity("Actualizaste la ficha del personaje.");
   saveState(); renderCharacter(); showToast("Ficha guardada.");
 });
-document.querySelector("#open-add-item").addEventListener("click", () => document.querySelector("#item-dialog").showModal());
+function openItemDialog(editId = null) {
+  const dlg = document.querySelector("#item-dialog");
+  const title = document.querySelector("#item-dialog-title");
+  const submitBtn = document.querySelector("#item-submit-btn");
+  document.querySelector("#item-edit-id").value = editId || "";
+  document.querySelector("#item-search-wrap").classList.toggle("hidden", !!editId);
+  if (editId) {
+    const inv = character().inventory.find(([id]) => id === editId);
+    if (!inv) return;
+    title.textContent = "Editar objeto";
+    submitBtn.textContent = "Guardar cambios";
+    document.querySelector("#item-name").value = inv[1];
+    document.querySelector("#item-quantity").value = inv[2];
+    document.querySelector("#item-category").value = inv[3];
+    document.querySelector("#item-description").value = inv[4] || "";
+    document.querySelector("#item-weight").value = inv[6] ?? 0;
+    document.querySelector("#item-value").value = inv[7] ?? 0;
+    document.querySelector("#item-slot").value = inv[5] || "other";
+    document.querySelector("#item-slot-field").classList.toggle("hidden", inv[3] !== "Equipo");
+  } else {
+    title.textContent = "Agregar objeto";
+    submitBtn.textContent = "Agregar";
+    document.querySelector("#item-form").reset();
+    document.querySelector("#item-slot-field").classList.add("hidden");
+    document.querySelector("#item-search-results").classList.add("hidden");
+    document.querySelector("#item-search-results").innerHTML = "";
+    document.querySelector("#item-search").value = "";
+  }
+  dlg.showModal();
+}
+
+document.querySelector("#open-add-item").addEventListener("click", () => openItemDialog());
 document.querySelector("#cancel-item").addEventListener("click", () => document.querySelector("#item-dialog").close());
 document.querySelector("#item-category").addEventListener("change", (event) => {
   document.querySelector("#item-slot-field").classList.toggle("hidden", event.target.value !== "Equipo");
+});
+
+document.querySelector("#item-search").addEventListener("input", (event) => {
+  const q = event.target.value.trim().toLowerCase();
+  const results = document.querySelector("#item-search-results");
+  if (q.length < 2) { results.classList.add("hidden"); results.innerHTML = ""; return; }
+  const matches = ITEM_DATABASE.filter(([id, name, cat, w, v, desc, src]) =>
+    name.toLowerCase().includes(q) || desc.toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (!matches.length) { results.classList.add("hidden"); return; }
+  results.classList.remove("hidden");
+  results.innerHTML = matches.map(([id, name, cat, weight, value, desc, src]) => `
+    <button type="button" class="search-result-item" data-db-id="${escapeHtml(id)}">
+      <span class="search-result-name">${escapeHtml(name)}</span>
+      <span class="search-result-meta">${escapeHtml(cat)} · ${weight} lb${value ? ` · ${value} PO` : ""} <em>${escapeHtml(src)}</em></span>
+      <span class="search-result-desc">${escapeHtml(desc)}</span>
+    </button>`).join("");
+});
+
+document.querySelector("#item-search-results").addEventListener("click", (event) => {
+  const btn = event.target.closest("[data-db-id]");
+  if (!btn) return;
+  const found = ITEM_DATABASE.find(([i]) => i === btn.dataset.dbId);
+  if (!found) return;
+  const [id, name, cat, weight, value, desc] = found;
+  document.querySelector("#item-name").value = name;
+  document.querySelector("#item-category").value = cat;
+  document.querySelector("#item-weight").value = weight;
+  document.querySelector("#item-value").value = value;
+  document.querySelector("#item-description").value = desc;
+  document.querySelector("#item-slot-field").classList.toggle("hidden", cat !== "Equipo");
+  document.querySelector("#item-search-results").classList.add("hidden");
+  document.querySelector("#item-search").value = "";
 });
 // Short rest handler
 document.addEventListener("click", (event) => {
@@ -1016,33 +1209,56 @@ document.addEventListener("click", (event) => {
   }
 });
 
-// Value input handler
-document.addEventListener("change", (event) => {
-  const valueInput = event.target.closest("[data-value-item]");
-  if (valueInput) {
-    const itemId = valueInput.dataset.valueItem;
-    const inv = character().inventory.find(([id]) => id === itemId);
-    if (!inv) return;
-    inv[7] = parseFloat(valueInput.value) || 0;
-    saveState();
-  }
-});
-
 document.querySelector("#item-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const name = document.querySelector("#item-name").value.trim();
   if (!name) return;
-  const id = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
   const quantity = Number(document.querySelector("#item-quantity").value);
   const category = document.querySelector("#item-category").value;
   const slot = category === "Equipo" ? document.querySelector("#item-slot").value : "";
   const weight = Number(document.querySelector("#item-weight").value) || 0;
+  const value = Number(document.querySelector("#item-value").value) || 0;
   const description = document.querySelector("#item-description").value.trim() || "Sin descripcion.";
-  character().inventory.push([id, name, quantity, category, description, slot, weight]);
-  addActivity(`Agregaste ${name} x${quantity}.`);
-  saveState(); renderInventory();
-  event.target.reset(); document.querySelector("#item-slot-field").classList.add("hidden");
-  document.querySelector("#item-dialog").close(); showToast(`${name} agregado.`);
+  const editId = document.querySelector("#item-edit-id").value;
+  if (editId) {
+    const inv = character().inventory.find(([id]) => id === editId);
+    if (inv) {
+      inv[1] = name; inv[2] = quantity; inv[3] = category;
+      inv[4] = description; inv[5] = slot; inv[6] = weight; inv[7] = value;
+      addActivity(`Editaste ${name}.`);
+      saveState(); renderInventory(); showToast(`${name} actualizado.`);
+    }
+  } else {
+    const id = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
+    character().inventory.push([id, name, quantity, category, description, slot, weight, value]);
+    addActivity(`Agregaste ${name} x${quantity}.`);
+    saveState(); renderInventory(); showToast(`${name} agregado.`);
+  }
+  document.querySelector("#item-slot-field").classList.add("hidden");
+  document.querySelector("#item-dialog").close();
+});
+
+// Rope dialog handlers
+document.querySelector("#rope-cancel").addEventListener("click", () => document.querySelector("#rope-dialog").close());
+document.querySelector("#rope-minus").addEventListener("click", () => {
+  const dlg = document.querySelector("#rope-dialog");
+  const inv = character().inventory.find(([id]) => id === dlg._ropeId);
+  if (!inv) return;
+  const amount = Number(document.querySelector("#rope-amount").value) || 1;
+  inv[2] = Math.max(0, inv[2] - amount);
+  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
+  addActivity(`Usaste ${amount} m de ${inv[1]}. Quedan ${inv[2]} m.`);
+  saveState(); renderInventory(); showToast(`${amount} m usados.`);
+});
+document.querySelector("#rope-plus").addEventListener("click", () => {
+  const dlg = document.querySelector("#rope-dialog");
+  const inv = character().inventory.find(([id]) => id === dlg._ropeId);
+  if (!inv) return;
+  const amount = Number(document.querySelector("#rope-amount").value) || 1;
+  inv[2] += amount;
+  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
+  addActivity(`Agregaste ${amount} m a ${inv[1]}. Total: ${inv[2]} m.`);
+  saveState(); renderInventory(); showToast(`+${amount} m.`);
 });
 
 // Initial render from localStorage, then update from Firestore
