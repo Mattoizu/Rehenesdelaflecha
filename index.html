@@ -291,6 +291,24 @@
       </div>
     </dialog>
 
+    <dialog id="drop-dialog">
+      <div style="padding:4px">
+        <h2 id="drop-dialog-title">Tirar objeto</h2>
+        <p style="color:var(--muted);font-size:.84rem;margin:8px 0 14px" id="drop-current-qty"></p>
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;color:var(--muted);font-size:.82rem">
+          <input type="checkbox" id="drop-all-check" /> Tirar todo
+        </label>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px">
+          <label style="color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em">Cantidad</label>
+          <input id="drop-amount" type="number" min="1" value="1" style="width:70px;text-align:center" />
+        </div>
+        <div class="dialog-actions">
+          <button class="small-button" id="drop-cancel">Cancelar</button>
+          <button class="small-button danger-button" id="drop-confirm">Tirar</button>
+        </div>
+      </div>
+    </dialog>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script type="module" src="app.js"></script>
   </body>

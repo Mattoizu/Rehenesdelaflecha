@@ -536,23 +536,23 @@ const initialCharacters = [
     attacks: ["Espada ancestral +4 - 1d8 + 2 cortante; efecto adicional especial", "Jabalina +4 - 1d6 + 2 perforante"],
     resources: ["Imponer las manos - 5 PG", "Sentidos divinos - 4 usos por descanso largo", "Dote - Centinela"],
     inventory: [
-      ["espada-ancestral", "Espada ancestral", 1, "Equipo", "Espada larga vinculada con una entidad oscura. Inflige 1d6 de dano adicional, pero tambien te inflige 1d6 despues de cada descanso largo."],
-      ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA base 16."],
-      ["escudo", "Escudo", 1, "Equipo", "Aporta +2 a la CA mientras lo empunas."],
-      ["jabalina", "Jabalina", 5, "Equipo", "Arma arrojadiza. Alcance 30/120 pies."],
-      ["simbolo-sagrado", "Simbolo sagrado", 1, "Equipo", "Foco para tus conjuros de paladin."],
-      ["mochila", "Mochila", 1, "Utilidad", "Contenedor del paquete de explorador."],
-      ["petate", "Petate", 1, "Utilidad", "Equipo para descansar durante el viaje."],
-      ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Equipo sencillo para preparar y comer alimentos."],
-      ["yesquero", "Yesquero", 1, "Utilidad", "Permite encender fuego."],
-      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina durante 1 hora. Luz brillante a 20 pies y tenue otros 20."],
-      ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
-      ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
-      ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["insignia-rango", "Insignia de rango", 1, "Historia", "Recuerdo de tu trasfondo de soldado."],
-      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Recuerdo de una batalla anterior."],
-      ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego asociado a tu pasado como soldado."],
-      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana."],
+      ["espada-ancestral", "Espada ancestral", 1, "Equipo", "Espada larga vinculada con una entidad oscura. Inflige 1d6 de dano adicional despues de impactar, pero tambien te inflige 1d6 despues de cada descanso largo. Homebrew.", "main-hand", 3, 0],
+      ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA 16. Requiere Fuerza 13. Desventaja en Sigilo.", "armor", 55, 75],
+      ["escudo", "Escudo", 1, "Equipo", "+2 CA mientras lo empunas. Requiere una mano libre.", "shield", 6, 10],
+      ["jabalina", "Jabalina", 5, "Equipo", "1d6 perforante. Arrojadiza (alcance 9/36 m). Versatil (1d8).", "main-hand", 2, 0.5],
+      ["simbolo-sagrado", "Simbolo sagrado", 1, "Equipo", "Amuleto sagrado. Foco para tus conjuros de paladin.", "focus", 1, 5],
+      ["mochila", "Mochila", 1, "Utilidad", "Capacidad: 30 lb o 0.03 m3.", "other", 5, 2],
+      ["petate", "Petate", 1, "Utilidad", "Para dormir. Necesario para descanso largo en la naturaleza.", "other", 7, 0.1],
+      ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Olla, platos y cubiertos basicos para cocinar.", "other", 8, 0.2],
+      ["yesquero", "Yesquero", 1, "Utilidad", "Encender fuego en 1 accion (o 1 minuto si falla la prueba).", "other", 1, 0.5],
+      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
+      ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
+      ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros de liquido.", "other", 5, 0.2],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado. Recuerdo de tu servicio.", "other", 0, 0],
+      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado. Recuerdo de una batalla anterior.", "other", 0.5, 0],
+      ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
+      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "other", 3, 0.5],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
     equipped: ["espada-ancestral", "cota-malla", "escudo"],
@@ -574,25 +574,25 @@ const initialCharacters = [
     attacks: ["Martillo Jesucristo +4 - 1d8 + 2 contundente", "Lanza +4 - 1d6 + 2 perforante"],
     resources: ["Sacerdote de guerra - 3 ataques adicionales por descanso largo", "Conjuros - CD 13, ataque +5", "Espacios de nivel 1 - 2"],
     inventory: [
-      ["martillo-jesucristo", "Martillo Jesucristo", 1, "Equipo", "Martillo de guerra personal. 1d8 contundente, o 1d10 a dos manos."],
-      ["lanza", "Lanza", 1, "Equipo", "Arma versatil y arrojadiza."],
-      ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA base 16."],
-      ["escudo", "Escudo", 1, "Equipo", "Porta el simbolo de tu deidad y aporta +2 a la CA mientras lo empunas."],
-      ["simbolo-sagrado", "Simbolo sagrado", 1, "Equipo", "Foco para tus conjuros de clerigo."],
-      ["sombrero", "Sombrero", 1, "Historia", "Lo encontro, se veia genial y decidio conservarlo."],
-      ["collar-padre", "Collar de su padre", 1, "Historia", "El ultimo recuerdo de su padre."],
-      ["mochila", "Mochila", 1, "Utilidad", "Contenedor del paquete de explorador."],
-      ["petate", "Petate", 1, "Utilidad", "Equipo para descansar durante el viaje."],
-      ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Equipo sencillo para preparar y comer alimentos."],
-      ["yesquero", "Yesquero", 1, "Utilidad", "Permite encender fuego."],
-      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina durante 1 hora. Luz brillante a 20 pies y tenue otros 20."],
-      ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
-      ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
-      ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["insignia-rango", "Insignia de rango", 1, "Historia", "Recuerdo de tu trasfondo de soldado."],
-      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Recuerdo de una batalla anterior."],
-      ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego asociado a tu pasado como soldado."],
-      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana."],
+      ["martillo-jesucristo", "Martillo Jesucristo", 1, "Equipo", "Martillo de guerra personal de Miguel Angel. 1d8 contundente, o 1d10 a dos manos. Versatil.", "main-hand", 2, 15],
+      ["lanza", "Lanza", 1, "Equipo", "1d6 perforante. Arrojadiza (alcance 6/18 m). Versatil (1d8).", "main-hand", 3, 1],
+      ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA 16. Requiere Fuerza 13. Desventaja en Sigilo.", "armor", 55, 75],
+      ["escudo", "Escudo", 1, "Equipo", "Porta el simbolo de tu deidad. +2 CA mientras lo empunas.", "shield", 6, 10],
+      ["simbolo-sagrado", "Simbolo sagrado", 1, "Equipo", "Amuleto sagrado. Foco para tus conjuros de clerigo.", "focus", 1, 5],
+      ["sombrero", "Sombrero", 1, "Historia", "Lo encontro en la Ciudadela. Le quedaba demasiado bien como para abandonarlo.", "head", 0.5, 0],
+      ["collar-padre", "Collar de su padre", 1, "Historia", "El ultimo recuerdo de su padre. Lo lleva bajo la barba.", "neck", 0.1, 0],
+      ["mochila", "Mochila", 1, "Utilidad", "Capacidad: 30 lb o 0.03 m3.", "other", 5, 2],
+      ["petate", "Petate", 1, "Utilidad", "Para dormir. Necesario para descanso largo.", "other", 7, 0.1],
+      ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Olla, platos y cubiertos basicos.", "other", 8, 0.2],
+      ["yesquero", "Yesquero", 1, "Utilidad", "Encender fuego en 1 accion.", "other", 1, 0.5],
+      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
+      ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
+      ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado.", "other", 0, 0],
+      ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado.", "other", 0.5, 0],
+      ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
+      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "other", 3, 0.5],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
     equipped: ["martillo-jesucristo", "cota-malla", "escudo", "sombrero", "collar-padre"],
@@ -614,25 +614,25 @@ const initialCharacters = [
     attacks: ["Arco largo +5 - 1d8 + 3 perforante", "Espada corta +5 - 1d6 + 3 perforante"],
     resources: ["Carcaj de Vaelor - ventaja 1 vez por descanso largo; siguiente ataque con desventaja", "Percepcion pasiva - 15"],
     inventory: [
-      ["arco-largo", "Arco largo", 1, "Equipo", "Arma a distancia. Alcance 150/600 pies."],
-      ["flecha", "Flecha", 20, "Consumible", "Municion para arco."],
-      ["espada-corta", "Espada corta", 2, "Equipo", "Arma ligera y sutil. 1d6 perforante."],
-      ["cuero", "Armadura de cuero", 1, "Equipo", "Armadura ligera. CA base 11 + Destreza."],
-      ["carcaj-vaelor", "Carcaj de Vaelor", 1, "Equipo", "Antes de atacar, puedes obtener ventaja 1 vez por descanso largo. Tu siguiente ataque tendra desventaja."],
-      ["mochila", "Mochila", 1, "Utilidad", "Contenedor del paquete de explorador."],
-      ["petate", "Petate", 1, "Utilidad", "Equipo para descansar durante el viaje."],
-      ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Equipo sencillo para preparar y comer alimentos."],
-      ["yesquero", "Yesquero", 1, "Utilidad", "Permite encender fuego."],
-      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina durante 1 hora. Luz brillante a 20 pies y tenue otros 20."],
-      ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
-      ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
-      ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["libro-edena-ruh", "Libro de los Edena Ruh", 1, "Historia", "Historias, cuentos infantiles y palabras de aliento de la troupe en la ultima pagina."],
-      ["cuchillo-pequeno", "Cuchillo pequeno", 1, "Equipo", "Objeto inicial de tu trasfondo de huerfano."],
-      ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Historia", "Marca lugares importantes de la ciudad donde creciste."],
-      ["raton-mascota", "Raton como mascota", 1, "Historia", "Pequeno companero de tu trasfondo de huerfano."],
-      ["recuerdo-padres", "Recuerdo de tus padres", 1, "Historia", "Un objeto pequeno que conservas de tu familia."],
-      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana."],
+      ["arco-largo", "Arco largo", 1, "Equipo", "1d8 perforante. Municion (alcance 45/180 m). A dos manos, pesado.", "two-hands", 2, 50],
+      ["flecha", "Flecha", 20, "Consumible", "Municion para arco largo o corto. 1 PO por 20.", "other", 1, 1],
+      ["espada-corta", "Espada corta", 2, "Equipo", "1d6 perforante. Ligera, sutil.", "main-hand", 2, 10],
+      ["cuero", "Armadura de cuero", 1, "Equipo", "CA 11 + mod. Destreza. Armadura ligera.", "armor", 10, 10],
+      ["carcaj-vaelor", "Carcaj de Vaelor", 1, "Equipo", "Carcaj de cuero oscuro de Vaelor. Homebrew: 1 vez por descanso largo puedes obtener ventaja en un ataque; el siguiente ataque tendra desventaja.", "back", 1, 0],
+      ["mochila", "Mochila", 1, "Utilidad", "Capacidad: 30 lb o 0.03 m3.", "other", 5, 2],
+      ["petate", "Petate", 1, "Utilidad", "Para dormir. Necesario para descanso largo.", "other", 7, 0.1],
+      ["utensilios-cocina", "Utensilios de cocina", 1, "Utilidad", "Olla, platos y cubiertos basicos.", "other", 8, 0.2],
+      ["yesquero", "Yesquero", 1, "Utilidad", "Encender fuego en 1 accion.", "other", 1, 0.5],
+      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
+      ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
+      ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["libro-edena-ruh", "Libro de los Edena Ruh", 1, "Historia", "Libro con historias, cuentos infantiles y palabras de aliento de la troupe Edena Ruh en su ultima pagina.", "other", 0.5, 0],
+      ["cuchillo-pequeno", "Cuchillo pequeno", 1, "Equipo", "1d4 perforante. Objeto de tu trasfondo de huerfano.", "off-hand", 0.5, 1],
+      ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Historia", "Mapa con lugares importantes de la ciudad donde creciste con los Edena Ruh.", "other", 0, 0],
+      ["raton-mascota", "Raton como mascota", 1, "Historia", "Pequeno companero de tu trasfondo de huerfano. Lo llevas contigo.", "other", 0, 0],
+      ["recuerdo-padres", "Recuerdo de tus padres", 1, "Historia", "Un objeto pequeno que conservas de tu familia biologica.", "other", 0.1, 0],
+      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "other", 3, 0.5],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
     equipped: ["arco-largo", "cuero", "carcaj-vaelor"],
@@ -654,19 +654,19 @@ const initialCharacters = [
     attacks: ["Espadon +5 - 2d6 + 3 cortante"],
     resources: ["Tomar aliento - 1d10 + 1 PG por descanso corto o largo", "Estilo propuesto - Combate con armas grandes"],
     inventory: [
-      ["espadon", "Espadon", 1, "Equipo", "Espada de dos manos confirmada. Inflige 2d6 de dano cortante."],
-      ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA base 16."],
-      ["hacha-mano", "Hacha de mano", 2, "Equipo", "Arma ligera y arrojadiza. Alcance 20/60 pies."],
-      ["tatuaje-belfegor", "Tatuaje de Belfegor", 1, "Equipo", "Cicatriz quemada por la sangre de Belfegor. 1 vez por descanso corto puedes duplicar movimiento o salto; la siguiente vez se reduce a la mitad."],
-      ["mochila", "Mochila", 1, "Utilidad", "Contenedor del paquete de explorador de mazmorras."],
-      ["palanca", "Palanca", 1, "Utilidad", "Herramienta para forzar o levantar objetos."],
-      ["martillo", "Martillo", 1, "Utilidad", "Herramienta resistente."],
-      ["piton", "Piton", 10, "Utilidad", "Clavija metalica para asegurar cuerda o bloquear mecanismos."],
-      ["yesquero", "Yesquero", 1, "Utilidad", "Permite encender fuego."],
-      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina durante 1 hora. Luz brillante a 20 pies y tenue otros 20."],
-      ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
-      ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
-      ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
+      ["espadon", "Espadon", 1, "Equipo", "2d6 cortante. A dos manos, pesada.", "two-hands", 6, 50],
+      ["cota-malla", "Cota de malla", 1, "Equipo", "Armadura pesada. CA 16. Requiere Fuerza 13. Desventaja en Sigilo.", "armor", 55, 75],
+      ["hacha-mano", "Hacha de mano", 2, "Equipo", "1d6 cortante. Ligera, arrojadiza (alcance 6/18 m).", "main-hand", 2, 5],
+      ["tatuaje-belfegor", "Tatuaje de Belfegor", 1, "Historia", "Cicatriz quemada por la sangre de Belfegor en el brazo derecho. Homebrew: 1 vez por descanso corto duplicas movimiento o salto; el siguiente turno tu velocidad se reduce a la mitad.", "body", 0, 0],
+      ["mochila", "Mochila", 1, "Utilidad", "Capacidad: 30 lb o 0.03 m3. Paquete de explorador de mazmorras.", "other", 5, 2],
+      ["palanca", "Palanca", 1, "Utilidad", "+4 en pruebas de Fuerza para abrir puertas o levantar objetos.", "other", 5, 2],
+      ["martillo", "Martillo", 1, "Utilidad", "Clava pitones y realiza reparaciones basicas.", "other", 3, 1],
+      ["piton", "Piton", 10, "Consumible", "Clavo de hierro para asegurar cuerda o bloquear puertas.", "other", 0.25, 0.05],
+      ["yesquero", "Yesquero", 1, "Utilidad", "Encender fuego en 1 accion.", "other", 1, 0.5],
+      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
+      ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
+      ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 0, ppt: 0 },
     equipped: ["espadon", "cota-malla", "tatuaje-belfegor"],
@@ -688,25 +688,25 @@ const initialCharacters = [
     attacks: ["Tajo +4 - 1d10 + 4 cortante", "Arco largo - 1d8 perforante", "Tomahawk +4 - 1d6 + 2 cortante"],
     resources: ["Tomar aliento - 1d10 + 1 PG por descanso corto o largo", "Estilo - Combate con armas grandes", "Estado - liberada por Yusdrayl tras entregar a Calcryx"],
     inventory: [
-      ["tajo", "Tajo", 1, "Equipo", "Alabarda personal. Sus propiedades deben confirmarse con la hoja del personaje."],
-      ["cuero", "Armadura de cuero", 1, "Equipo", "Armadura ligera. CA base 11 + Destreza."],
-      ["arco-largo", "Arco largo", 1, "Equipo", "Arma a distancia. Alcance 150/600 pies."],
-      ["flecha", "Flecha", 20, "Consumible", "Municion para arco."],
-      ["espada-larga", "Espada larga", 1, "Equipo", "Arma marcial versatil. Inflige 1d8 cortante, o 1d10 a dos manos."],
-      ["calavera-magica", "Skully", 1, "Equipo", "Calavera reanimada que conservaste tras derrotar a un nigromante."],
-      ["tomahawk-enano", "Tomahawk enano", 2, "Equipo", "Hachas de mano enanas regaladas por su padre."],
-      ["mochila", "Mochila", 1, "Utilidad", "Contenedor del paquete de explorador de mazmorras."],
-      ["palanca", "Palanca", 1, "Utilidad", "Herramienta para forzar o levantar objetos."],
-      ["martillo", "Martillo", 1, "Utilidad", "Herramienta resistente."],
-      ["piton", "Piton", 10, "Utilidad", "Clavija metalica para asegurar cuerda o bloquear mecanismos."],
-      ["yesquero", "Yesquero", 1, "Utilidad", "Permite encender fuego."],
-      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina durante 1 hora. Luz brillante a 20 pies y tenue otros 20."],
-      ["racion", "Racion de viaje", 10, "Consumible", "Comida para un dia."],
-      ["odre", "Odre", 1, "Utilidad", "Recipiente para agua."],
-      ["cuerda-canamo", "Cuerda de canamo, 50 pies", 1, "Utilidad", "Cuerda resistente para exploracion."],
-      ["herramientas-herrero", "Herramientas de herrero", 1, "Historia", "Herramientas de artesano para trabajar metal."],
-      ["carta-gremio", "Carta de presentacion del gremio", 1, "Historia", "Documento asociado a tu trasfondo de artesana gremial."],
-      ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Vestimenta resistente para el camino."],
+      ["tajo", "Tajo", 1, "Equipo", "Alabarda personal de Amber. 1d10 cortante. A dos manos, gran alcance, pesada.", "two-hands", 6, 20],
+      ["cuero", "Armadura de cuero", 1, "Equipo", "CA 11 + mod. Destreza. Armadura ligera.", "armor", 10, 10],
+      ["arco-largo", "Arco largo", 1, "Equipo", "1d8 perforante. Municion (alcance 45/180 m). A dos manos, pesado.", "back", 2, 50],
+      ["flecha", "Flecha", 20, "Consumible", "Municion para arco largo o corto. 1 PO por 20.", "other", 1, 1],
+      ["espada-larga", "Espada larga", 1, "Equipo", "1d8 cortante. Versatil (1d10 a dos manos).", "main-hand", 3, 15],
+      ["calavera-magica", "Skully", 1, "Historia", "Calavera reanimada conservada tras derrotar a un gnomo nigromante. Conserva magia aunque nadie entiende bien que hace.", "belt", 1, 0],
+      ["tomahawk-enano", "Tomahawk enano", 2, "Equipo", "Hachas de mano enanas regaladas por su padre Errik. 1d6 cortante. Ligera, arrojadiza (alcance 6/18 m).", "main-hand", 2, 5],
+      ["mochila", "Mochila", 1, "Utilidad", "Capacidad: 30 lb o 0.03 m3. Paquete de explorador de mazmorras.", "other", 5, 2],
+      ["palanca", "Palanca", 1, "Utilidad", "+4 en pruebas de Fuerza para abrir puertas o levantar objetos.", "other", 5, 2],
+      ["martillo", "Martillo", 1, "Utilidad", "Clava pitones y realiza reparaciones basicas.", "other", 3, 1],
+      ["piton", "Piton", 10, "Consumible", "Clavo de hierro para asegurar cuerda o bloquear puertas.", "other", 0.25, 0.05],
+      ["yesquero", "Yesquero", 1, "Utilidad", "Encender fuego en 1 accion.", "other", 1, 0.5],
+      ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
+      ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
+      ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
+      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 10, 1],
+      ["herramientas-herrero", "Herramientas de herrero", 1, "Historia", "Herramientas de artesano para trabajar metal. Las de Amber son enanas, herencia de Regrus.", "other", 8, 20],
+      ["carta-gremio", "Carta de presentacion del gremio", 1, "Historia", "Documento de tu trasfondo de artesana gremial. Acredita tu oficio de herrera.", "other", 0, 0],
+      ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Ropa resistente y comoda para el camino.", "other", 4, 2],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 15, ppt: 0 },
     equipped: ["tajo", "cuero", "calavera-magica"],
@@ -719,7 +719,7 @@ const initialCharacters = [
 ];
 
 const retiredItems = {
-  arthas: ["espada-larga", "po"],
+  arthas: ["espada-larga", "po", "insignia-rango", "trofeo-enemigo", "dados-hueso"],
   "miguel-angel": ["pocion-curacion", "po"],
   nilux: ["po"],
   galahad: ["po"],
@@ -1242,12 +1242,15 @@ document.addEventListener("click", (event) => {
   }
   const dropButton = event.target.closest("[data-drop-item]");
   if (dropButton) {
-    const item = character().inventory.find(([id]) => id === dropButton.dataset.dropItem);
-    if (!item || !confirm(`Tirar ${item[1]}? Esta accion eliminara todas sus unidades.`)) return;
-    character().inventory = character().inventory.filter(([id]) => id !== dropButton.dataset.dropItem);
-    character().equipped = (character().equipped || []).filter((id) => id !== dropButton.dataset.dropItem);
-    addActivity(`Tiraste ${item[1]}.`);
-    saveState(); renderInventory(); showToast(`${item[1]} eliminado.`);
+    const inv = character().inventory.find(([id]) => id === dropButton.dataset.dropItem);
+    if (!inv) return;
+    const dlg = document.querySelector("#drop-dialog");
+    dlg._dropId = dropButton.dataset.dropItem;
+    document.querySelector("#drop-dialog-title").textContent = `Tirar: ${inv[1]}`;
+    document.querySelector("#drop-current-qty").textContent = `Cantidad actual: ${inv[2]}`;
+    document.querySelector("#drop-amount").value = inv[2];
+    document.querySelector("#drop-amount").max = inv[2];
+    dlg.showModal();
   }
   const editButton = event.target.closest("[data-edit-item]");
   if (editButton) openItemDialog(editButton.dataset.editItem);
@@ -1422,6 +1425,30 @@ document.querySelector("#item-form").addEventListener("submit", (event) => {
 
 // Rope dialog handlers
 document.querySelector("#rope-cancel").addEventListener("click", () => document.querySelector("#rope-dialog").close());
+
+// Drop dialog handlers
+document.querySelector("#drop-cancel").addEventListener("click", () => document.querySelector("#drop-dialog").close());
+document.querySelector("#drop-confirm").addEventListener("click", () => {
+  const dlg = document.querySelector("#drop-dialog");
+  const dropAll = document.querySelector("#drop-all-check").checked;
+  const amount = dropAll ? null : (parseInt(document.querySelector("#drop-amount").value) || 1);
+  const inv = character().inventory.find(([id]) => id === dlg._dropId);
+  if (!inv) { dlg.close(); return; }
+  if (dropAll || amount >= inv[2]) {
+    character().inventory = character().inventory.filter(([id]) => id !== dlg._dropId);
+    character().equipped = (character().equipped || []).filter((id) => id !== dlg._dropId);
+    addActivity(`Tiraste ${inv[1]} (todo).`);
+    saveState(); renderInventory(); showToast(`${inv[1]} eliminado.`);
+  } else {
+    inv[2] = Math.max(0, inv[2] - amount);
+    addActivity(`Tiraste ${inv[1]} x${amount}. Quedan ${inv[2]}.`);
+    saveState(); renderInventory(); showToast(`${inv[1]} x${amount} tirado.`);
+  }
+  dlg.close();
+});
+document.querySelector("#drop-all-check").addEventListener("change", (e) => {
+  document.querySelector("#drop-amount").disabled = e.target.checked;
+});
 document.querySelector("#rope-minus").addEventListener("click", () => {
   const dlg = document.querySelector("#rope-dialog");
   const inv = character().inventory.find(([id]) => id === dlg._ropeId);
