@@ -117,22 +117,60 @@ const SLOT_BY_ITEM = {
 };
 
 const ITEM_DATABASE = [
-  ['estatuilla-jade', 'Estatuilla de jade', 'Tesoro', 1, 20, 'Figura tallada en jade oscuro con grabados draconicos.', 'Ciudadela Sombria'],
-  ['llave-draconica', 'Llave draconica', 'Tesoro', 0.5, 50, 'Llave con forma de cabeza de dragon. Abre puertas draconicas antiguas.', 'Ciudadela Sombria'],
-  ['antorcha-verde', 'Antorcha de llama verde eterna', 'Tesoro', 1, 150, 'Antorcha magica de llama verde que nunca se apaga.', 'Ciudadela Sombria'],
-  ['pergamino-curacion', 'Pergamino de curar heridas', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: restaura 1d8+1 PG al lanzarlo.', 'Ciudadela Sombria'],
-  ['pergamino-llama', 'Pergamino de manos ardientes', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: inflige 5d6 de fuego en cono de 4.5 m.', 'Ciudadela Sombria'],
-  ['pergamino-oscuridad', 'Pergamino de oscuridad', 'Consumible', 0.1, 50, 'Conjuro de nivel 2: crea una esfera de oscuridad magica de 4.5 m.', 'Ciudadela Sombria'],
+  // ── LA CIUDADELA SOMBRIA — Tesoros oficiales (Cuentos del Portal Bostezante) ──
+  // Zona 3 (Patio - goblin muerto)
+  ['bolsa-goblin-z3', 'Bolsa de monedas (goblin)', 'Tesoro', 0.2, 4, 'Contiene 23 PP y 4 PO. Atada al cinto de un goblin muerto en el pozo del patio.', 'Ciudadela Sombria'],
+  // Zona 5 (Esqueletos)
+  ['flecha-magica', 'Flecha +1', 'Equipo', 0.05, 25, 'Flecha magica con +1 a impactar y al dano. Hallada en el compartimento secreto de la aljaba de un esqueleto.', 'Ciudadela Sombria'],
+  // Zona 12 (Barril de mephits)
+  ['zafiro-pequeno', 'Zafiro pequeno', 'Tesoro', 0.05, 10, 'Piedra preciosa azul intenso. Habia cinco en el barril; se usaban para vincular a los mephits.', 'Ciudadela Sombria'],
+  // Zona 15 (Yusdrayl - altar y posesiones)
+  ['ficha-pluma-quaal', 'Ficha de pluma de Quaal (arbol)', 'Tesoro', 0.1, 75, 'Objeto magico de un solo uso: invoca un arbol grande. Pertenecia a Yusdrayl.', 'Ciudadela Sombria'],
+  ['pergamino-abrir', 'Pergamino de abrir', 'Consumible', 0.1, 50, 'Conjuro de nivel 2: abre una cerradura o desbloquea un objeto cerrado magicamente.', 'Ciudadela Sombria'],
+  ['pergamino-armadura-mago', 'Pergamino de armadura de mago', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: CA 13 + mod. Destreza para el objetivo. Dura 8 horas.', 'Ciudadela Sombria'],
+  ['pergamino-trepar', 'Pergamino de trepar cual aracnido', 'Consumible', 0.1, 50, 'Conjuro de nivel 2: el objetivo puede escalar superficies verticales y techos. Dura 1 hora.', 'Ciudadela Sombria'],
+  ['elixir-salud', 'Elixir de salud (3 dosis)', 'Consumible', 0.5, 120, 'Cada dosis elimina una enfermedad o condicion adversa: ceguera, sordera, paralisis o veneno.', 'Ciudadela Sombria'],
+  // Zona 21 (Altar kobold - figuritas de jade)
+  ['figurita-jade-pequena', 'Figurita de jade (dragon pequena)', 'Tesoro', 0.2, 15, 'Figura menuda de jade con forma de dragon. Habia cuatro sobre el altar kobold, mas una quinta en el pozo.', 'Ciudadela Sombria'],
+  // Zona 35 (Nido de Calcryx)
+  ['figurita-jade-grande', 'Figurita de jade (dragon grande)', 'Tesoro', 0.5, 20, 'Figurita de jade con forma de dragon. Mayor que las del altar kobold. Estaba en el nido de Calcryx.', 'Ciudadela Sombria'],
+  ['caliz-cristal', 'Caliz de cristal', 'Tesoro', 0.3, 5, 'Caliz fino de cristal hallado en el nido de Calcryx.', 'Ciudadela Sombria'],
+  ['vajilla-plata', 'Pieza de vajilla de plata elegante', 'Tesoro', 0.2, 1, 'Una pieza de la vajilla fina de plata del nido de Calcryx. Habia veinticuatro en total (1 PO cada una).', 'Ciudadela Sombria'],
+  ['estuche-khundrukar', 'Estuche de pergamino de Khundrukar', 'Tesoro', 0.2, 100, 'Estuche sellado de hueso con la palabra "Khundrukar" en runas enanas. Contiene un mensaje fragmentado de Durgeddin el Negro. Vale 100 PO en comunidades enanas.', 'Ciudadela Sombria'],
+  // Zona 36 (Pozo de bandidos goblins)
+  ['anillo-oro-zafiro', 'Anillo de oro con zafiro', 'Tesoro', 0.1, 25, 'Anillo de oro con un zafiro incrustado (25 PO). Perdido hace mucho tiempo en el pozo de los bandidos goblins.', 'Ciudadela Sombria'],
+  // Zona 32 (Goblins con jarra)
+  ['jarra-plata-enana', 'Jarra de plata de manufactura enana', 'Tesoro', 1, 50, 'Jarra de plata con trabajo fino tipico enano (50 PO). Contiene un vino goblin asqueroso.', 'Ciudadela Sombria'],
+  // Zona 30 (Exploradores muertos / Karakas)
+  ['anillo-karakas', 'Anillo de oro de Karakas', 'Tesoro', 0.1, 10, 'Anillo de oro con el nombre de Karakas grabado en comun (10 PO). Estaba en el dedo del explorador muerto.', 'Ciudadela Sombria'],
+  ['piedra-preciosa-25', 'Piedra preciosa (25 PO)', 'Tesoro', 0.05, 25, 'Gema hallada entre los restos de los exploradores. Habia tres (25 PO cada una).', 'Ciudadela Sombria'],
   ['pocion-curacion', 'Pocion de curacion', 'Consumible', 0.5, 50, 'Restaura 2d4+2 PG al beberla.', 'Ciudadela Sombria'],
+  // Zona 41 (Salon del jefe goblin - Durnn y Grenl)
+  ['pergamino-fuego-faerico', 'Pergamino de fuego faerico', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: rodea de luz faerica objetos o criaturas. Da ventaja en ataques contra ellas. Dura 1 minuto.', 'Ciudadela Sombria'],
+  ['pergamino-retirada', 'Pergamino de retirada expeditiva', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: accion adicional para correr o saltar durante 10 minutos.', 'Ciudadela Sombria'],
+  // Zona 42 (Tribu kobold - estatua de agata)
+  ['estatua-agata-corellon', 'Estatua de agata de Corellon Larethian', 'Tesoro', 0.5, 30, 'Estatua delicada de agata que representa a la deidad elfa Corellon Larethian (30 PO). Hallada en la pila de botin kobold.', 'Ciudadela Sombria'],
+  // Sacerdote dragon (sarcofago)
+  ['daga-ceremonial', 'Daga ceremonial', 'Equipo', 1, 125, 'Daga de elaboracion exquisita y decoracion ceremonial (125 PO). Pertenecia al sacerdote dragon del sarcofago.', 'Ciudadela Sombria'],
+  ['anillo-plata-sacerdote', 'Anillo de plata (sacerdote dragon)', 'Tesoro', 0.1, 15, 'Anillo de plata ornamentado (15 PO). Habia dos en el sarcofago del sacerdote dragon.', 'Ciudadela Sombria'],
+  ['amuleto-plata-sacerdote', 'Amuleto de plata (sacerdote dragon)', 'Tesoro', 0.2, 15, 'Amuleto de plata con motivos draconicos (15 PO). Hallado en el sarcofago.', 'Ciudadela Sombria'],
+  ['pergamino-orden-imperiosa', 'Pergamino de orden imperiosa', 'Consumible', 0.1, 50, 'Conjuro de nivel 1: la criatura objetivo obedece una orden de una palabra si falla salvacion de SAB CD 13.', 'Ciudadela Sombria'],
+  ['pergamino-curar-n2', 'Pergamino de curar heridas (nv 2)', 'Consumible', 0.1, 150, 'Conjuro mejorado a nivel 2: restaura 2d8+3 PG.', 'Ciudadela Sombria'],
+  ['pergamino-infligir-n2', 'Pergamino de infligir heridas (nv 2)', 'Consumible', 0.1, 150, 'Conjuro mejorado a nivel 2 de contacto: inflige 4d10 de dano necrotico.', 'Ciudadela Sombria'],
+  ['pergamino-saeta-n2', 'Pergamino de saeta guia (nv 2)', 'Consumible', 0.1, 150, 'Conjuro mejorado a nivel 2: 4d6 de dano radiante y da ventaja en el siguiente ataque contra el objetivo.', 'Ciudadela Sombria'],
+  // Zona sala vela (objeto magico)
+  ['pocion-resistencia-fuego', 'Pocion de resistencia (fuego)', 'Consumible', 0.5, 300, 'Otorga resistencia al dano de fuego durante 1 hora.', 'Ciudadela Sombria'],
+  ['silbato-llamador-nocturno', 'Silbato Llamador Nocturno', 'Equipo', 0.1, 0, 'Silbato de cristal con nombre en enano. Objeto magico unico. Ver descripcion en el apendice del libro.', 'Ciudadela Sombria'],
+  // Belak el Paria (jefe final)
+  ['varita-enmaranar', 'Varita de enmaranar', 'Equipo', 1, 250, 'Varita magica que lanza el conjuro enmaranar. Pertenecia a Belak el Paria.', 'Ciudadela Sombria'],
+  ['antitonxina', 'Dosis de antitoxina', 'Consumible', 0.1, 50, 'Otorga ventaja en salvaciones contra veneno durante 1 hora.', 'General'],
+  ['anillo-sellar-hucrele', 'Anillo de sellar Hucrele', 'Tesoro', 0.1, 20, 'Anillo de oro con el sello de la familia Hucrele (20 PO). Lo llevaba Sharwyn. Recompensa de 125 PO de Kerowyn si se devuelve.', 'Ciudadela Sombria'],
+  // Fruta curativa (venta en Oakhurst)
+  ['fruta-curativa', 'Fruta curativa de la Ciudadela', 'Consumible', 0.2, 50, 'Fruta magica relacionada con el Arbol de Gulthias. Se vende en Oakhurst por unas 50 PO.', 'Ciudadela Sombria'],
+  // Antorcha de llama permanente
+  ['antorcha-verde', 'Antorcha de llama permanente (verde)', 'Equipo', 1, 0, 'Antorcha a la que se le lanzo un conjuro de llama permanente con llama de color verde. Objeto magico.', 'Ciudadela Sombria'],
+  // General
   ['pocion-curacion-mayor', 'Pocion de curacion mayor', 'Consumible', 0.5, 300, 'Restaura 4d4+4 PG al beberla.', 'General'],
-  ['fruta-curativa', 'Fruta curativa de la Ciudadela', 'Consumible', 0.2, 200, 'Fruta magica que restaura 1d8+1 PG. Se dice que proviene de las profundidades de la Ciudadela.', 'Ciudadela Sombria'],
-  ['vara-veneno', 'Vara envenada', 'Equipo', 2, 25, 'Vara corta con veneno de serpiente. Usado por los goblins de la Ciudadela.', 'Ciudadela Sombria'],
-  ['monedas-goblin', 'Bolsa de monedas goblin', 'Tesoro', 0.5, 15, 'Bolsa con mezcla de PC y PO robadas por los goblins.', 'Ciudadela Sombria'],
-  ['amuleto-dracnico', 'Amuleto draconico', 'Tesoro', 0.2, 75, 'Amuleto de plata con simbolo draconico grabado.', 'Ciudadela Sombria'],
-  ['copa-plata-draconico', 'Copa de plata draconica', 'Tesoro', 0.8, 40, 'Copa ceremonial de plata con motivos draconicos.', 'Ciudadela Sombria'],
-  ['anillo-bronce', 'Anillo de bronce', 'Tesoro', 0.1, 10, 'Anillo simple de bronce con grabados geometricos.', 'Ciudadela Sombria'],
-  ['gema-roja', 'Gema roja pulida', 'Tesoro', 0.1, 50, 'Piedra semipreciosa de color rojo intenso.', 'General'],
-  ['gema-azul', 'Gema azul pulida', 'Tesoro', 0.1, 50, 'Piedra semipreciosa de color azul profundo.', 'General'],
   ['daga-plata', 'Daga de plata', 'Equipo', 1, 20, 'Daga con hoja de plata. Efectiva contra licantropos y criaturas con resistencia a armas normales.', 'General'],
   ['aceite-flask', 'Frasco de aceite', 'Consumible', 1, 0.1, 'Aceite inflamable. Cubre 1.5 m2. Inflige 5 de fuego si se enciende.', 'General'],
   ['relicario-duergar', 'Relicario duergar', 'Tesoro', 0.3, 80, 'Relicario de hierro negro con gemas diminutas, trabajo tipico duergar.', 'Forja de la Furia'],
