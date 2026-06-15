@@ -1077,15 +1077,19 @@ function renderItemCard(entry, equipped, showEquip) {
            <input class="use-amount-input" type="number" min="1" max="${quantity}" value="1" data-use-amount-for="${id}" />
          </div>`
       : "";
-  const valueHtml = valueField > 0
-    ? `<span class="item-value-tag">${valueField} PO</span>`
-    : "";
+  // value shown as chip in metaChips
+  const weightLb = entry[6] ?? 0;
+  const weightDisplay = weightLb > 0 ? `${weightLb} lb` : null;
+  const metaChips = [
+    weightDisplay ? `<span class="item-meta-chip">⚖ ${weightDisplay}</span>` : null,
+    valueField > 0 ? `<span class="item-meta-chip item-meta-gold">◈ ${valueField} PO</span>` : null,
+  ].filter(Boolean).join("");
   return `
     <article class="inventory-item">
       <div>
         <h3>${escapeHtml(name)} <span class="quantity">x${quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
         <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
-        ${valueHtml}
+        ${metaChips ? `<div class="item-meta-row">${metaChips}</div>` : ""}
       </div>
       <div class="item-actions">
         ${primaryAction}

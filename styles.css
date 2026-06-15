@@ -675,3 +675,29 @@ button[data-edit-item] { font-size: .82rem; }
   .chest-lid { height: 70px; }
   .chest-lock { width: 28px; height: 28px; font-size: .82rem; bottom: -14px; }
 }
+
+/* ── Item meta chips (peso + valor) ───────────────────────────────── */
+.item-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+.item-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--muted);
+  font-size: .67rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  background: rgba(39, 25, 24, .5);
+}
+.item-meta-gold {
+  border-color: var(--gold-dark);
+  color: var(--gold);
+  background: rgba(123, 87, 42, .12);
+}
