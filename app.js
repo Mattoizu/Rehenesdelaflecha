@@ -53,31 +53,28 @@ async function loadStateFromFirestore() {
 function subscribeToChanges() {
   onSnapshot(STATE_DOC, (snap) => {
     if (!snap.exists() || !firestoreReady) return;
-    // Ignore snapshots triggered by our own recent write (within 3 seconds)
-    const now = Date.now();
-    if (now - (window._lastSaveAt || 0) < 3000) return;
+    // Skip local echoes of our own writes
+    if (snap.metadata.hasPendingWrites) return;
     try {
       const remote = JSON.parse(snap.data().data);
-      // Only update if remote is newer than our last save
-      if (remote && snap.data().updatedAt > (window._lastSaveAt || 0)) {
-        const merged = mergeRemoteState(remote);
-        state.activity = merged.activity;
-        state.characters.forEach((ch) => {
-          const remote_ch = merged.characters.find((r) => r.id === ch.id);
-          if (remote_ch) {
-            ch.stats = { ...ch.stats, ...remote_ch.stats };
-            ch.attributes = { ...ch.attributes, ...remote_ch.attributes };
-            ch.inventory = remote_ch.inventory || ch.inventory;
-            ch.equipped = remote_ch.equipped || ch.equipped;
-            ch.currency = remote_ch.currency || ch.currency;
-            ch.condition = remote_ch.condition || ch.condition;
-            ch.resourceUses = remote_ch.resourceUses || {};
-          }
-        });
-        if (activeCharacterId) renderCharacter();
-        else renderHome();
-      }
-    } catch(e) {}
+      if (!remote) return;
+      const merged = mergeRemoteState(remote);
+      state.activity = merged.activity;
+      state.characters.forEach((ch) => {
+        const remote_ch = merged.characters.find((r) => r.id === ch.id);
+        if (remote_ch) {
+          ch.stats = { ...ch.stats, ...remote_ch.stats };
+          ch.attributes = { ...ch.attributes, ...remote_ch.attributes };
+          ch.inventory = remote_ch.inventory || ch.inventory;
+          ch.equipped = remote_ch.equipped || ch.equipped;
+          ch.currency = remote_ch.currency || ch.currency;
+          ch.condition = remote_ch.condition || ch.condition;
+          ch.resourceUses = remote_ch.resourceUses || {};
+        }
+      });
+      if (activeCharacterId) renderCharacter();
+      else renderHome();
+    } catch(e) { console.warn("onSnapshot error:", e); }
   });
 }
 
