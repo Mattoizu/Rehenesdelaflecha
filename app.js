@@ -23,15 +23,19 @@ let saveTimeout = null;
 async function saveState() {
   // Save to localStorage immediately as backup
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  // Mark this tab as the one saving so onSnapshot ignores our own writes
+  window._lastSaveAt = Date.now();
   // Debounce Firestore writes (avoid hammering on rapid clicks)
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(async () => {
     try {
-      await setDoc(STATE_DOC, { data: JSON.stringify(state), updatedAt: Date.now() });
+      const ts = Date.now();
+      window._lastSaveAt = ts;
+      await setDoc(STATE_DOC, { data: JSON.stringify(state), updatedAt: ts });
     } catch (e) {
       console.warn("Firestore save failed, using localStorage:", e);
     }
-  }, 800);
+  }, 400);
 }
 
 async function loadStateFromFirestore() {
@@ -49,6 +53,9 @@ async function loadStateFromFirestore() {
 function subscribeToChanges() {
   onSnapshot(STATE_DOC, (snap) => {
     if (!snap.exists() || !firestoreReady) return;
+    // Ignore snapshots triggered by our own recent write (within 3 seconds)
+    const now = Date.now();
+    if (now - (window._lastSaveAt || 0) < 3000) return;
     try {
       const remote = JSON.parse(snap.data().data);
       // Only update if remote is newer than our last save
