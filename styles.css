@@ -1075,3 +1075,11 @@ button[data-edit-item] { font-size: .82rem; }
   .char-gallery-portrait-wrap { height: 140px; }
   .gallery-photo-delete { opacity: 1; }
 }
+
+/* PDF viewer en ficha */
+.sheet-preview-pdf {
+  width: 100%;
+  height: 600px;
+  border: none;
+  display: block;
+}

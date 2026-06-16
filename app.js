@@ -1623,7 +1623,7 @@ function renderCharacter() {
 
 function renderSpells() {
   const item = character();
-  const el = document.querySelector("#spells-panel");
+  const el = document.querySelector("#spells-content");
   if (!el) return;
   const cs = CHARACTER_SPELLS[item.id];
   if (!cs) { el.innerHTML = '<p class="helper-copy">Sin datos de conjuros.</p>'; return; }
@@ -1736,14 +1736,19 @@ function renderSheet() {
     </div>` : "";
 
   // Portrait upload section
+  const isPdf = item.sheetImageType === 'application/pdf';
   const portraitHtml = `
     <div class="portrait-upload-section">
-      <p class="eyebrow" style="margin-bottom:8px">Hoja oficial (foto o escaneo)</p>
+      <p class="eyebrow" style="margin-bottom:8px">Hoja oficial (foto, escaneo o PDF)</p>
       <div class="sheet-upload-area" id="sheet-upload-area">
-        ${item.sheetImage ? `<img src="${escapeHtml(item.sheetImage)}" class="sheet-preview" alt="Hoja oficial" />` : '<span class="upload-placeholder">📄 Toca para subir foto de tu hoja</span>'}
+        ${item.sheetImage
+          ? isPdf
+            ? `<iframe src="${escapeHtml(item.sheetImage)}" class="sheet-preview-pdf" title="Hoja oficial PDF"></iframe>`
+            : `<img src="${escapeHtml(item.sheetImage)}" class="sheet-preview" alt="Hoja oficial" />`
+          : '<span class="upload-placeholder">📄 Toca para subir foto o PDF de tu hoja</span>'}
       </div>
-      <input type="file" id="sheet-image-input" accept="image/*" style="display:none" />
-      ${item.sheetImage ? `<button class="small-button danger-button" style="margin-top:6px" id="remove-sheet-image">Quitar imagen</button>` : ""}
+      <input type="file" id="sheet-image-input" accept="image/*,application/pdf" style="display:none" />
+      ${item.sheetImage ? `<button class="small-button danger-button" style="margin-top:6px" id="remove-sheet-image">Quitar archivo</button>` : ""}
     </div>`;
 
   document.querySelector("#sheet-form").innerHTML = `
@@ -2298,13 +2303,15 @@ document.addEventListener("change", (event) => {
   const fileInput = event.target.closest("#sheet-image-input");
   if (fileInput && fileInput.files[0]) {
     const reader = new FileReader();
+    const file = fileInput.files[0];
     reader.onload = (e) => {
       const item = character();
       if (!item) return;
       item.sheetImage = e.target.result;
+      item.sheetImageType = file.type;
       saveState(); renderSheet(); showToast("Hoja guardada.");
     };
-    reader.readAsDataURL(fileInput.files[0]);
+    reader.readAsDataURL(file);
   }
 });
 
