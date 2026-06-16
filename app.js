@@ -2310,7 +2310,7 @@ async function extractSheetData(base64Data, mediaType) {
       ? { type: "image", source: { type: "base64", media_type: mediaType, data: base64Data } }
       : { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64Data } };
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://rehenes-proxy.matias-patapia.workers.dev", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
