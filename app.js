@@ -1316,6 +1316,7 @@ function showView(viewId) {
   if (bottomNav) bottomNav.classList.toggle("hidden", isCharView);
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (viewId === "loot-view") renderLootBoard();
+  if (viewId === "gallery-view") renderGalleryPage();
   if (viewId === "campaign-view" || viewId === "missions-view" || viewId === "lore-view") renderHome();
 }
 function renderHome() {
@@ -1447,6 +1448,19 @@ function renderCalendar() {
     ${cal.notas ? `<p class="calendar-note">${escapeHtml(cal.notas)}</p>` : ""}`;
 }
 
+
+function renderGalleryPage() {
+  const el = document.querySelector("#campaign-gallery-main");
+  if (!el) return;
+  el.innerHTML = campaign.gallery.map(([src, title, caption]) => `
+    <figure class="gallery-card">
+      <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" />
+      <figcaption>
+        <strong>${escapeHtml(title)}</strong>
+        <span>${escapeHtml(caption)}</span>
+      </figcaption>
+    </figure>`).join("");
+}
 
 function renderLootBoard() {
   const chestEl = document.querySelector("#chest-contents");
