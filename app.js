@@ -961,7 +961,7 @@ const initialCharacters = [
     portrait: "portrait-arthas.jpg",
     appearance: "Humano alto y de porte noble. Cabello blanco ondulado, lentes finos, armadura oscura ornamentada y capa violeta. Su espada ancestral emite energia purpura.",
     story: "Caballero de una orden paladina. Sobrevivio a unas ruinas profundas al tomar una espada ancestral vinculada con una entidad silenciosa.",
-    condition: "Agotamiento nivel 1 por el orbe musical. Necesita un descanso largo para recuperarse.",
+    condition: "Recuperado. Fue derribado por el aliento helado de Calcryx pero resistio.",
     stats: { level: 1, hp: 12, maxHp: 12, ac: 18, initiative: 0, speed: "30 pies", proficiency: 2, passivePerception: 10 },
     attributes: { Fuerza: 14, Destreza: 10, Constitucion: 14, Inteligencia: 10, Sabiduria: 10, Carisma: 16 },
     attacks: ["Espada ancestral +4 - 1d8 + 2 cortante; efecto adicional especial", "Jabalina +4 - 1d6 + 2 perforante"],
@@ -999,7 +999,7 @@ const initialCharacters = [
     portrait: "portrait-miguel-angel.jpg",
     appearance: "Enano robusto de barba negra, lentes y sombrero marron. Lleva armadura pesada grabada, escudo y un martillo que brilla con luz dorada.",
     story: "Busca justicia contra una iglesia corrupta. Porta su martillo predilecto, un collar heredado de su padre y un sombrero que le quedaba demasiado bien como para abandonarlo.",
-    condition: "Agotamiento nivel 1 por el orbe musical. Necesita un descanso largo para recuperarse.",
+    condition: "Recuperado. Fue derribado por el aliento helado de Calcryx pero resistio.",
     stats: { level: 1, hp: 11, maxHp: 11, ac: 18, initiative: 1, speed: "25 pies", proficiency: 2, passivePerception: 13 },
     attributes: { Fuerza: 14, Destreza: 12, Constitucion: 15, Inteligencia: 10, Sabiduria: 16, Carisma: 8 },
     attacks: ["Martillo Jesucristo +4 - 1d8 + 2 contundente", "Lanza +4 - 1d6 + 2 perforante"],
@@ -1571,7 +1571,6 @@ function renderCharacter() {
   document.querySelector("#combat-summary").innerHTML = item.attacks.map((text) => `<div class="info-row">${escapeHtml(text)}</div>`).join("") + restHtml + resourceHtml;
   document.querySelector("#current-condition").textContent = item.condition;
   renderSheetReadonly();
-  renderSheet();
   renderInventory();
   // Level up panel — use CLASS_DATA
   const cd = CLASS_DATA[item.id];
@@ -1721,6 +1720,14 @@ function renderSheetReadonly() {
   const item = character();
   const el = document.querySelector("#sheet-readonly");
   if (!el) return;
+  // Ensure edit mode is off
+  const form = document.querySelector("#sheet-form");
+  const saveBtn = document.querySelector("#save-sheet");
+  const editBtn = document.querySelector("#toggle-edit-sheet");
+  if (form) form.classList.add("hidden");
+  if (saveBtn) saveBtn.classList.add("hidden");
+  if (editBtn) editBtn.textContent = "✏️ Editar";
+  el.classList.remove("hidden");
   const cd = CLASS_DATA[item.id];
 
   const ATTR_SHORT = { Fuerza: "FUE", Destreza: "DES", Constitucion: "CON", Inteligencia: "INT", Sabiduria: "SAB", Carisma: "CAR" };
