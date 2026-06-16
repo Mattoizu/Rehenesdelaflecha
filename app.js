@@ -1465,10 +1465,8 @@ function renderGalleryPage() {
 function renderLootBoard() {
   const chestEl = document.querySelector("#chest-contents");
   const summaryEl = document.querySelector("#loot-summary");
-
-  // Aggregate Tesoro items across all characters
-  const el = preview || chestEl;
-  if (!el) return;
+  const preview = document.querySelector("#loot-preview");
+  if (!chestEl && !preview) return;
   // Aggregate Tesoro items across all characters
   const lootMap = new Map();
   state.characters.forEach((ch) => {
@@ -1500,9 +1498,7 @@ function renderLootBoard() {
     </article>`).join("") : '<p class="helper-copy" style="padding:8px">Sin tesoros aun.</p>';
 
 
-  // Chest view
   // Home preview card
-  const preview = document.querySelector("#loot-preview");
   if (preview) {
     preview.innerHTML = items.length
       ? `<p style="color:var(--muted);font-size:.82rem;margin-top:6px">${items.length} tipo${items.length !== 1 ? "s" : ""} de tesoro · ${items.reduce((s,r)=>s+r.qty,0)} objetos${totalValue > 0 ? ` · ${totalValue} PO estimado` : ""}</p>`
