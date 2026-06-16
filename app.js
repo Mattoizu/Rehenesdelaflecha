@@ -1255,12 +1255,17 @@ function showToast(message) {
 }
 function showView(viewId) {
   document.querySelectorAll(".view").forEach((view) => view.classList.toggle("active", view.id === viewId));
+  const homeViews = ["home-view", "campaign-view", "missions-view", "lore-view", "gallery-view", "loot-view", "char-gallery-view"];
+  const isTopLevel = homeViews.includes(viewId);
   document.querySelector("#back-button").classList.toggle("hidden", viewId === "home-view");
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (viewId === "gallery-view") renderGalleryView();
+  if (viewId === "loot-view") renderLootBoard();
 }
 function renderHome() {
-  document.querySelector("#session-board").innerHTML = `
+  // Re-render all sub-views that depend on campaign data
+  if (document.querySelector("#session-board")) {
+    document.querySelector("#session-board").innerHTML = `
     <div class="session-board-header">
       <div>
         <p class="eyebrow">Tablero de sesion</p>
@@ -1293,7 +1298,8 @@ function renderHome() {
       <div class="character-hp-bar"><span style="width:${hpPct}%" class="${hpLow ? 'low' : ''}"></span></div>
     </button>`;
   }).join("");
-  document.querySelector("#quest-board").innerHTML = campaign.quests.map(([status, title, text, tone, reward]) => `
+  }
+  if (document.querySelector("#quest-board")) document.querySelector("#quest-board").innerHTML = campaign.quests.map(([status, title, text, tone, reward]) => `
     <article class="quest-card ${escapeHtml(tone)}">
       <span class="quest-status">${escapeHtml(status)}</span>
       <h3>${escapeHtml(title)}</h3>

@@ -23,115 +23,63 @@
 
     <main>
       <section class="view active" id="home-view">
+
+        <!-- Hero card -->
         <article class="hero-card">
           <p class="eyebrow">Capitulo I - Sesion 5</p>
           <h1>La llave y el sacerdote dragon</h1>
           <p>Calcryx fue devuelta con vida, Amber quedo libre y Yusdrayl entrego la llave draconica. Tras el descanso en territorio kobold, la compania abrio nuevas salas antiguas, sobrevivio al orbe musical y derribo a un sacerdote dragon fallido que solo murio al arder.</p>
           <div class="chip-row">
-            <span class="chip">Nivel 1</span>
+            <span class="chip">Nivel 2</span>
             <span class="chip danger">Nilux y Galahad agotados</span>
             <span class="chip">Llave draconica conseguida</span>
           </div>
         </article>
 
-        <section class="section-block character-entry">
-          <p class="eyebrow">Acceso rapido</p>
-          <h2>Elige tu aventurero</h2>
+        <!-- Menú principal -->
+        <nav class="main-nav">
+          <button class="main-nav-btn" data-go="campaign-view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            </svg>
+            <span>Campaña</span>
+          </button>
+          <button class="main-nav-btn" data-go="missions-view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            <span>Misiones</span>
+          </button>
+          <button class="main-nav-btn" data-go="loot-view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 8h14M5 8a2 2 0 010-4h14a2 2 0 010 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <span>Botin</span>
+          </button>
+          <button class="main-nav-btn" data-go="gallery-view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+            </svg>
+            <span>Galeria</span>
+          </button>
+          <button class="main-nav-btn" data-go="lore-view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+            </svg>
+            <span>Bitacora</span>
+          </button>
+        </nav>
+
+        <!-- Personajes -->
+        <section class="home-characters">
+          <p class="home-section-label">Aventureros</p>
           <div class="character-grid" id="character-grid"></div>
         </section>
 
-        <section class="section-block character-entry" style="cursor:pointer" data-go="loot-view">
-          <p class="eyebrow">Botin del grupo</p>
-          <h2>Baul de la compania</h2>
-          <div id="loot-preview"></div>
-        </section>
-
-        <section class="section-block character-entry" style="cursor:pointer" data-go="gallery-view">
-          <p class="eyebrow">Fotos e ilustraciones</p>
-          <h2>Galeria de la compania</h2>
-          <p class="body-copy" style="margin-top:6px">Retratos, fan art y recuerdos de cada aventurero.</p>
-        </section>
-
-        <section class="section-block">
-          <div class="character-entry">
-            <p class="eyebrow">Tiempo transcurrido</p>
-            <h2>Calendario de campaña</h2>
-            <div id="campaign-calendar"></div>
-          </div>
-        </section>
-
-        <section class="section-block">
-          <div id="session-history"></div>
-        </section>
-
-        <section class="session-board" id="session-board"></section>
-
-        <section class="episode-grid">
-          <article class="episode-card">
-            <p class="eyebrow">Anteriormente</p>
-            <h2>Calcryx vuelve al trono</h2>
-            <p>El grupo encontro a Calcryx, sobrevivio a su aliento helado, la dejo inconsciente y huyo hacia Yusdrayl mientras los goblins corrian a avisar a su lider.</p>
-          </article>
-          <article class="episode-card next-card">
-            <p class="eyebrow">Proxima sesion</p>
-            <h2>Despues del sarcofago</h2>
-            <p>El sacerdote dragon fallido fue destruido con fuego. La compania tiene botin nuevo, una antorcha verde eterna y mas preguntas sobre las ruinas draconicas.</p>
-          </article>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">En pocas palabras</p>
-          <h2>La situacion actual</h2>
-          <div class="objective-grid" id="current-objectives"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Hilos de la historia</p>
-          <h2>Misiones y rumores</h2>
-          <div class="quest-grid" id="quest-board"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Solo lo descubierto</p>
-          <h2>Lugares conocidos</h2>
-          <div class="known-map" id="known-map"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Pistas reunidas</p>
-          <h2>Saberes descubiertos</h2>
-          <div class="lore-grid" id="known-lore"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Mesa de investigacion</p>
-          <h2>Lo que saben y lo que falta</h2>
-          <div class="intel-board" id="intel-board"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Rostros conocidos</p>
-          <h2>Personajes de la historia</h2>
-          <div class="card-grid" id="known-npcs"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Ilustraciones del grupo</p>
-          <h2>Galeria de la compania</h2>
-          <div class="gallery-grid" id="campaign-gallery"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">Lo que el grupo recuerda</p>
-          <h2>Bitacora de la compania</h2>
-          <div class="timeline" id="timeline"></div>
-        </section>
-
-        <section class="section-block">
-          <p class="eyebrow">La mesa tambien se recuerda asi</p>
-          <h2>Momentos de la compania</h2>
-          <div class="moment-grid" id="campaign-moments"></div>
-        </section>
+        <!-- Calendario rápido -->
+        <div id="campaign-calendar" class="home-calendar"></div>
+        <div id="session-history" class="home-sessions"></div>
+        <div id="loot-board"></div>
 
         <section class="quote-card" id="campaign-quote"></section>
         <section class="knowledge-note">
@@ -228,6 +176,81 @@
           </article>
         </section>
       </section>
+      <!-- Campaign view -->
+      <section class="view" id="campaign-view">
+        <section class="session-board" id="session-board"></section>
+        <section class="episode-grid" style="margin-top:16px">
+          <article class="episode-card">
+            <p class="eyebrow">Anteriormente</p>
+            <h2>Calcryx vuelve al trono</h2>
+            <p>El grupo encontro a Calcryx, sobrevivio a su aliento helado, la dejo inconsciente y huyo hacia Yusdrayl mientras los goblins corrian a avisar a su lider.</p>
+          </article>
+          <article class="episode-card next-card">
+            <p class="eyebrow">Proxima sesion</p>
+            <h2>Despues del sarcofago</h2>
+            <p>El sacerdote dragon fallido fue destruido con fuego. La compania tiene botin nuevo, una antorcha verde eterna y mas preguntas sobre las ruinas draconicas.</p>
+          </article>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">En pocas palabras</p>
+          <h2>La situacion actual</h2>
+          <div class="objective-grid" id="current-objectives"></div>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">Rostros conocidos</p>
+          <h2>Personajes de la historia</h2>
+          <div class="card-grid" id="known-npcs"></div>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">Ilustraciones del grupo</p>
+          <h2>Galeria de la compania</h2>
+          <div class="gallery-grid" id="campaign-gallery"></div>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">La mesa tambien se recuerda asi</p>
+          <h2>Momentos de la compania</h2>
+          <div class="moment-grid" id="campaign-moments"></div>
+        </section>
+        <section class="quote-card" id="campaign-quote"></section>
+        <section class="knowledge-note">
+          <strong>Bitacora de jugadores</strong>
+          <span>Esta pagina muestra solamente lugares, rumores y personajes que la compania ya conoce.</span>
+        </section>
+      </section>
+
+      <!-- Missions view -->
+      <section class="view" id="missions-view">
+        <section class="section-block">
+          <p class="eyebrow">Hilos de la historia</p>
+          <h2>Misiones y rumores</h2>
+          <div class="quest-grid" id="quest-board"></div>
+        </section>
+      </section>
+
+      <!-- Lore view -->
+      <section class="view" id="lore-view">
+        <section class="section-block">
+          <p class="eyebrow">Solo lo descubierto</p>
+          <h2>Lugares conocidos</h2>
+          <div class="known-map" id="known-map"></div>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">Pistas reunidas</p>
+          <h2>Saberes descubiertos</h2>
+          <div class="lore-grid" id="known-lore"></div>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">Mesa de investigacion</p>
+          <h2>Lo que saben y lo que falta</h2>
+          <div class="intel-board" id="intel-board"></div>
+        </section>
+        <section class="section-block">
+          <p class="eyebrow">Lo que el grupo recuerda</p>
+          <h2>Bitacora de la compania</h2>
+          <div class="timeline" id="timeline"></div>
+        </section>
+      </section>
+
       <!-- Gallery view -->
       <section class="view" id="gallery-view">
         <div class="section-block">
