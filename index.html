@@ -143,12 +143,12 @@
       <section class="view" id="character-view">
         <article class="profile-hero" id="profile-hero"></article>
         <nav class="profile-tabs" aria-label="Secciones del personaje">
-          <button class="profile-tab active" data-tab="summary-panel">Resumen</button>
-          <button class="profile-tab" data-tab="sheet-panel">Ficha</button>
-          <button class="profile-tab" data-tab="inventory-panel">Inventario</button>
-          <button class="profile-tab" data-tab="level-panel">Subir nivel</button>
-          <button class="profile-tab" data-tab="spells-panel">Conjuros</button>
-          <button class="profile-tab" data-tab="memories-panel">Recuerdos</button>
+          <button class="profile-tab active" data-tab="summary-panel"><span class="tab-icon">⚔️</span><span class="tab-label">Resumen</span></button>
+          <button class="profile-tab" data-tab="sheet-panel"><span class="tab-icon">📋</span><span class="tab-label">Ficha</span></button>
+          <button class="profile-tab" data-tab="inventory-panel"><span class="tab-icon">🎒</span><span class="tab-label">Inventario</span></button>
+          <button class="profile-tab" data-tab="spells-panel"><span class="tab-icon">✨</span><span class="tab-label">Conjuros</span></button>
+          <button class="profile-tab" data-tab="level-panel"><span class="tab-icon">📈</span><span class="tab-label">Nivel</span></button>
+          <button class="profile-tab" data-tab="memories-panel"><span class="tab-icon">📖</span><span class="tab-label">Recuerdos</span></button>
         </nav>
 
         <section class="tab-panel active" id="summary-panel">
@@ -171,12 +171,16 @@
           <article class="panel-card">
             <div class="section-title-row">
               <div>
-                <p class="eyebrow">Datos editables</p>
-                <h2>Hoja de personaje</h2>
+                <p class="eyebrow">Hoja de personaje</p>
+                <h2 id="sheet-panel-title">Estadisticas</h2>
               </div>
-              <button class="small-button gold-button" id="save-sheet" type="button">Guardar ficha</button>
+              <div style="display:flex;gap:8px">
+                <button class="small-button gold-button hidden" id="save-sheet" type="button">💾 Guardar</button>
+                <button class="small-button" id="toggle-edit-sheet" type="button">✏️ Editar</button>
+              </div>
             </div>
-            <div class="form-grid" id="sheet-form"></div>
+            <div id="sheet-readonly"></div>
+            <div class="form-grid hidden" id="sheet-form"></div>
           </article>
         </section>
 
@@ -209,12 +213,7 @@
         </section>
 
         <section class="tab-panel" id="level-panel">
-          <article class="panel-card">
-            <p class="eyebrow">Guia didactica</p>
-            <h2>Cuando subas de nivel</h2>
-            <p class="helper-copy">Estas son sugerencias para conversar con el DM. Tasha y Xanathar se consideran solo para clases y hechizos.</p>
-            <div class="recommendation-list" id="recommendation-list"></div>
-          </article>
+          <div id="recommendation-list"></div>
         </section>
 
         <section class="tab-panel" id="spells-panel">

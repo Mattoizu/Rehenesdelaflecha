@@ -1098,3 +1098,86 @@ button[data-edit-item] { font-size: .82rem; }
 .sheet-pdf-loaded span:nth-child(2) { color: #a8d7ae; font-size: .96rem; font-weight: 700; }
 .sheet-pdf-sub { color: var(--muted); font-size: .76rem; }
 .upload-placeholder small { display: block; margin-top: 4px; font-size: .72rem; opacity: .7; }
+
+/* ── Icon tabs ────────────────────────────────────────────────────── */
+.profile-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 12px;
+  min-width: 64px;
+}
+.tab-icon { font-size: 1.2rem; line-height: 1; }
+.tab-label { font-size: .62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+
+@media (max-width: 520px) {
+  .profile-tab { padding: 7px 8px; min-width: 52px; }
+  .tab-icon { font-size: 1.1rem; }
+  .tab-label { font-size: .56rem; }
+}
+
+/* ── Sheet readonly view ──────────────────────────────────────────── */
+.attrs-readonly-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.attr-readonly-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 6px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 12px;
+  background: rgba(123, 87, 42, .08);
+  text-align: center;
+}
+.attr-readonly-mod {
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.attr-readonly-val {
+  color: var(--muted);
+  font-size: .72rem;
+  margin: 3px 0 2px;
+}
+.attr-readonly-name {
+  color: var(--muted);
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.stats-readonly-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+}
+.stat-readonly-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(39, 25, 24, .5);
+}
+.stat-readonly-label {
+  color: var(--muted);
+  font-size: .75rem;
+}
+.stat-readonly-val {
+  color: var(--gold);
+  font-size: .9rem;
+  font-weight: 800;
+  font-family: Georgia, serif;
+}
+
+@media (max-width: 420px) {
+  .attrs-readonly-grid { grid-template-columns: repeat(3, 1fr); }
+}

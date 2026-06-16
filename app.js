@@ -1570,6 +1570,7 @@ function renderCharacter() {
     </div>` : '';
   document.querySelector("#combat-summary").innerHTML = item.attacks.map((text) => `<div class="info-row">${escapeHtml(text)}</div>`).join("") + restHtml + resourceHtml;
   document.querySelector("#current-condition").textContent = item.condition;
+  renderSheetReadonly();
   renderSheet();
   renderInventory();
   // Level up panel — use CLASS_DATA
@@ -1716,6 +1717,65 @@ function renderSpells() {
       <div style="margin-top:10px">${trucosHtml}${spellListHtml || '<p class="helper-copy">Sin conjuros disponibles en este nivel.</p>'}</div>
     </article>`;
 }
+function renderSheetReadonly() {
+  const item = character();
+  const el = document.querySelector("#sheet-readonly");
+  if (!el) return;
+  const cd = CLASS_DATA[item.id];
+
+  const attrHtml = Object.entries(item.attributes).map(([name, value]) => {
+    const mod = Math.floor((value - 10) / 2);
+    const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
+    return `<div class="attr-readonly-card">
+      <span class="attr-readonly-mod">${modStr}</span>
+      <span class="attr-readonly-val">${value}</span>
+      <span class="attr-readonly-name">${escapeHtml(name.substring(0,3).toUpperCase())}</span>
+    </div>`;
+  }).join("");
+
+  const statsHtml = [
+    ["Nivel", item.stats.level],
+    ["CA", item.stats.ac],
+    ["PG Max", item.stats.maxHp],
+    ["Iniciativa", item.stats.initiative >= 0 ? `+${item.stats.initiative}` : item.stats.initiative],
+    ["Velocidad", item.stats.speed],
+    ["Percepcion", item.stats.passivePerception],
+  ].map(([label, val]) => `<div class="stat-readonly-row"><span class="stat-readonly-label">${label}</span><span class="stat-readonly-val">${escapeHtml(String(val))}</span></div>`).join("");
+
+  const competenciasHtml = cd ? `
+    <div class="competencias-block" style="margin-top:14px">
+      <div class="comp-row"><span class="comp-label">Clase / Raza</span><span>${escapeHtml(cd.clase)} · ${escapeHtml(cd.raza)}</span></div>
+      <div class="comp-row"><span class="comp-label">Armaduras</span><span>${escapeHtml(cd.armaduras.join(", "))}</span></div>
+      <div class="comp-row"><span class="comp-label">Armas</span><span>${escapeHtml(cd.armas.join(", "))}</span></div>
+      ${cd.herramientas.length ? `<div class="comp-row"><span class="comp-label">Herramientas</span><span>${escapeHtml(cd.herramientas.join(", "))}</span></div>` : ""}
+      <div class="comp-row"><span class="comp-label">Tiradas salv.</span><span>${escapeHtml(cd.salvaciones_texto)}</span></div>
+      <div class="comp-row"><span class="comp-label">Habilidades</span><span>${escapeHtml(cd.habilidades_texto)}</span></div>
+      <div class="comp-row"><span class="comp-label">Idiomas</span><span>${escapeHtml(cd.idiomas_texto)}</span></div>
+    </div>` : "";
+
+  // Portrait/sheet image
+  const isPdf = item.sheetImageType === 'application/pdf';
+  const sheetImageHtml = item.sheetImage
+    ? `<div style="margin-top:14px">
+        <p class="eyebrow" style="margin-bottom:8px">Hoja oficial</p>
+        ${isPdf
+          ? `<div class="sheet-pdf-loaded"><span class="sheet-pdf-icon">📄</span><span>PDF guardado</span><span class="sheet-pdf-sub">Usa el boton Editar para volver a subir</span></div>`
+          : `<img src="${escapeHtml(item.sheetImage)}" class="sheet-preview" alt="Hoja oficial" />`}
+      </div>`
+    : `<div class="sheet-upload-area" id="sheet-upload-area" style="margin-top:14px">
+        <span class="upload-placeholder">📄 Sube tu hoja oficial (foto o PDF)<br><small>La IA leerá los datos y los aplicará automáticamente</small></span>
+      </div>
+      <input type="file" id="sheet-image-input" accept="image/*,application/pdf" style="display:none" />`;
+
+  el.innerHTML = `
+    <div class="attrs-readonly-grid">${attrHtml}</div>
+    <div class="stats-readonly-list" style="margin-top:14px">${statsHtml}</div>
+    <p class="eyebrow" style="margin-top:14px;margin-bottom:6px">Estado</p>
+    <div class="info-row">${escapeHtml(item.condition || "Sin condiciones.")}</div>
+    ${competenciasHtml}
+    ${sheetImageHtml}`;
+}
+
 function renderSheet() {
   const item = character();
   const cd = CLASS_DATA[item.id];
@@ -1764,6 +1824,11 @@ function renderSheet() {
     <label class="wide-field">Estado actual<textarea id="sheet-condition">${escapeHtml(item.condition)}</textarea></label>
     <div class="wide-field">${competenciasHtml}</div>
     <div class="wide-field">${portraitHtml}</div>`;
+  // Show form, hide readonly
+  document.querySelector("#sheet-readonly").classList.add("hidden");
+  document.querySelector("#sheet-form").classList.remove("hidden");
+  document.querySelector("#save-sheet").classList.remove("hidden");
+  document.querySelector("#toggle-edit-sheet").textContent = "✕ Cancelar";
 }
 function renderItemCard(entry, equipped, showEquip) {
   const [id, name, quantity, itemCategory, description] = entry;
@@ -1987,6 +2052,23 @@ document.addEventListener("click", (event) => {
   }
 });
 document.querySelector("#back-button").addEventListener("click", () => showView("home-view"));
+document.querySelector("#toggle-edit-sheet").addEventListener("click", () => {
+  const form = document.querySelector("#sheet-form");
+  const readonly = document.querySelector("#sheet-readonly");
+  const saveBtn = document.querySelector("#save-sheet");
+  const isEditing = !form.classList.contains("hidden");
+  if (isEditing) {
+    // Cancel — back to readonly
+    form.classList.add("hidden");
+    readonly.classList.remove("hidden");
+    saveBtn.classList.add("hidden");
+    document.querySelector("#toggle-edit-sheet").textContent = "✏️ Editar";
+  } else {
+    // Enter edit mode
+    renderSheet();
+  }
+});
+
 document.querySelector("#save-sheet").addEventListener("click", () => {
   const item = character();
   document.querySelectorAll("[data-stat]").forEach((input) => {
@@ -1995,7 +2077,13 @@ document.querySelector("#save-sheet").addEventListener("click", () => {
   document.querySelectorAll("[data-attribute]").forEach((input) => { item.attributes[input.dataset.attribute] = Number(input.value); });
   item.condition = document.querySelector("#sheet-condition").value;
   addActivity("Actualizaste la ficha del personaje.");
-  saveState(); renderCharacter(); showToast("Ficha guardada.");
+  saveState(); renderCharacter();
+  // Return to readonly after save
+  document.querySelector("#sheet-form").classList.add("hidden");
+  document.querySelector("#sheet-readonly").classList.remove("hidden");
+  document.querySelector("#save-sheet").classList.add("hidden");
+  document.querySelector("#toggle-edit-sheet").textContent = "✏️ Editar";
+  showToast("Ficha guardada.");
 });
 function openItemDialog(editId = null) {
   const dlg = document.querySelector("#item-dialog");
