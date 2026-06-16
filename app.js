@@ -990,10 +990,10 @@ const campaign = {
     notas: "Nilux y Galahad siguen con agotamiento nivel 1 por el orbe musical. Necesitan un descanso largo para recuperarse.",
   },
   gallery: [
-    ["grupo4.jpeg", "La victoria sobre el troll", "La compania rodea el cuerpo del troll consumido por las llamas verdes del sarcofago. El botín esta abierto al fondo."],
     ["grupo1.jpeg", "Sobre el abismo", "Ilustracion de la compania reunida en unas ruinas verticales."],
     ["grupo2.jpeg", "Territorio hostil", "Ilustracion del grupo mientras ratas gigantes y goblins observan desde la oscuridad."],
     ["grupo3.jpeg", "Una amenaza helada", "Ilustracion de la compania frente a una enorme dragona blanca. No representa necesariamente a Calcryx."],
+    ["grupo4.jpeg", "La victoria sobre el troll", "La compania rodea el cuerpo del troll consumido por las llamas verdes del sarcofago. El botin esta abierto al fondo."],
     ["grupo-chibi.png", "Los rehenes de la flecha perdida", "Una version bastante menos solemne de la compania, con Meepo intentando sobrevivir a la jornada."],
   ],
 };
