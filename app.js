@@ -1911,6 +1911,7 @@ function renderItemCard(entry, equipped, showEquip) {
   const isConsumable = itemCategory === "Consumible";
   const isEquip = itemCategory === "Equipo";
   const isRope = /cuerda|soga/i.test(name);
+  // For ropes, quantity = meters. Cap display accordingly.
   const primaryAction = isEquip
     ? `<button class="small-button gold-button" data-equip-item="${id}">${equipped ? "Quitar" : "Equipar"}</button>`
     : isConsumable
@@ -1929,14 +1930,14 @@ function renderItemCard(entry, equipped, showEquip) {
   return `
     <article class="inventory-item">
       <div>
-        <h3>${escapeHtml(name)} <span class="quantity">x${quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
+        <h3>${escapeHtml(name)} <span class="quantity">${isRope ? quantity + ' m' : 'x' + quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
         <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
         ${metaChips ? `<div class="item-meta-row">${metaChips}</div>` : ""}
       </div>
       <div class="item-actions">
         ${primaryAction}
-        ${isRope ? `<button class="small-button" data-rope-item="${id}">~ m</button>` : ''}
-        <button class="small-button" data-add-one-item="${id}">+1</button>
+        ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± metros</button>` : ''}
+        ${!isRope ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
         <button class="small-button" data-edit-item="${id}">✎</button>
         <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
       </div>
