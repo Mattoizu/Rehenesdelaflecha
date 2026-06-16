@@ -1257,6 +1257,7 @@ function showView(viewId) {
   document.querySelectorAll(".view").forEach((view) => view.classList.toggle("active", view.id === viewId));
   document.querySelector("#back-button").classList.toggle("hidden", viewId === "home-view");
   window.scrollTo({ top: 0, behavior: "smooth" });
+  if (viewId === "gallery-view") renderGalleryView();
 }
 function renderHome() {
   document.querySelector("#session-board").innerHTML = `
