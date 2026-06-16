@@ -1501,6 +1501,13 @@ function renderLootBoard() {
 
 
   // Chest view
+  // Home preview card
+  const preview = document.querySelector("#loot-preview");
+  if (preview) {
+    preview.innerHTML = items.length
+      ? `<p style="color:var(--muted);font-size:.82rem;margin-top:6px">${items.length} tipo${items.length !== 1 ? "s" : ""} de tesoro · ${items.reduce((s,r)=>s+r.qty,0)} objetos${totalValue > 0 ? ` · ${totalValue} PO estimado` : ""}</p>`
+      : '<p style="color:var(--muted);font-size:.82rem;margin-top:6px">El baul esta vacio.</p>';
+  }
   if (chestEl) {
     chestEl.innerHTML = `<div class="loot-grid">${lootHtml}</div>`;
   }
