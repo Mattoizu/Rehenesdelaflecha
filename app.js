@@ -445,7 +445,7 @@ const CLASS_DATA = {
     competencias_texto: "Todas las armaduras y escudos · Armas sencillas y marciales · Sin herramientas",
     salvaciones_texto: "Sabiduria · Carisma",
     habilidades_texto: "Atletismo · Percepcion · Persuasion · Religion",
-    idiomas_texto: "Comun · un idioma adicional",
+    idiomas_texto: "Comun · Draconido",
     rasgos_texto: [
       "Deteccion divina (1/desc. largo): Sientes presencia de monstruos, celestiales e infernales en 18 m.",
       "Imponer las manos: Piscina de 5 PG (nv1) o 10 PG (nv2) por descanso largo. Curar o curar enfermedad (5 PG).",
@@ -541,7 +541,7 @@ const CLASS_DATA = {
     competencias_texto: "Armadura ligera y media, escudos · Armas sencillas y marciales · Elfo: espada larga, espada corta, arco largo, arco corto",
     salvaciones_texto: "Fuerza · Destreza",
     habilidades_texto: "Atletismo · Percepcion · Sigilo · Supervivencia · Trato con animales · Naturaleza",
-    idiomas_texto: "Comun · Elfico · un idioma a eleccion",
+    idiomas_texto: "Comun · Elfico · Goblin (enemigo predilecto)",
     rasgos_texto: [
       "Enemigo predilecto: +2 a tiradas de dano contra tipo elegido. Ventaja en Sabiduria (Supervivencia) para rastrearlos e Int. para recordar informacion sobre ellos.",
       "Explorador natural (Bosque): Terreno dificil no reduce vel. en bosques. Ventaja en tiradas de Sigilo en bosques. Siempre alerta contra emboscadas. Grupo no se pierde en terreno preferido.",
@@ -590,7 +590,7 @@ const CLASS_DATA = {
     competencias_texto: "Todas las armaduras y escudos · Armas sencillas y marciales",
     salvaciones_texto: "Fuerza · Constitucion",
     habilidades_texto: "Atletismo · Historia · Intimidacion · Percepcion",
-    idiomas_texto: "Comun · un idioma adicional",
+    idiomas_texto: "Comun · Draconido",
     rasgos_texto: [
       "Estilo de combate — Combate con armas grandes: Relanzar 1s y 2s en tiradas de dano con armas a dos manos. Usar el segundo resultado.",
       "Segundo aire (1/desc. corto): Accion adicional para recuperar 1d10 + nivel de luchador PG.",
