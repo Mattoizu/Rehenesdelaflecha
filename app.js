@@ -408,14 +408,383 @@ const MOCHILA_CATEGORIES = ["Utilidad", "Historia"];
 // Items that belong in the main inventory tab
 const ACTIVO_CATEGORIES = ["Equipo", "Consumible", "Tesoro"];
 
+
+// ══════════════════════════════════════════════════════════════════
+// DATOS OFICIALES DE CLASE — PHB 5e
+// ══════════════════════════════════════════════════════════════════
+const CLASS_DATA = {
+  arthas: {
+    clase: "Paladin", subclase: "Sin juramento (nivel 3)", raza: "Humano variante",
+    nivelActual: 2,
+    dadoGolpe: 10,
+    bonificadorCompetencia: 2,
+    CA_esperada: (stats, equipped) => {
+      // Cota de malla (16) + escudo (2) + estilo Defensa (+1 con armadura) = 19
+      return 19;
+    },
+    PG_por_nivel: [12, 7], // nivel 1: max, nivel 2: promedio+1
+    velocidad: "9 m",
+    armaduras: ["Todas las armaduras", "Escudos"],
+    armas: ["Armas sencillas", "Armas marciales"],
+    herramientas: [],
+    tiradas_salvacion: ["Sabiduria", "Carisma"],
+    habilidades: ["Atletismo", "Percepcion", "Persuasion", "Religion"],
+    idiomas: ["Comun", "un idioma adicional a eleccion"],
+    rasgos_nivel: {
+      1: ["Deteccion divina", "Imponer las manos (5 PG)"],
+      2: ["Estilo de combate (Defensa)", "Smite divino", "Conjuros de paladin (2x nivel 1)"],
+    },
+    espacios_conjuro: { 1: 2 },
+    conjuros_conocidos: "Prepara Carisma + nivel (2+3=5 conjuros de la lista de paladin)",
+    dote: "Centinela (humano variante)",
+    validaciones: [
+      { campo: "CA", esperado: 19, descripcion: "Cota de malla (16) + Escudo (2) + Defensa (1)" },
+      { campo: "maxHp", esperado: 19, descripcion: "10 (nv1) + 7 (nv2) - 1 (CON mod? 0) = 17+CON" },
+      { campo: "level", esperado: 2, descripcion: "Nivel actual" },
+    ],
+    competencias_texto: "Todas las armaduras y escudos · Armas sencillas y marciales · Sin herramientas",
+    salvaciones_texto: "Sabiduria · Carisma",
+    habilidades_texto: "Atletismo · Percepcion · Persuasion · Religion",
+    idiomas_texto: "Comun · un idioma adicional",
+    rasgos_texto: [
+      "Deteccion divina (1/desc. largo): Sientes presencia de monstruos, celestiales e infernales en 18 m.",
+      "Imponer las manos: Piscina de 5 PG (nv1) o 10 PG (nv2) por descanso largo. Curar o curar enfermedad (5 PG).",
+      "Estilo de combate — Defensa: +1 CA mientras llevas armadura.",
+      "Smite divino: Al impactar con arma, gasta espacio de conjuro para infligir 2d8 radiante por nivel del espacio (1d8 extra contra muertos vivientes/infernales).",
+      "Conjuros de paladin: CD de conjuro 13. Bono de ataque +5. 2 espacios de nivel 1.",
+      "Dote Centinela: Oportunidades no reducen vel., ataques de oport. contra aliados, reaccion al atacar enemigo que ataca a otro.",
+    ],
+    nivel_siguiente: {
+      nivel: 3,
+      beneficios: [
+        "Elegir Juramento Sagrado (define subclase): Devocion, Antiguos, Venganza u otro.",
+        "Conjuros del Juramento (siempre preparados, no cuentan para limite).",
+        "Canalizar divinidad (1/descanso corto): 2 opciones segun juramento.",
+        "+1 espacio de conjuro nivel 1 (total 3), desbloqueando espacios de nivel 2.",
+        "PG: +7 (o tira 1d10) + mod. Constitucion.",
+      ]
+    }
+  },
+  "miguel-angel": {
+    clase: "Clerigo", subclase: "Dominio de la Guerra", raza: "Enano de las montanas",
+    nivelActual: 2,
+    dadoGolpe: 8,
+    bonificadorCompetencia: 2,
+    velocidad: "7.5 m (enano)",
+    armaduras: ["Armadura ligera", "Armadura media", "Escudos"],
+    armas: ["Armas sencillas", "Martillos de guerra (dominio)", "Espadas largas (dominio)", "Hachas (dominio)", "Armas marciales (dominio)"],
+    herramientas: ["Herramientas de herrero (herencia enana)", "Herramientas de albañil o elaborador de cerveza (a eleccion)"],
+    tiradas_salvacion: ["Sabiduria", "Carisma"],
+    habilidades: ["Historia", "Medicina", "Persuasion", "Religion"],
+    idiomas: ["Comun", "Enano"],
+    rasgos_nivel: {
+      1: ["Conjuros de dominio de la guerra", "Armas marciales y armaduras pesadas (dominio)", "Sacerdote de guerra (3 ataques/desc. largo)"],
+      2: ["Canalizar divinidad (1/desc. corto)", "Guided strike (+10 tirada de ataque)", "War God's Blessing (reaccion: +10 a aliado)"],
+    },
+    espacios_conjuro: { 1: 3 },
+    conjuros_conocidos: "Prepara Sabiduria + nivel (3+2=5) + 2 del dominio (siempre preparados)",
+    competencias_texto: "Armadura ligera, media y pesada (dominio) · Escudos · Armas sencillas · Armas marciales (dominio) · Herr. de herrero",
+    salvaciones_texto: "Sabiduria · Carisma",
+    habilidades_texto: "Historia · Medicina · Persuasion · Religion",
+    idiomas_texto: "Comun · Enano",
+    rasgos_texto: [
+      "Sacerdote de guerra (dominio): 3 veces por descanso largo puedes hacer un ataque adicional como accion adicional cuando usas la accion de Atacar.",
+      "Canalizar divinidad (1/desc. corto): Dos opciones — Expulsar muertos vivientes o Golpe guiado.",
+      "Golpe guiado: Tras ver la tirada de ataque tuya o de un aliado en 9 m, +10 a la tirada (puede convertir fallo en exito).",
+      "Bendicion del dios de la guerra: Reaccion para dar +10 a tirada de ataque de un aliado en 9 m.",
+      "Conjuros de dominio (siempre preparados): Escudo de fe, Orden imperiosa (nv1) / Arma espiritual, Arma magica (nv2).",
+      "Resistencia enana: Ventaja en tiradas de salvacion contra veneno. Resistencia al dano de veneno.",
+    ],
+    validaciones: [
+      { campo: "CA", esperado: 18, descripcion: "Cota de malla (16) + Escudo (2)" },
+      { campo: "level", esperado: 2, descripcion: "Nivel actual" },
+    ],
+    nivel_siguiente: {
+      nivel: 3,
+      beneficios: [
+        "Desbloquear espacios de conjuro de nivel 2.",
+        "+1 espacio de nivel 1, +2 espacios de nivel 2.",
+        "Conjuros de dominio nivel 3: Espiritu guardian, Conjuro de zona.",
+        "PG: +5 (o tira 1d8) + mod. Constitucion.",
+        "Puedes preparar un conjuro adicional.",
+      ]
+    }
+  },
+  nilux: {
+    clase: "Explorador", subclase: "Sin arquetipo (nivel 3)", raza: "Elfo de los bosques",
+    nivelActual: 2,
+    dadoGolpe: 10,
+    bonificadorCompetencia: 2,
+    velocidad: "10.5 m (elfo de los bosques)",
+    armaduras: ["Armadura ligera", "Armadura media", "Escudos"],
+    armas: ["Armas sencillas", "Armas marciales"],
+    herramientas: [],
+    tiradas_salvacion: ["Fuerza", "Destreza"],
+    habilidades: ["Atletismo", "Percepcion", "Sigilo", "Supervivencia", "Trato con animales", "Naturaleza"],
+    idiomas: ["Comun", "Elfico", "un idioma a eleccion (explorador)"],
+    rasgos_nivel: {
+      1: ["Enemigo predilecto (tipo a eleccion)", "Explorador natural (Bosque)"],
+      2: ["Estilo de combate (Arqueria: +2 ataques a distancia)", "Conciencia primitiva (1 min/nivel/desc. largo)"],
+    },
+    rasgos_raza: [
+      "Vision en la oscuridad 18 m",
+      "Sentidos afinados: competencia en Percepcion",
+      "Ascendencia feérica: ventaja contra ser hechizado, no puede dormirse por magia",
+      "Trance: 4 horas de trance en lugar de 8 de sueño",
+      "Paso del bosque: ignorar terreno dificil no magico en bosques",
+      "Camuflar: Ocultarse aunque solo ligeramente tapado por follaje",
+      "Velocidad 35 pies (10.5 m)",
+      "Competencia en espada larga, espada corta, arco largo, arco corto",
+    ],
+    espacios_conjuro: {},
+    conjuros_conocidos: "Sin conjuros en nivel 2 (los obtiene en nivel 2 de conjuros a nivel 5)",
+    competencias_texto: "Armadura ligera y media, escudos · Armas sencillas y marciales · Elfo: espada larga, espada corta, arco largo, arco corto",
+    salvaciones_texto: "Fuerza · Destreza",
+    habilidades_texto: "Atletismo · Percepcion · Sigilo · Supervivencia · Trato con animales · Naturaleza",
+    idiomas_texto: "Comun · Elfico · un idioma a eleccion",
+    rasgos_texto: [
+      "Enemigo predilecto: +2 a tiradas de dano contra tipo elegido. Ventaja en Sabiduria (Supervivencia) para rastrearlos e Int. para recordar informacion sobre ellos.",
+      "Explorador natural (Bosque): Terreno dificil no reduce vel. en bosques. Ventaja en tiradas de Sigilo en bosques. Siempre alerta contra emboscadas. Grupo no se pierde en terreno preferido.",
+      "Estilo de combate — Arqueria: +2 a tiradas de ataque con armas a distancia.",
+      "Conciencia primitiva: Gasta espacio de conjuro para detectar en 1.5 km a tipo de bestia o planta (o infernal, celestial, etc.) en terreno preferido.",
+      "Vision en la oscuridad 18 m (elfo de los bosques).",
+      "Ascendencia feerica: ventaja contra ser hechizado, inmune a dormir por magia.",
+    ],
+    validaciones: [
+      { campo: "ac", esperado: 14, descripcion: "Armadura de cuero (11) + Destreza mod (+3 esperado)" },
+      { campo: "level", esperado: 2, descripcion: "Nivel actual" },
+      { campo: "speed", esperado: "35 pies", descripcion: "Elfo de los bosques: 35 pies" },
+    ],
+    nivel_siguiente: {
+      nivel: 3,
+      beneficios: [
+        "Elegir arquetipo de explorador: Cazador, Acechador de bestias, Deslizador (Gloom Stalker), etc.",
+        "Desbloquear conjuros de explorador (nivel 1): 2 conjuros conocidos, 2 espacios de nivel 1.",
+        "Primeros auxilios: estabilizar criaturas sin tirada.",
+        "PG: +6 (o tira 1d10) + mod. Constitucion.",
+      ]
+    }
+  },
+  galahad: {
+    clase: "Luchador", subclase: "Sin arquetipo (nivel 3)", raza: "Humano",
+    nivelActual: 2,
+    dadoGolpe: 10,
+    bonificadorCompetencia: 2,
+    velocidad: "9 m",
+    armaduras: ["Todas las armaduras", "Escudos"],
+    armas: ["Armas sencillas", "Armas marciales"],
+    herramientas: [],
+    tiradas_salvacion: ["Fuerza", "Constitucion"],
+    habilidades: ["Atletismo", "Historia", "Intimidacion", "Percepcion"],
+    idiomas: ["Comun", "un idioma adicional (humano)"],
+    rasgos_nivel: {
+      1: ["Estilo de combate (Combate con dos armas o Combate con armas grandes)", "Segundo aire (1/desc. corto)", "Oleada de accion (1/desc. corto)"],
+      2: ["Oleada de accion desbloqueada"],
+    },
+    rasgos_raza: [
+      "Puntuaciones de habilidad +1 a todas",
+      "Un idioma adicional a eleccion",
+    ],
+    espacios_conjuro: {},
+    conjuros_conocidos: "Sin conjuros hasta elegir El Caballero Mágico (nivel 3)",
+    competencias_texto: "Todas las armaduras y escudos · Armas sencillas y marciales",
+    salvaciones_texto: "Fuerza · Constitucion",
+    habilidades_texto: "Atletismo · Historia · Intimidacion · Percepcion",
+    idiomas_texto: "Comun · un idioma adicional",
+    rasgos_texto: [
+      "Estilo de combate — Combate con armas grandes: Relanzar 1s y 2s en tiradas de dano con armas a dos manos. Usar el segundo resultado.",
+      "Segundo aire (1/desc. corto): Accion adicional para recuperar 1d10 + nivel de luchador PG.",
+      "Oleada de accion (1/desc. corto): Tomar una accion adicional en tu turno (ademas de la accion normal y adicional).",
+    ],
+    validaciones: [
+      { campo: "CA", esperado: 18, descripcion: "Cota de malla (16) + Escudo (2) — aunque usa espadon, puede llevar escudo" },
+      { campo: "level", esperado: 2, descripcion: "Nivel actual" },
+    ],
+    nivel_siguiente: {
+      nivel: 3,
+      beneficios: [
+        "Elegir arquetipo marcial: Campeon, Caballero de Batalla, Maestro de Combate, Caballero Arcano, etc.",
+        "Campeon: Critico en 19-20. Maestro de Combate: 4 maniobras + 4 dados de superioridad d8.",
+        "PG: +6 (o tira 1d10) + mod. Constitucion.",
+      ]
+    }
+  },
+  amber: {
+    clase: "Luchadora", subclase: "Sin arquetipo (nivel 3)", raza: "Alto elfo",
+    nivelActual: 2,
+    dadoGolpe: 10,
+    bonificadorCompetencia: 2,
+    velocidad: "9 m",
+    armaduras: ["Todas las armaduras", "Escudos"],
+    armas: ["Armas sencillas", "Armas marciales"],
+    herramientas: [],
+    tiradas_salvacion: ["Fuerza", "Constitucion"],
+    habilidades: ["Acrobacias", "Atletismo", "Historia", "Percepcion"],
+    idiomas: ["Comun", "Elfico", "un idioma adicional (alto elfo)"],
+    rasgos_raza: [
+      "Vision en la oscuridad 18 m",
+      "Sentidos afinados: competencia en Percepcion",
+      "Ascendencia feérica: ventaja contra ser hechizado, no puede dormirse por magia",
+      "Trance: 4 horas en lugar de 8 de sueño",
+      "Competencia en espada larga, espada corta, arco largo, arco corto",
+      "Truco de mago (alto elfo): conoce un truco del mago",
+    ],
+    rasgos_nivel: {
+      1: ["Estilo de combate (Combate con armas grandes)", "Segundo aire (1/desc. corto)"],
+      2: ["Oleada de accion (1/desc. corto)"],
+    },
+    espacios_conjuro: {},
+    conjuros_conocidos: "Sin conjuros. Truco de mago por raza de alto elfo.",
+    competencias_texto: "Todas las armaduras y escudos · Armas sencillas y marciales · Elfo: espada larga, espada corta, arco largo, arco corto",
+    salvaciones_texto: "Fuerza · Constitucion",
+    habilidades_texto: "Acrobacias · Atletismo · Historia · Percepcion",
+    idiomas_texto: "Comun · Elfico · un idioma adicional",
+    rasgos_texto: [
+      "Estilo de combate — Combate con armas grandes: Relanzar 1s y 2s en tiradas de dano con armas a dos manos. Usar el segundo resultado.",
+      "Segundo aire (1/desc. corto): Accion adicional para recuperar 1d10 + nivel de luchador PG.",
+      "Oleada de accion (1/desc. corto): Tomar una accion adicional en tu turno.",
+      "Vision en la oscuridad 18 m (alto elfo).",
+      "Ascendencia feerica: ventaja contra ser hechizado, inmune a dormir por magia.",
+      "Truco de mago: conoce un truco de la lista de mago (a eleccion del jugador).",
+    ],
+    validaciones: [
+      { campo: "level", esperado: 2, descripcion: "Nivel actual" },
+    ],
+    nivel_siguiente: {
+      nivel: 3,
+      beneficios: [
+        "Elegir arquetipo marcial: Campeon, Caballero de Batalla, Maestro de Combate, Caballero Arcano, etc.",
+        "Campeon: Critico en 19-20. Maestro de Combate: 4 maniobras + 4 dados de superioridad d8.",
+        "PG: +6 (o tira 1d10) + mod. Constitucion.",
+      ]
+    }
+  },
+};
+
+
+// ══════════════════════════════════════════════════════════════════
+// BASE DE DATOS DE CONJUROS — PHB 5e (clases relevantes)
+// ══════════════════════════════════════════════════════════════════
+const SPELL_DATABASE = {
+  // ── PALADÍN ──────────────────────────────────────────────────────
+  paladin: {
+    trucos: [],
+    1: ["Bendicion","Castigo abrasador","Castigo atronador","Castigo furioso","Curar heridas",
+        "Detectar el bien y el mal","Detectar magia","Detectar venenos y enfermedades",
+        "Duelo forzado","Escudo de fe","Favor divino","Heroismo","Orden imperiosa",
+        "Proteccion contra el bien y el mal","Purificar comida y bebida"],
+    2: ["Arma magica","Auxilio","Castigo marcador","Hallar corcel","Localizar objeto",
+        "Proteccion contra veneno","Restablecimiento menor","Zona de la verdad"],
+    3: ["Arma elemental","Aura de vitalidad","Castigo cegador","Circulo magico",
+        "Crear comida y agua","Disipar magia","El manto del cruzado","Levantar maldicion",
+        "Luz del dia","Revivir"],
+    4: ["Aura de pureza","Aura de vida","Castigo abrumador","Destierro",
+        "Guarda contra la muerte","Localizar criatura"],
+    5: ["Alzar a los muertos","Castigo desterrador","Circulo de poder",
+        "Disipar el bien y el mal","Geas","Ola destructora"],
+    // Dominio extra segun juramento (nivel 3+, no aplica aun)
+    dominio_guerra: {
+      1: ["Escudo de fe","Orden imperiosa"],
+      2: ["Arma espiritual","Arma magica"],
+    }
+  },
+  // ── CLÉRIGO (Dominio de la Guerra) ───────────────────────────────
+  clerigo: {
+    trucos: ["Guia","Llama sagrada","Luz","Piedad con los moribundos","Reparar","Resistencia","Taumaturgia"],
+    1: ["Bendicion","Crear o destruir agua","Curar heridas","Detectar el bien y el mal",
+        "Detectar magia","Detectar venenos y enfermedades","Escudo de fe","Infligir heridas",
+        "Orden imperiosa","Palabra de curacion","Perdiccion","Proteccion contra el bien y el mal",
+        "Purificar comida y bebida","Saeta guia","Santuario"],
+    2: ["Arma espiritual","Augurio","Auxilio","Calmar emociones","Detectar trampas",
+        "Dulce descanso","Inmovilizar persona","Llama permanente","Localizar objeto",
+        "Plegaria de curacion","Potenciar caracteristica","Proteccion contra veneno",
+        "Restablecimiento menor","Silencio","Sordera/Ceguera","Vinculo protector","Zona de la verdad"],
+    3: ["Animar a los muertos","Caminar sobre el agua","Circulo magico","Clarividencia",
+        "Crear comida y agua","Disipar magia","Don de lenguas","Espiritus guardianes",
+        "Fingir muerte","Glifo custodio","Hablar con los muertos","Imponer maldicion",
+        "Levantar maldicion","Luz del dia","Palabra de curacion en masa","Revivir","Señal de esperanza"],
+    4: ["Adivinacion","Controlar agua","Destierro","Guarda contra la muerte",
+        "Guardian de la fe","Libertad de movimiento","Localizar criatura","Moldear la piedra"],
+    5: ["Alzar a los muertos","Atadura planar","Comunion","Conocer las leyendas","Consagrar",
+        "Contagio","Curar heridas en masa","Disipar el bien y el mal","Escudriñar","Geas",
+        "Golpe flamigero","Plaga de insectos","Restablecimiento mayor"],
+    // Conjuros de dominio de la guerra (siempre preparados)
+    dominio_guerra: {
+      1: ["Escudo de fe","Orden imperiosa"],
+      2: ["Arma espiritual","Arma magica"],
+      3: ["Espiritu guardian","Conjuro de zona"],
+      4: ["Libertad de movimiento","Guardabosques de piedra"],
+      5: ["Flameante","Muro de fuerza"],
+    }
+  },
+  // ── EXPLORADOR ───────────────────────────────────────────────────
+  explorador: {
+    trucos: [], // los exploradores no tienen trucos
+    1: ["Alarma","Buenas bayas","Curar heridas","Detectar magia",
+        "Detectar venenos y enfermedades","Encantar animal","Golpe apresador",
+        "Hablar con los animales","Marca del cazador","Nube de oscurecimiento",
+        "Purificar comida y bebida","Salto","Tormenta de espinas","Zancada prodigiosa"],
+    2: ["Cordon de flechas","Crecimiento espinoso","Detectar trampas",
+        "Localizar animales o plantas","Localizar objeto","Mensajero animal",
+        "Pasar sin rastro","Piel robliza","Proteccion contra veneno",
+        "Restablecimiento menor","Sentidos de la bestia","Silencio","Vision en la oscuridad"],
+    3: ["Caminar sobre el agua","Conjurar animales","Conjurar descarga de proyectiles",
+        "Crecimiento vegetal","Flecha de relampago","Hablar con las plantas",
+        "Indetectable","Luz del dia","Muro de viento","Proteccion contra energia",
+        "Respirar bajo el agua"],
+    4: ["Conjurar seres del bosque","Enredadera","Libertad de movimiento",
+        "Localizar criatura","Piel petrea"],
+    5: ["Carcaj veloz","Comunion con la naturaleza","Conjurar lluvia de flechas","Paso arboreo"],
+  },
+};
+
+// Conjuros conocidos/preparados por personaje
+const CHARACTER_SPELLS = {
+  arthas: {
+    clase: "paladin",
+    espacios: {1: 2},
+    usados: {},
+    preparados: [],
+    dominioConjuros: [], // se activan en nivel 3 con juramento
+  },
+  "miguel-angel": {
+    clase: "clerigo",
+    espacios: {1: 3},
+    usados: {},
+    preparados: [],
+    dominioConjuros: ["Escudo de fe","Orden imperiosa"], // dominio guerra nivel 1
+  },
+  nilux: {
+    clase: "explorador",
+    espacios: {1: 0}, // exploradores no tienen conjuros hasta nivel 5
+    usados: {},
+    preparados: [],
+    dominioConjuros: [],
+  },
+  galahad: {
+    clase: null, // luchador sin conjuros
+    espacios: {},
+    usados: {},
+    preparados: [],
+    dominioConjuros: [],
+  },
+  amber: {
+    clase: null, // luchadora sin conjuros (truco de mago por raza)
+    espacios: {},
+    usados: {},
+    preparados: ["Truco de mago (alto elfo): elige uno de la lista de mago"],
+    dominioConjuros: [],
+  },
+};
+
 // ── Contraseñas por personaje ──────────────────────────────────────
 const MASTER_PASSWORD = "0951";
 const CHARACTER_PASSWORDS = {
-  "arthas": null,         // sin contraseña aún
-  "miguel-angel": "1890",
-  "nilux": null,
-  "galahad": null,
-  "amber": null,
+  "arthas": null,         // Checo — sin contraseña aun
+  "miguel-angel": "1890", // Koko
+  "nilux": "1001",        // Vasito
+  "galahad": null,        // Rodrigo — sin contraseña aun
+  "amber": "7235",        // Cris
 };
 function checkPassword(characterId) {
   const pw = CHARACTER_PASSWORDS[characterId];
@@ -468,13 +837,13 @@ const campaign = {
     ["Actual", "Explorar las salas draconicas", "La llave abrio el camino hacia el orbe musical, el acertijo de estrellas y el sarcofago.", "gold"],
   ],
   quests: [
-    ["Completada", "El precio de Calcryx", "Calcryx fue recuperada viva, Amber quedo libre y Yusdrayl entrego la llave como recompensa.", "green"],
-    ["Activa", "La expedicion perdida", "Descubrir que ocurrio con los aventureros que entraron antes a la Ciudadela.", "gold"],
-    ["Completada", "La llave de la cabeza de dragon", "La llave fue recibida de Yusdrayl y usada para abrir la puerta draconica.", "green"],
-    ["Activa", "El misterio de Calcryx", "Calcryx ataco a Meepo apenas fue enviado a buscarla. El grupo sospecha que Meepo podria ocultar algo.", "danger"],
-    ["Activa", "Las ruinas draconicas", "El orbe, el acertijo de las estrellas, las runas y el sacerdote dragon fallido revelan que estas salas guardan historia antigua.", "gold"],
-    ["Rumor", "Una fruta que cura", "En Oakhurst se habla de una fruta extraordinaria capaz de curar a la gente.", "muted"],
-    ["Completada", "Descender a la Ciudadela", "La compania encontro la grieta y alcanzo las ruinas hundidas.", "green"],
+    ["Completada", "El precio de Calcryx", "Calcryx fue recuperada viva, Amber quedo libre y Yusdrayl entrego la llave como recompensa.", "green", null],
+    ["Activa", "La expedicion perdida", "Descubrir que ocurrio con los aventureros Hucrele que entraron antes a la Ciudadela.", "gold", {po: 500, detalle: "125 PO por anillo de Sharwyn + 125 PO por anillo de Talgen + 250 PO si Sharwyn vuelve viva + 250 PO si Talgen vuelve vivo. Paga Kerowyn Hucrele en Oakhurst.", cobrado: false}],
+    ["Completada", "La llave de la cabeza de dragon", "La llave fue recibida de Yusdrayl y usada para abrir la puerta draconica.", "green", null],
+    ["Activa", "El misterio de Calcryx", "Calcryx ataco a Meepo apenas fue enviado a buscarla. El grupo sospecha que Meepo podria ocultar algo.", "danger", null],
+    ["Activa", "Las ruinas draconicas", "El orbe, el acertijo de las estrellas, las runas y el sacerdote dragon fallido revelan que estas salas guardan historia antigua.", "gold", null],
+    ["Rumor", "Una fruta que cura", "En Oakhurst se habla de una fruta extraordinaria capaz de curar a la gente.", "muted", null],
+    ["Completada", "Descender a la Ciudadela", "La compania encontro la grieta y alcanzo las ruinas hundidas.", "green", null],
   ],
   places: [
     ["Oakhurst", "Punto de partida", "La aldea donde comenzo la busqueda de la expedicion desaparecida.", "known"],
@@ -546,6 +915,38 @@ const campaign = {
     ["Miguel Angel", "El sombrero se veia genial. Eso era suficiente."],
     ["Jot", "No lo atraparon, pero al menos dejo una escena dificil de olvidar."],
   ],
+  sessions: [
+    {
+      numero: 1, titulo: "El descenso a la Ciudadela",
+      fecha: "Dia 1 de campaña",
+      resumen: "La compania llego a Oakhurst, conocio a Kerowyn Hucrele y acepto buscar a sus hijos. Descendieron por la grieta, conocieron a Meepo y llegaron ante Yusdrayl.",
+      logros: ["Primer contacto con los kobolds", "Trato aceptado con Yusdrayl", "Amber capturada como garantia"],
+    },
+    {
+      numero: 2, titulo: "Calcryx y el aliento helado",
+      fecha: "Dia 1-2 de campaña",
+      resumen: "El grupo busco a Calcryx, enfrento a goblins en la sala de descanso, recupero a la cria de dragon blanco bajo el aliento helado y huyo encendiendo cadaveres en la entrada goblin.",
+      logros: ["Calcryx recuperada viva", "Amber liberada", "Llave draconica obtenida", "Descanso en territorio kobold"],
+    },
+    {
+      numero: 3, titulo: "El orbe y el acertijo",
+      fecha: "Dia 2-3 de campaña",
+      resumen: "El grupo exploro las salas draconicas. Nilux encendio el orbe musical que encanto varias veces al grupo. Miguel Angel resolvio el acertijo de la puerta dragon con la respuesta: las estrellas.",
+      logros: ["Orbe destruido", "Puerta draconica abierta", "Nilux y Galahad agotados"],
+    },
+    {
+      numero: 4, titulo: "Jot y el sarcofago",
+      fecha: "Dia 3 de campaña",
+      resumen: "El grupo encontro a la criatura invisible Jot, que escapo burlándose al convertirse en murcielago. Luego derrotaron al sacerdote dragon fallido del sarcofago, que solo dejo de levantarse cuando Galahad propuso quemarlo.",
+      logros: ["Sacerdote dragon fallido destruido", "Antorcha verde eterna encontrada", "Pergaminos y botin del sarcofago"],
+    },
+  ],
+  calendario: {
+    diaActual: 3,
+    descansosLargos: 3,
+    descansosCortos: 2,
+    notas: "Nilux y Galahad siguen con agotamiento nivel 1 por el orbe musical. Necesitan un descanso largo para recuperarse.",
+  },
   gallery: [
     ["grupo1.jpeg", "Sobre el abismo", "Ilustracion de la compania reunida en unas ruinas verticales."],
     ["grupo2.jpeg", "Territorio hostil", "Ilustracion del grupo mientras ratas gigantes y goblins observan desde la oscuridad."],
@@ -560,7 +961,7 @@ const initialCharacters = [
     portrait: "portrait-arthas.jpg",
     appearance: "Humano alto y de porte noble. Cabello blanco ondulado, lentes finos, armadura oscura ornamentada y capa violeta. Su espada ancestral emite energia purpura.",
     story: "Caballero de una orden paladina. Sobrevivio a unas ruinas profundas al tomar una espada ancestral vinculada con una entidad silenciosa.",
-    condition: "Recuperado tras el descanso largo. Fue derribado por el aliento helado de Calcryx en la sesion anterior.",
+    condition: "Agotamiento nivel 1 por el orbe musical. Necesita un descanso largo para recuperarse.",
     stats: { level: 1, hp: 12, maxHp: 12, ac: 18, initiative: 0, speed: "30 pies", proficiency: 2, passivePerception: 10 },
     attributes: { Fuerza: 14, Destreza: 10, Constitucion: 14, Inteligencia: 10, Sabiduria: 10, Carisma: 16 },
     attacks: ["Espada ancestral +4 - 1d8 + 2 cortante; efecto adicional especial", "Jabalina +4 - 1d6 + 2 perforante"],
@@ -598,7 +999,7 @@ const initialCharacters = [
     portrait: "portrait-miguel-angel.jpg",
     appearance: "Enano robusto de barba negra, lentes y sombrero marron. Lleva armadura pesada grabada, escudo y un martillo que brilla con luz dorada.",
     story: "Busca justicia contra una iglesia corrupta. Porta su martillo predilecto, un collar heredado de su padre y un sombrero que le quedaba demasiado bien como para abandonarlo.",
-    condition: "Recuperado tras el descanso largo. Fue derribado por el aliento helado de Calcryx en la sesion anterior.",
+    condition: "Agotamiento nivel 1 por el orbe musical. Necesita un descanso largo para recuperarse.",
     stats: { level: 1, hp: 11, maxHp: 11, ac: 18, initiative: 1, speed: "25 pies", proficiency: 2, passivePerception: 13 },
     attributes: { Fuerza: 14, Destreza: 12, Constitucion: 15, Inteligencia: 10, Sabiduria: 16, Carisma: 8 },
     attacks: ["Martillo Jesucristo +4 - 1d8 + 2 contundente", "Lanza +4 - 1d6 + 2 perforante"],
@@ -891,11 +1292,12 @@ function renderHome() {
       <div class="character-hp-bar"><span style="width:${hpPct}%" class="${hpLow ? 'low' : ''}"></span></div>
     </button>`;
   }).join("");
-  document.querySelector("#quest-board").innerHTML = campaign.quests.map(([status, title, text, tone]) => `
+  document.querySelector("#quest-board").innerHTML = campaign.quests.map(([status, title, text, tone, reward]) => `
     <article class="quest-card ${escapeHtml(tone)}">
       <span class="quest-status">${escapeHtml(status)}</span>
       <h3>${escapeHtml(title)}</h3>
       <p>${escapeHtml(text)}</p>
+      ${reward ? `<div class="quest-reward"><span class="quest-reward-icon">◈</span><span>${escapeHtml(reward.detalle)}</span><span class="quest-reward-total">${reward.po} PO potencial</span></div>` : ""}
     </article>`).join("");
   document.querySelector("#known-map").innerHTML = campaign.places.map(([name, status, text, state], index) => `
     <article class="place-card ${escapeHtml(state)}">
@@ -940,6 +1342,91 @@ function renderHome() {
     <blockquote>${escapeHtml(quote)}</blockquote>
     <cite>${escapeHtml(author)}</cite>`;
   renderLootBoard();
+  renderSessionHistory();
+  renderCalendar();
+}
+
+function renderSessionHistory() {
+  const el = document.querySelector("#session-history");
+  if (!el || !campaign.sessions) return;
+  el.innerHTML = `
+    <div class="session-history-header">
+      <span class="eyebrow">Historial de campaña</span>
+      <span class="session-xp-total">${campaign.sessions.length} sesiones</span>
+    </div>
+    ${campaign.sessions.slice().reverse().map(sess => `
+      <article class="session-history-card">
+        <div class="session-history-top">
+          <span class="session-num">Sesion ${sess.numero}</span>
+          <span class="session-fecha">${escapeHtml(sess.fecha)}</span>
+
+        </div>
+        <h3>${escapeHtml(sess.titulo)}</h3>
+        <p>${escapeHtml(sess.resumen)}</p>
+        <div class="session-logros">
+          ${sess.logros.map(l => `<span class="session-logro">✓ ${escapeHtml(l)}</span>`).join("")}
+        </div>
+      </article>`).join("")}`;
+}
+
+function renderCalendar() {
+  const el = document.querySelector("#campaign-calendar");
+  if (!el || !campaign.calendario) return;
+  const cal = campaign.calendario;
+  el.innerHTML = `
+    <div class="calendar-grid">
+      <div class="calendar-stat"><span class="calendar-num">${cal.diaActual}</span><span class="calendar-label">Dia de campaña</span></div>
+      <div class="calendar-stat"><span class="calendar-num">${cal.descansosLargos}</span><span class="calendar-label">Desc. largos</span></div>
+      <div class="calendar-stat"><span class="calendar-num">${cal.descansosCortos}</span><span class="calendar-label">Desc. cortos</span></div>
+    </div>
+    ${cal.notas ? `<p class="calendar-note">${escapeHtml(cal.notas)}</p>` : ""}`;
+}
+
+// Active character gallery ID
+let activeGalleryCharId = null;
+
+function renderGalleryView() {
+  const el = document.querySelector("#character-gallery-grid");
+  if (!el) return;
+  el.innerHTML = state.characters.map(ch => `
+    <button class="char-gallery-card" data-gallery-char="${ch.id}">
+      <div class="char-gallery-portrait-wrap">
+        <img class="char-gallery-portrait" src="${escapeHtml(ch.portrait)}" alt="${escapeHtml(ch.name)}" />
+        <div class="char-gallery-overlay">
+          <span>${(ch.photos || []).length} foto${(ch.photos || []).length !== 1 ? 's' : ''}</span>
+        </div>
+      </div>
+      <div class="char-gallery-info">
+        <h3>${escapeHtml(ch.name)}</h3>
+        <p>${escapeHtml(ch.player)}</p>
+      </div>
+    </button>`).join("");
+}
+
+function renderCharGallery(charId) {
+  activeGalleryCharId = charId;
+  const ch = state.characters.find(c => c.id === charId);
+  if (!ch) return;
+  showView("char-gallery-view");
+
+  // Hero
+  document.querySelector("#char-gallery-eyebrow").textContent = `Galeria de ${ch.player}`;
+  document.querySelector("#char-gallery-title").textContent = ch.name;
+  document.querySelector("#char-gallery-hero").style.backgroundImage = `url('${ch.portrait}')`;
+
+  // Photos grid
+  const photos = ch.photos || [];
+  const el = document.querySelector("#char-gallery-photos");
+  if (!photos.length) {
+    el.innerHTML = '<p class="helper-copy" style="padding:20px 0">Sin fotos aun. Sube la primera con el boton de arriba.</p>';
+    return;
+  }
+  el.innerHTML = photos.map((photo, i) => `
+    <div class="gallery-photo-card">
+      <img src="${escapeHtml(photo.url)}" alt="${escapeHtml(photo.caption || '')}" class="gallery-photo-img" />
+      ${photo.caption ? `<p class="gallery-photo-caption">${escapeHtml(photo.caption)}</p>` : ""}
+      <button class="gallery-photo-delete" data-delete-photo="${i}" title="Eliminar">✕</button>
+    </div>`).join("");
 }
 
 function renderLootBoard() {
@@ -1084,14 +1571,181 @@ function renderCharacter() {
   document.querySelector("#current-condition").textContent = item.condition;
   renderSheet();
   renderInventory();
-  document.querySelector("#recommendation-list").innerHTML = item.recommendations.map(([title, text]) => `
-    <article class="recommendation"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`).join("");
+  // Level up panel — use CLASS_DATA
+  const cd = CLASS_DATA[item.id];
+  const levelEl = document.querySelector("#recommendation-list");
+  if (cd) {
+    const nextLvl = cd.nivel_siguiente;
+    const currentLevel = item.stats.level || 1;
+    // Validations
+    const validationHtml = cd.validaciones ? cd.validaciones.map(v => {
+      const actual = v.campo === "level" ? item.stats.level
+                   : v.campo === "maxHp" ? item.stats.maxHp
+                   : v.campo === "ac" || v.campo === "CA" ? item.stats.ac
+                   : null;
+      const ok = actual !== null && actual >= v.esperado;
+      const icon = ok ? "✅" : "⚠️";
+      return `<div class="validation-row ${ok ? 'ok' : 'warn'}">
+        <span class="val-icon">${icon}</span>
+        <div><strong>${escapeHtml(v.campo.toUpperCase())}</strong>: tienes ${actual ?? '?'}, esperado ${v.esperado} — ${escapeHtml(v.descripcion)}</div>
+      </div>`;
+    }).join("") : "";
+    // Current traits
+    const traitsHtml = cd.rasgos_texto.map(t => `<div class="info-row">${escapeHtml(t)}</div>`).join("");
+    // Next level
+    const nextHtml = nextLvl ? `
+      <article class="panel-card" style="margin-top:12px">
+        <p class="eyebrow">Cuando subas a nivel ${nextLvl.nivel}</p>
+        <h2>Beneficios de nivel ${nextLvl.nivel}</h2>
+        <div class="stack" style="margin-top:10px">
+          ${nextLvl.beneficios.map(b => `<div class="info-row">${escapeHtml(b)}</div>`).join("")}
+        </div>
+      </article>` : "";
+    levelEl.innerHTML = `
+      <article class="panel-card">
+        <p class="eyebrow">Validacion de ficha</p>
+        <h2>Estado actual — Nivel ${currentLevel}</h2>
+        <div class="stack" style="margin-top:10px">${validationHtml || '<div class="info-row">Sin validaciones configuradas.</div>'}</div>
+      </article>
+      <article class="panel-card" style="margin-top:12px">
+        <p class="eyebrow">Rasgos activos</p>
+        <h2>${escapeHtml(cd.clase)} — ${escapeHtml(cd.raza)}</h2>
+        <div class="stack" style="margin-top:10px">${traitsHtml}</div>
+      </article>
+      ${nextHtml}`;
+  } else {
+    levelEl.innerHTML = item.recommendations.map(([title, text]) => `
+      <article class="recommendation"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`).join("");
+  }
   document.querySelector("#memory-list").innerHTML = item.memories.map((text) => `<div class="info-row">${escapeHtml(text)}</div>`).join("");
+  renderSpells();
+}
+
+function renderSpells() {
+  const item = character();
+  const el = document.querySelector("#spells-panel");
+  if (!el) return;
+  const cs = CHARACTER_SPELLS[item.id];
+  if (!cs) { el.innerHTML = '<p class="helper-copy">Sin datos de conjuros.</p>'; return; }
+  if (!cs.clase && cs.preparados.length === 0) {
+    el.innerHTML = `<article class="panel-card"><p class="eyebrow">Conjuros</p><h2>Sin magia</h2>
+      <p class="body-copy" style="margin-top:8px">${item.name} no tiene acceso a conjuros en nivel 2.${item.id === 'amber' ? ' Como alto elfo conoce un truco de mago a eleccion.' : ''}</p>
+      </article>`;
+    return;
+  }
+  const spellClass = SPELL_DATABASE[cs.clase] || {};
+  // Slots display
+  const slotsHtml = Object.entries(cs.espacios || {}).filter(([,v]) => v > 0).map(([lvl, total]) => {
+    const used = (cs.usados?.[lvl] || 0);
+    const pips = Array.from({length: total}, (_, i) => {
+      const isUsed = i < used;
+      return `<button class="resource-pip${isUsed ? ' used' : ''}" data-spell-slot="${lvl}" data-pip-idx="${i}" title="${isUsed ? 'Recuperar' : 'Gastar'}"></button>`;
+    }).join('');
+    return `<div class="spell-slot-row"><span class="spell-slot-label">Espacios nivel ${lvl}</span><div class="resource-pips">${pips}</div><span class="slot-count">${total - used}/${total}</span></div>`;
+  }).join('') || '<p class="helper-copy">Sin espacios de conjuro.</p>';
+
+  // Prepared spells section
+  const maxPrep = cs.clase === 'clerigo'
+    ? Math.max(1, (item.attributes?.Sabiduria ? Math.floor((item.attributes.Sabiduria - 10) / 2) : 0) + (item.stats?.level || 1))
+    : cs.clase === 'paladin'
+    ? Math.max(1, (item.attributes?.Carisma ? Math.floor((item.attributes.Carisma - 10) / 2) : 0) + Math.floor((item.stats?.level || 1) / 2))
+    : null;
+
+  const preparedHtml = cs.preparados.length
+    ? cs.preparados.map((sp, i) => `
+        <div class="spell-row">
+          <span class="spell-name">${escapeHtml(sp)}</span>
+          <button class="small-button danger-button spell-remove-btn" data-remove-spell="${i}">✕</button>
+        </div>`).join('')
+    : '<p class="helper-copy">No has preparado conjuros aun. Agrega desde la lista de abajo.</p>';
+
+  // Domain spells (always prepared)
+  const domainHtml = cs.dominioConjuros?.length ? `
+    <article class="panel-card" style="margin-top:12px">
+      <p class="eyebrow">Siempre preparados (dominio)</p>
+      <h2>Conjuros de dominio</h2>
+      <div class="stack" style="margin-top:8px">
+        ${cs.dominioConjuros.map(sp => `<div class="info-row spell-name">${escapeHtml(sp)}</div>`).join('')}
+      </div>
+    </article>` : '';
+
+  // Spell list browser
+  const availableLevels = Object.entries(spellClass)
+    .filter(([k]) => k !== 'trucos' && !k.startsWith('dominio') && !isNaN(k))
+    .filter(([lvl]) => {
+      const maxLvl = Math.ceil((item.stats?.level || 1) / 2);
+      return parseInt(lvl) <= maxLvl;
+    });
+
+  const spellListHtml = availableLevels.map(([lvl, spells]) => `
+    <div class="spell-level-group">
+      <h3 class="inventory-section-title">Nivel ${lvl}</h3>
+      <div class="spell-browser-list">
+        ${spells.map(sp => {
+          const isPrepared = cs.preparados.includes(sp) || cs.dominioConjuros?.includes(sp);
+          return `<button class="spell-browser-btn${isPrepared ? ' prepared' : ''}" data-add-spell="${escapeHtml(sp)}" ${isPrepared ? 'disabled' : ''}>${escapeHtml(sp)}</button>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+
+  const trucosHtml = (spellClass.trucos?.length || cs.preparados.some(s => s.includes('truco'))) ? `
+    <div class="spell-level-group">
+      <h3 class="inventory-section-title">Trucos</h3>
+      <div class="spell-browser-list">
+        ${(spellClass.trucos || []).map(sp => `<button class="spell-browser-btn prepared" disabled>${escapeHtml(sp)}</button>`).join('')}
+      </div>
+    </div>` : '';
+
+  el.innerHTML = `
+    <article class="panel-card">
+      <p class="eyebrow">Espacios de conjuro</p>
+      <h2>Magia disponible</h2>
+      <div class="spell-slots-grid" style="margin-top:10px">${slotsHtml}</div>
+    </article>
+    <article class="panel-card" style="margin-top:12px">
+      <div class="section-title-row">
+        <div><p class="eyebrow">Preparados${maxPrep ? ` (max ${maxPrep})` : ''}</p><h2>Conjuros preparados</h2></div>
+      </div>
+      <div class="stack" style="margin-top:8px">${preparedHtml}</div>
+    </article>
+    ${domainHtml}
+    <article class="panel-card" style="margin-top:12px">
+      <p class="eyebrow">Lista disponible segun clase y nivel</p>
+      <h2>Explorar conjuros</h2>
+      <div style="margin-top:10px">${trucosHtml}${spellListHtml || '<p class="helper-copy">Sin conjuros disponibles en este nivel.</p>'}</div>
+    </article>`;
 }
 function renderSheet() {
   const item = character();
-  const attributeFields = Object.entries(item.attributes).map(([name, value]) => `
-    <label>${escapeHtml(name)}<input data-attribute="${escapeHtml(name)}" type="number" value="${escapeHtml(value)}" /></label>`).join("");
+  const cd = CLASS_DATA[item.id];
+  const attributeFields = Object.entries(item.attributes).map(([name, value]) => {
+    const mod = Math.floor((value - 10) / 2);
+    const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
+    return `<label>${escapeHtml(name)} <span class="attr-mod">${modStr}</span><input data-attribute="${escapeHtml(name)}" type="number" value="${escapeHtml(value)}" /></label>`;
+  }).join("");
+  const competenciasHtml = cd ? `
+    <div class="competencias-block">
+      <div class="comp-row"><span class="comp-label">Clase / Raza</span><span>${escapeHtml(cd.clase)} · ${escapeHtml(cd.raza)}</span></div>
+      <div class="comp-row"><span class="comp-label">Armaduras</span><span>${escapeHtml(cd.armaduras.join(", "))}</span></div>
+      <div class="comp-row"><span class="comp-label">Armas</span><span>${escapeHtml(cd.armas.join(", "))}</span></div>
+      ${cd.herramientas.length ? `<div class="comp-row"><span class="comp-label">Herramientas</span><span>${escapeHtml(cd.herramientas.join(", "))}</span></div>` : ""}
+      <div class="comp-row"><span class="comp-label">Tiradas salv.</span><span>${escapeHtml(cd.salvaciones_texto)}</span></div>
+      <div class="comp-row"><span class="comp-label">Habilidades</span><span>${escapeHtml(cd.habilidades_texto)}</span></div>
+      <div class="comp-row"><span class="comp-label">Idiomas</span><span>${escapeHtml(cd.idiomas_texto)}</span></div>
+      ${cd.conjuros_conocidos ? `<div class="comp-row"><span class="comp-label">Conjuros</span><span>${escapeHtml(cd.conjuros_conocidos)}</span></div>` : ""}
+    </div>` : "";
+
+  // Portrait upload section
+  const portraitHtml = `
+    <div class="portrait-upload-section">
+      <p class="eyebrow" style="margin-bottom:8px">Hoja oficial (foto o escaneo)</p>
+      <div class="sheet-upload-area" id="sheet-upload-area">
+        ${item.sheetImage ? `<img src="${escapeHtml(item.sheetImage)}" class="sheet-preview" alt="Hoja oficial" />` : '<span class="upload-placeholder">📄 Toca para subir foto de tu hoja</span>'}
+      </div>
+      <input type="file" id="sheet-image-input" accept="image/*" style="display:none" />
+      ${item.sheetImage ? `<button class="small-button danger-button" style="margin-top:6px" id="remove-sheet-image">Quitar imagen</button>` : ""}
+    </div>`;
+
   document.querySelector("#sheet-form").innerHTML = `
     <label>Nivel<input data-stat="level" type="number" min="1" value="${escapeHtml(item.stats.level)}" /></label>
     <label>PG actuales<input data-stat="hp" type="number" min="0" value="${escapeHtml(item.stats.hp)}" /></label>
@@ -1101,7 +1755,9 @@ function renderSheet() {
     <label>Velocidad<input data-stat="speed" value="${escapeHtml(item.stats.speed)}" /></label>
     <label>Percepcion pasiva<input data-stat="passivePerception" type="number" value="${escapeHtml(item.stats.passivePerception)}" /></label>
     ${attributeFields}
-    <label class="wide-field">Estado actual<textarea id="sheet-condition">${escapeHtml(item.condition)}</textarea></label>`;
+    <label class="wide-field">Estado actual<textarea id="sheet-condition">${escapeHtml(item.condition)}</textarea></label>
+    <div class="wide-field">${competenciasHtml}</div>
+    <div class="wide-field">${portraitHtml}</div>`;
 }
 function renderItemCard(entry, equipped, showEquip) {
   const [id, name, quantity, itemCategory, description] = entry;
@@ -1226,6 +1882,7 @@ function addActivity(message) {
 function activateCharacter(id) {
   if (!checkPassword(id)) return;
   activeCharacterId = id;
+  restoreSpellState(character());
   document.querySelectorAll(".profile-tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.tab === "summary-panel"));
   document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("active", panel.id === "summary-panel"));
   renderCharacter();
@@ -1480,8 +2137,106 @@ document.querySelector("#item-form").addEventListener("submit", (event) => {
   document.querySelector("#item-dialog").close();
 });
 
+// Spell handlers
+document.addEventListener("click", (event) => {
+  // Spell slot pip toggle
+  const slotPip = event.target.closest("[data-spell-slot]");
+  if (slotPip && !slotPip.closest("[data-resource-idx]")) {
+    const item = character();
+    if (!item) return;
+    const lvl = slotPip.dataset.spellSlot;
+    const pipIdx = parseInt(slotPip.dataset.pipIdx);
+    const cs = CHARACTER_SPELLS[item.id];
+    if (!cs) return;
+    cs.usados = cs.usados || {};
+    const cur = cs.usados[lvl] || 0;
+    cs.usados[lvl] = cur > pipIdx ? pipIdx : pipIdx + 1;
+    // Save to character state
+    item.spellState = { usados: { ...cs.usados }, preparados: [...cs.preparados] };
+    saveState(); renderSpells();
+  }
+  // Add spell to prepared
+  const addSpell = event.target.closest("[data-add-spell]");
+  if (addSpell) {
+    const item = character();
+    if (!item) return;
+    const cs = CHARACTER_SPELLS[item.id];
+    if (!cs) return;
+    const spellName = addSpell.dataset.addSpell;
+    if (!cs.preparados.includes(spellName)) {
+      cs.preparados.push(spellName);
+      item.spellState = { usados: { ...cs.usados }, preparados: [...cs.preparados] };
+      saveState(); renderSpells(); showToast(`${spellName} preparado.`);
+    }
+  }
+  // Remove spell from prepared
+  const removeSpell = event.target.closest("[data-remove-spell]");
+  if (removeSpell) {
+    const item = character();
+    if (!item) return;
+    const cs = CHARACTER_SPELLS[item.id];
+    if (!cs) return;
+    const idx = parseInt(removeSpell.dataset.removeSpell);
+    const removed = cs.preparados.splice(idx, 1)[0];
+    item.spellState = { usados: { ...cs.usados }, preparados: [...cs.preparados] };
+    saveState(); renderSpells(); showToast(`${removed} removido.`);
+  }
+});
+
+// Restore spell state from saved character data
+function restoreSpellState(item) {
+  if (!item.spellState) return;
+  const cs = CHARACTER_SPELLS[item.id];
+  if (!cs) return;
+  cs.usados = item.spellState.usados || {};
+  cs.preparados = item.spellState.preparados || [];
+}
+
 // Rope dialog handlers
 document.querySelector("#rope-cancel").addEventListener("click", () => document.querySelector("#rope-dialog").close());
+
+// Gallery handlers
+document.addEventListener("click", (event) => {
+  // Open character gallery
+  const galleryChar = event.target.closest("[data-gallery-char]");
+  if (galleryChar) renderCharGallery(galleryChar.dataset.galleryChar);
+
+  // Open file picker
+  const uploadBtn = event.target.closest("#open-upload-photo");
+  if (uploadBtn) document.querySelector("#photo-upload-input").click();
+
+  // Delete photo
+  const deleteBtn = event.target.closest("[data-delete-photo]");
+  if (deleteBtn && activeGalleryCharId) {
+    const ch = state.characters.find(c => c.id === activeGalleryCharId);
+    if (!ch) return;
+    const idx = parseInt(deleteBtn.dataset.deletePhoto);
+    ch.photos = (ch.photos || []).filter((_, i) => i !== idx);
+    saveState(); renderCharGallery(activeGalleryCharId); showToast("Foto eliminada.");
+  }
+});
+
+document.querySelector("#photo-upload-input").addEventListener("change", (event) => {
+  if (!activeGalleryCharId) return;
+  const ch = state.characters.find(c => c.id === activeGalleryCharId);
+  if (!ch) return;
+  ch.photos = ch.photos || [];
+  const files = Array.from(event.target.files);
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      ch.photos.push({ url: e.target.result, caption: "", uploadedAt: Date.now() });
+      loaded++;
+      if (loaded === files.length) {
+        saveState(); renderCharGallery(activeGalleryCharId);
+        showToast(`${files.length} foto${files.length > 1 ? 's' : ''} subida${files.length > 1 ? 's' : ''}.`);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = "";
+});
 
 // Drop dialog handlers
 document.querySelector("#drop-cancel").addEventListener("click", () => document.querySelector("#drop-dialog").close());
@@ -1525,6 +2280,32 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
   document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
   addActivity(`Agregaste ${amount} m a ${inv[1]}. Total: ${inv[2]} m.`);
   saveState(); renderInventory(); showToast(`+${amount} m.`);
+});
+
+// Portrait/sheet image upload handler
+document.addEventListener("click", (event) => {
+  const uploadArea = event.target.closest("#sheet-upload-area");
+  if (uploadArea) document.querySelector("#sheet-image-input").click();
+  const removeBtn = event.target.closest("#remove-sheet-image");
+  if (removeBtn) {
+    const item = character();
+    if (!item) return;
+    item.sheetImage = null;
+    saveState(); renderSheet(); showToast("Imagen eliminada.");
+  }
+});
+document.addEventListener("change", (event) => {
+  const fileInput = event.target.closest("#sheet-image-input");
+  if (fileInput && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const item = character();
+      if (!item) return;
+      item.sheetImage = e.target.result;
+      saveState(); renderSheet(); showToast("Hoja guardada.");
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  }
 });
 
 // Initial render from localStorage, then update from Firestore

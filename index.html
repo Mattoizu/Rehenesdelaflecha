@@ -46,6 +46,24 @@
           <div id="loot-preview"></div>
         </section>
 
+        <section class="section-block character-entry" style="cursor:pointer" data-go="gallery-view">
+          <p class="eyebrow">Fotos e ilustraciones</p>
+          <h2>Galeria de la compania</h2>
+          <p class="body-copy" style="margin-top:6px">Retratos, fan art y recuerdos de cada aventurero.</p>
+        </section>
+
+        <section class="section-block">
+          <div class="character-entry">
+            <p class="eyebrow">Tiempo transcurrido</p>
+            <h2>Calendario de campaña</h2>
+            <div id="campaign-calendar"></div>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div id="session-history"></div>
+        </section>
+
         <section class="session-board" id="session-board"></section>
 
         <section class="episode-grid">
@@ -129,6 +147,7 @@
           <button class="profile-tab" data-tab="sheet-panel">Ficha</button>
           <button class="profile-tab" data-tab="inventory-panel">Inventario</button>
           <button class="profile-tab" data-tab="level-panel">Subir nivel</button>
+          <button class="profile-tab" data-tab="spells-panel">Conjuros</button>
           <button class="profile-tab" data-tab="memories-panel">Recuerdos</button>
         </nav>
 
@@ -198,6 +217,10 @@
           </article>
         </section>
 
+        <section class="tab-panel" id="spells-panel">
+          <div id="spells-panel"></div>
+        </section>
+
         <section class="tab-panel" id="memories-panel">
           <article class="panel-card">
             <p class="eyebrow">Historia personal</p>
@@ -206,6 +229,31 @@
           </article>
         </section>
       </section>
+      <!-- Gallery view -->
+      <section class="view" id="gallery-view">
+        <div class="section-block">
+          <p class="eyebrow">Galerías personales</p>
+          <h2>Elige un aventurero</h2>
+          <div class="character-gallery-grid" id="character-gallery-grid"></div>
+        </div>
+      </section>
+
+      <!-- Character gallery view -->
+      <section class="view" id="char-gallery-view">
+        <div class="char-gallery-hero" id="char-gallery-hero"></div>
+        <div class="section-block">
+          <div class="section-title-row">
+            <div>
+              <p class="eyebrow" id="char-gallery-eyebrow"></p>
+              <h2 id="char-gallery-title"></h2>
+            </div>
+            <button class="small-button gold-button" id="open-upload-photo">+ Subir foto</button>
+          </div>
+          <div class="char-gallery-photos" id="char-gallery-photos"></div>
+        </div>
+        <input type="file" id="photo-upload-input" accept="image/*" multiple style="display:none" />
+      </section>
+
       <!-- Loot view -->
       <section class="view" id="loot-view">
         <div class="chest-hero">
