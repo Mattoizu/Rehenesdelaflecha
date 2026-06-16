@@ -21,11 +21,9 @@ let firestoreReady = false;
 let saveTimeout = null;
 
 async function saveState() {
-  // Save to localStorage immediately
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  // Block snapshot listener while we're saving
-  window._isSaving = true;
-  window._lastSaveAt = Date.now();
+  // Pause sync to prevent overwrite
+  pauseSync();
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(async () => {
     try {
@@ -33,8 +31,8 @@ async function saveState() {
     } catch (e) {
       console.warn("Firestore save failed:", e);
     } finally {
-      // Unblock snapshot 3 seconds after write completes
-      setTimeout(() => { window._isSaving = false; }, 3000);
+      // Resume sync 2 seconds after write completes
+      setTimeout(() => resumeSync(), 2000);
     }
   }, 200);
 }
@@ -51,8 +49,18 @@ async function loadStateFromFirestore() {
   return null;
 }
 
+let _unsubscribeSnapshot = null;
+
+function pauseSync() {
+  if (_unsubscribeSnapshot) { _unsubscribeSnapshot(); _unsubscribeSnapshot = null; }
+}
+
+function resumeSync() {
+  if (!_unsubscribeSnapshot) subscribeToChanges();
+}
+
 function subscribeToChanges() {
-  onSnapshot(STATE_DOC, (snap) => {
+  _unsubscribeSnapshot = onSnapshot(STATE_DOC, (snap) => {
     if (!snap.exists() || !firestoreReady) return;
     // Skip local echoes of our own writes
     if (snap.metadata.hasPendingWrites) return;
