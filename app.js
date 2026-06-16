@@ -1740,16 +1740,16 @@ function renderSheet() {
   const isPdf = item.sheetImageType === 'application/pdf';
   const portraitHtml = `
     <div class="portrait-upload-section">
-      <p class="eyebrow" style="margin-bottom:8px">Hoja oficial (foto, escaneo o PDF)</p>
+      <p class="eyebrow" style="margin-bottom:8px">Hoja oficial — la IA extrae los datos automaticamente</p>
       <div class="sheet-upload-area" id="sheet-upload-area">
         ${item.sheetImage
           ? isPdf
-            ? `<iframe src="${escapeHtml(item.sheetImage)}" class="sheet-preview-pdf" title="Hoja oficial PDF"></iframe>`
+            ? `<div class="sheet-pdf-loaded"><span class="sheet-pdf-icon">📄</span><span>PDF cargado y analizado</span><span class="sheet-pdf-sub">Los datos fueron aplicados a tu ficha</span></div>`
             : `<img src="${escapeHtml(item.sheetImage)}" class="sheet-preview" alt="Hoja oficial" />`
-          : '<span class="upload-placeholder">📄 Toca para subir foto o PDF de tu hoja</span>'}
+          : '<span class="upload-placeholder">📄 Sube tu hoja oficial (foto o PDF)<br><small>La IA leerá los datos y los aplicará automáticamente</small></span>'}
       </div>
       <input type="file" id="sheet-image-input" accept="image/*,application/pdf" style="display:none" />
-      ${item.sheetImage ? `<button class="small-button danger-button" style="margin-top:6px" id="remove-sheet-image">Quitar archivo</button>` : ""}
+      ${item.sheetImage ? `<button class="small-button danger-button" style="margin-top:6px" id="remove-sheet-image">Quitar archivo y volver a subir</button>` : ""}
     </div>`;
 
   document.querySelector("#sheet-form").innerHTML = `
@@ -2297,23 +2297,112 @@ document.addEventListener("click", (event) => {
     const item = character();
     if (!item) return;
     item.sheetImage = null;
-    saveState(); renderSheet(); showToast("Imagen eliminada.");
+    item.sheetImageType = null;
+    saveState(); renderSheet(); showToast("Archivo eliminado.");
   }
 });
-document.addEventListener("change", (event) => {
-  const fileInput = event.target.closest("#sheet-image-input");
-  if (fileInput && fileInput.files[0]) {
-    const reader = new FileReader();
-    const file = fileInput.files[0];
-    reader.onload = (e) => {
-      const item = character();
-      if (!item) return;
-      item.sheetImage = e.target.result;
-      item.sheetImageType = file.type;
-      saveState(); renderSheet(); showToast("Hoja guardada.");
-    };
-    reader.readAsDataURL(file);
+
+async function extractSheetData(base64Data, mediaType) {
+  showToast("Analizando ficha con IA...");
+  try {
+    const isImage = mediaType.startsWith("image/");
+    const contentBlock = isImage
+      ? { type: "image", source: { type: "base64", media_type: mediaType, data: base64Data } }
+      : { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64Data } };
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: [
+            contentBlock,
+            {
+              type: "text",
+              text: `Esta es una hoja de personaje de D&D 5e. Extrae los siguientes datos y responde SOLO con un objeto JSON valido, sin markdown ni texto adicional:
+{
+  "nivel": <numero>,
+  "hp": <PG actuales, numero>,
+  "maxHp": <PG maximos, numero>,
+  "ac": <CA, numero>,
+  "initiative": <iniciativa como numero con signo, ej: 1 o -1>,
+  "speed": <velocidad en pies, solo el numero>,
+  "passivePerception": <percepcion pasiva, numero>,
+  "Fuerza": <numero>,
+  "Destreza": <numero>,
+  "Constitucion": <numero>,
+  "Inteligencia": <numero>,
+  "Sabiduria": <numero>,
+  "Carisma": <numero>
+}
+Si no puedes leer algun campo con certeza, omitelo del JSON.`
+            }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || "";
+    const clean = text.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
+  } catch (e) {
+    console.error("Error extracting sheet data:", e);
+    return null;
   }
+}
+
+document.addEventListener("change", async (event) => {
+  const fileInput = event.target.closest("#sheet-image-input");
+  if (!fileInput || !fileInput.files[0]) return;
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const item = character();
+    if (!item) return;
+    const base64Full = e.target.result;
+    const base64Data = base64Full.split(",")[1];
+    const mediaType = file.type;
+
+    // Save the file for display
+    item.sheetImage = base64Full;
+    item.sheetImageType = mediaType;
+    saveState(); renderSheet();
+
+    // Extract data with AI
+    const extracted = await extractSheetData(base64Data, mediaType);
+    if (!extracted) { showToast("No se pudo leer la ficha automaticamente."); return; }
+
+    // Show confirmation dialog
+    const fields = Object.entries(extracted);
+    if (!fields.length) { showToast("No se encontraron datos en la ficha."); return; }
+
+    const confirmMsg = "La IA encontro estos datos:\n\n" +
+      fields.map(([k, v]) => `${k}: ${v}`).join("\n") +
+      "\n\n¿Aplicar a la ficha?";
+
+    if (confirm(confirmMsg)) {
+      // Apply stats
+      const statFields = ["nivel", "hp", "maxHp", "ac", "initiative", "speed", "passivePerception"];
+      const statMap = { nivel: "level", hp: "hp", maxHp: "maxHp", ac: "ac", initiative: "initiative", speed: "speed", passivePerception: "passivePerception" };
+      statFields.forEach(key => {
+        if (extracted[key] !== undefined) {
+          item.stats[statMap[key]] = key === "speed" ? `${extracted[key]} pies` : extracted[key];
+        }
+      });
+      // Apply attributes
+      const attrFields = ["Fuerza", "Destreza", "Constitucion", "Inteligencia", "Sabiduria", "Carisma"];
+      attrFields.forEach(attr => {
+        if (extracted[attr] !== undefined) item.attributes[attr] = extracted[attr];
+      });
+      saveState(); renderCharacter(); showToast("Ficha aplicada correctamente.");
+    }
+  };
+  reader.readAsDataURL(file);
+  fileInput.value = "";
 });
 
 // Initial render from localStorage, then update from Firestore

@@ -1083,3 +1083,18 @@ button[data-edit-item] { font-size: .82rem; }
   border: none;
   display: block;
 }
+
+/* PDF cargado estado */
+.sheet-pdf-loaded {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px;
+  width: 100%;
+}
+.sheet-pdf-icon { font-size: 2.4rem; }
+.sheet-pdf-loaded span:nth-child(2) { color: #a8d7ae; font-size: .96rem; font-weight: 700; }
+.sheet-pdf-sub { color: var(--muted); font-size: .76rem; }
+.upload-placeholder small { display: block; margin-top: 4px; font-size: .72rem; opacity: .7; }
