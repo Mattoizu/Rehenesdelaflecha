@@ -1256,3 +1256,58 @@ button[data-edit-item] { font-size: .82rem; }
   .main-nav-btn { padding: 11px 4px 10px; font-size: .58rem; gap: 5px; border-radius: 11px; }
   .main-nav-btn svg { width: 18px; height: 18px; }
 }
+
+/* ── Bottom navigation (mobile only) ─────────────────────────────── */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: rgba(16, 11, 11, .96);
+    border-top: 1px solid rgba(123, 87, 42, .4);
+    backdrop-filter: blur(16px);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottom-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 9px 4px 8px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: .58rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color .15s;
+  }
+  .bottom-nav-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--muted);
+    transition: stroke .15s;
+  }
+  .bottom-nav-btn.active,
+  .bottom-nav-btn:hover {
+    color: var(--gold);
+  }
+  .bottom-nav-btn.active svg,
+  .bottom-nav-btn:hover svg {
+    stroke: var(--gold);
+  }
+  /* Push content up so bottom nav doesn't cover it */
+  main { padding-bottom: 70px; }
+  /* Hide topbar nav on mobile — bottom nav takes over */
+  .topbar-nav { display: none !important; }
+}

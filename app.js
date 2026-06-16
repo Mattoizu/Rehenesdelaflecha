@@ -1262,9 +1262,15 @@ function showView(viewId) {
   document.querySelectorAll(".topbar-nav-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.go === viewId);
   });
-  // Show/hide topbar nav (hide when inside a character)
+  // Highlight active bottom nav btn
+  document.querySelectorAll(".bottom-nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.go === viewId);
+  });
+  // Show/hide topbar nav and bottom nav (hide when inside a character)
   const topbarNav = document.querySelector("#topbar-nav");
+  const bottomNav = document.querySelector("#bottom-nav");
   if (topbarNav) topbarNav.classList.toggle("hidden", isCharView);
+  if (bottomNav) bottomNav.classList.toggle("hidden", isCharView);
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (viewId === "gallery-view") renderGalleryView();
   if (viewId === "loot-view") renderLootBoard();
@@ -1358,7 +1364,6 @@ function renderHome() {
     <cite>${escapeHtml(author)}</cite>`;
   renderLootBoard();
   renderSessionHistory();
-  renderCalendar();
 }
 
 function renderSessionHistory() {
