@@ -32,8 +32,16 @@ async function saveState() {
   const myVersion = window._localVersion;
   saveTimeout = setTimeout(async () => {
     try {
+      // Strip heavy fields (images) before saving to Firestore
+      const stateForCloud = {
+        ...state,
+        characters: state.characters.map(ch => {
+          const { sheetImage, sheetImageType, photos, ...rest } = ch;
+          return rest;
+        })
+      };
       await setDoc(STATE_DOC, { 
-        data: JSON.stringify(state), 
+        data: JSON.stringify(stateForCloud), 
         updatedAt: Date.now(),
         version: myVersion,
         clientId: window._clientId
@@ -97,10 +105,8 @@ function subscribeToChanges() {
           ch.currency = remote_ch.currency || ch.currency;
           ch.condition = remote_ch.condition || ch.condition;
           ch.resourceUses = remote_ch.resourceUses || {};
-          ch.sheetImage = remote_ch.sheetImage ?? ch.sheetImage;
-          ch.sheetImageType = remote_ch.sheetImageType ?? ch.sheetImageType;
+          // Never overwrite local-only fields from remote (images stay local)
           ch.spellState = remote_ch.spellState ?? ch.spellState;
-          ch.photos = remote_ch.photos ?? ch.photos;
         }
       });
       if (activeCharacterId) renderCharacter();
