@@ -23,19 +23,22 @@ let saveTimeout = null;
 async function saveState() {
   // Save to localStorage immediately as backup
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  // Mark this tab as the one saving so onSnapshot ignores our own writes
+  // Block onSnapshot for 5 seconds after any save
   window._lastSaveAt = Date.now();
-  // Debounce Firestore writes (avoid hammering on rapid clicks)
+  window._blockSnapshotUntil = Date.now() + 5000;
+  // Write to Firestore immediately (no debounce for critical saves)
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(async () => {
     try {
       const ts = Date.now();
       window._lastSaveAt = ts;
       await setDoc(STATE_DOC, { data: JSON.stringify(state), updatedAt: ts });
+      // Keep blocking for 2 more seconds after write confirms
+      window._blockSnapshotUntil = Date.now() + 2000;
     } catch (e) {
       console.warn("Firestore save failed, using localStorage:", e);
     }
-  }, 400);
+  }, 200);
 }
 
 async function loadStateFromFirestore() {
@@ -55,6 +58,8 @@ function subscribeToChanges() {
     if (!snap.exists() || !firestoreReady) return;
     // Skip local echoes of our own writes
     if (snap.metadata.hasPendingWrites) return;
+    // Block if we recently saved from this tab
+    if (Date.now() < (window._blockSnapshotUntil || 0)) return;
     try {
       const remote = JSON.parse(snap.data().data);
       if (!remote) return;
