@@ -1,4 +1,5 @@
-const STORAGE_KEY = "ciudadela-sombria-jugadores-v1";
+const STORAGE_KEY = "ciudadela-sombria-jugadores-v2";
+// v2: identities without level text, dynamic level badge
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
