@@ -1347,13 +1347,15 @@ function renderHome() {
   document.querySelector("#character-grid").innerHTML = state.characters.map((item) => {
     const hpPct = item.stats.maxHp ? Math.min(100, (item.stats.hp / item.stats.maxHp) * 100) : 100;
     const hpLow = hpPct <= 50;
+    const firstName = escapeHtml(item.name.split(" ")[0]);
     return `
     <button class="character-card" data-character="${item.id}">
       <img class="portrait" src="${escapeHtml(item.portrait)}" alt="Retrato de ${escapeHtml(item.name)}" />
-      <h3>${escapeHtml(item.name)}</h3>
-      <p>${escapeHtml(item.player)} — ${escapeHtml(item.identity)}</p>
-      <span class="char-level-badge">Nivel ${item.stats?.level || 1}</span>
-      <div class="character-hp-bar"><span style="width:${hpPct}%" class="${hpLow ? 'low' : ''}"></span></div>
+      <div class="character-card-overlay">
+        <h3>${firstName}</h3>
+        <span class="char-level-badge">Nv ${item.stats?.level || 1}</span>
+        <div class="character-hp-bar"><span style="width:${hpPct}%" class="${hpLow ? 'low' : ''}"></span></div>
+      </div>
     </button>`;
   }).join("");
   }

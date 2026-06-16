@@ -125,24 +125,23 @@ main { max-width: 1040px; margin: 0 auto; padding: 20px 14px 45px; }
 }
 .hero-card {
   position: relative;
-  min-height: 360px;
+  min-height: 300px;
   overflow: hidden;
-  padding: clamp(22px, 5vw, 42px);
+  padding: clamp(18px, 4vw, 36px);
+  padding-top: clamp(80px, 15vw, 140px);
   background:
-    linear-gradient(90deg, rgba(16, 11, 11, .98), rgba(25, 15, 13, .82) 43%, rgba(25, 15, 13, .24)),
-    url("grupo2.jpeg") center right / cover;
+    linear-gradient(180deg, rgba(16,11,11,.2) 0%, rgba(16,11,11,.85) 60%, rgba(16,11,11,.99) 100%),
+    url("grupo4.jpeg") center / cover;
 }
 .hero-card::before {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 20% 18%, rgba(232, 184, 94, .18), transparent 18rem),
-    linear-gradient(180deg, transparent, rgba(16, 11, 11, .78));
+  background: radial-gradient(circle at 80% 20%, rgba(232,184,94,.08), transparent 50%);
   content: "";
   pointer-events: none;
 }
 .hero-card > * { position: relative; z-index: 1; }
-.hero-card > p:not(.eyebrow) { max-width: 580px; color: #dccdbd; line-height: 1.68; text-shadow: 0 1px 10px rgba(0, 0, 0, .75); }
+.hero-card > p:not(.eyebrow) { max-width: 580px; color: #dccdbd; line-height: 1.68; text-shadow: 0 1px 10px rgba(0,0,0,.75); }
 .eyebrow { margin-bottom: 6px; color: var(--gold); font-size: .66rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
 .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 17px; }
 .chip { padding: 5px 9px; border: 1px solid var(--gold-dark); border-radius: 99px; color: #f2cb81; background: rgba(123, 87, 42, .17); font-size: .7rem; font-weight: 700; }
@@ -150,7 +149,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 20px 14px 45px; }
 .section-block { margin-top: 27px; }
 .section-block > h2 { margin-bottom: 12px; font-size: 1.42rem; }
 .character-entry { margin-top: 16px; padding: 14px; border: 1px solid var(--gold-dark); border-radius: 14px; background: linear-gradient(135deg, rgba(123, 87, 42, .14), rgba(39, 25, 24, .56)); }
-.character-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 11px; }
+.character-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .card-grid, .gallery-grid, .objective-grid, .quest-grid, .moment-grid, .lore-grid, .intel-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 11px; }
 .episode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 11px; margin-top: 13px; }
 .episode-card, .objective-card, .quest-card, .moment-card, .quote-card, .knowledge-note {
@@ -224,24 +223,62 @@ main { max-width: 1040px; margin: 0 auto; padding: 20px 14px 45px; }
 .character-card {
   position: relative;
   overflow: hidden;
-  padding: 15px;
+  aspect-ratio: 3/4;
+  border-radius: 14px !important;
+  padding: 0;
   text-align: left;
   color: var(--text);
   transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  cursor: pointer;
 }
-.character-card::after {
+.character-card:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 18px 35px rgba(0, 0, 0, .4); }
+.character-card .portrait {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  object-fit: cover;
+  display: block;
+}
+.character-card-overlay {
   position: absolute;
-  top: -34px;
-  right: -32px;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 184, 94, .18), transparent 68%);
-  content: "";
+  inset: auto 0 0;
+  padding: 28px 8px 8px;
+  background: linear-gradient(transparent, rgba(16,11,11,.97));
 }
-.character-card:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 18px 35px rgba(0, 0, 0, .3); }
-.character-card h3 { margin: 8px 0 4px; color: #f4d38e; font-size: 1.1rem; }
-.character-card p, .story-card p, .body-copy, .helper-copy { color: var(--muted); font-size: .86rem; line-height: 1.5; }
+.character-card h3 { color: #f4d38e; font-size: .82rem; font-weight: 700; text-align: center; margin: 0 0 2px; line-height: 1.2; }
+.character-card p { color: var(--muted); font-size: .62rem; text-align: center; margin: 0; font-family: sans-serif; }
+.character-card .char-level-badge {
+  display: block;
+  text-align: center;
+  margin: 2px auto 0;
+  padding: 1px 6px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 99px;
+  color: var(--gold);
+  background: rgba(123,87,42,.15);
+  font-size: .6rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.character-card .character-hp-bar {
+  margin-top: 5px;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(16,11,11,.6);
+  overflow: hidden;
+}
+.character-card .character-hp-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  transition: width .3s ease;
+}
+.character-card .character-hp-bar span.low { background: linear-gradient(90deg, #7a2a2a, var(--red)); }
+.story-card p, .body-copy, .helper-copy { color: var(--muted); font-size: .86rem; line-height: 1.5; }
 
 /* HP mini-bar on character cards */
 .character-hp-bar {
@@ -455,23 +492,22 @@ dialog form { display: grid; gap: 12px; }
 
 @media (max-width: 520px) {
   main { padding-top: 14px; }
-  .brand-button strong { font-size: .94rem; }
-  /* Hero card: menos altura, texto libre, imagen mejor posicionada */
-  .hero-card { min-height: 320px; background-position: 65% center; }
-  .hero-card h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
-  .hero-card > p:not(.eyebrow) { max-width: 100%; }
+  .brand-text strong { font-size: .84rem; }
+  .hero-card { min-height: 240px; padding-top: 60px; }
+  .hero-card h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .hero-card > p:not(.eyebrow) { display: none; }
   .session-board-header { display: grid; align-items: start; }
   .profile-hero { padding: 15px; grid-template-columns: 84px 1fr; gap: 11px; }
   .profile-portrait { width: 84px; height: 84px; }
-  /* Profile tabs: primer/último tab no se cortan */
   .profile-tabs { padding: 0 0 3px; margin: 12px -14px 12px; padding-inline: 14px; }
   .inventory-item { grid-template-columns: 1fr; }
   .item-actions { justify-content: flex-start; }
   .currency-grid { grid-template-columns: repeat(5, minmax(48px, 1fr)); gap: 4px; }
   .knowledge-note { display: grid; }
-  .character-grid { grid-template-columns: repeat(2, 1fr); }
+  .character-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .rest-buttons { gap: 6px; }
   .rest-btn { flex: 1; justify-content: center; font-size: .74rem; padding: 8px 10px; }
+  .home-section-label { padding: 0 2px; }
 }
 
 /* ── Inventory sub-tabs ───────────────────────────────────────────────── */
