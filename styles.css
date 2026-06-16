@@ -1315,3 +1315,18 @@ button[data-edit-item] { font-size: .82rem; }
   /* Hide topbar nav on mobile — bottom nav takes over */
   .topbar-nav { display: none !important; }
 }
+
+/* Character level badge */
+.char-level-badge {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 8px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 99px;
+  color: var(--gold);
+  background: rgba(123, 87, 42, .15);
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}

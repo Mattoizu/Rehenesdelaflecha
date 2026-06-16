@@ -61,8 +61,11 @@ function subscribeToChanges() {
     // Block if we recently saved from this tab
     if (Date.now() < (window._blockSnapshotUntil || 0)) return;
     try {
-      const remote = JSON.parse(snap.data().data);
+      const remoteData = snap.data();
+      const remote = JSON.parse(remoteData.data);
       if (!remote) return;
+      // Ignore if remote is older than our last local write
+      if (remoteData.updatedAt && remoteData.updatedAt < (window._lastSaveAt || 0)) return;
       const merged = mergeRemoteState(remote);
       state.activity = merged.activity;
       state.characters.forEach((ch) => {
@@ -1321,7 +1324,8 @@ function renderHome() {
     <button class="character-card" data-character="${item.id}">
       <img class="portrait" src="${escapeHtml(item.portrait)}" alt="Retrato de ${escapeHtml(item.name)}" />
       <h3>${escapeHtml(item.name)}</h3>
-      <p>${escapeHtml(item.player)} — ${escapeHtml(item.identity)} · Nivel ${item.stats?.level || 1}</p>
+      <p>${escapeHtml(item.player)} — ${escapeHtml(item.identity)}</p>
+      <span class="char-level-badge">Nivel ${item.stats?.level || 1}</span>
       <div class="character-hp-bar"><span style="width:${hpPct}%" class="${hpLow ? 'low' : ''}"></span></div>
     </button>`;
   }).join("");
