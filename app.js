@@ -19,22 +19,32 @@ const STATE_DOC = doc(db, "campana", "estado");
 
 let firestoreReady = false;
 let saveTimeout = null;
+window._clientId = Math.random().toString(36).slice(2);
+
+window._localVersion = window._localVersion || 0;
 
 async function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  // Pause sync to prevent overwrite
   pauseSync();
   clearTimeout(saveTimeout);
+  // Increment version on every save
+  window._localVersion++;
+  const myVersion = window._localVersion;
   saveTimeout = setTimeout(async () => {
     try {
-      await setDoc(STATE_DOC, { data: JSON.stringify(state), updatedAt: Date.now() });
+      await setDoc(STATE_DOC, { 
+        data: JSON.stringify(state), 
+        updatedAt: Date.now(),
+        version: myVersion,
+        clientId: window._clientId
+      });
+      console.log("Saved version", myVersion);
     } catch (e) {
       console.warn("Firestore save failed:", e);
     } finally {
-      // Resume sync 2 seconds after write completes
-      setTimeout(() => resumeSync(), 2000);
+      setTimeout(() => resumeSync(), 1500);
     }
-  }, 200);
+  }, 150);
 }
 
 async function loadStateFromFirestore() {
@@ -64,10 +74,15 @@ function subscribeToChanges() {
     if (!snap.exists() || !firestoreReady) return;
     // Skip local echoes of our own writes
     if (snap.metadata.hasPendingWrites) return;
+    // Ignore snapshots written by this same client
+    const snapData = snap.data();
+    if (snapData.clientId === window._clientId) return;
+    // Ignore if the snapshot version is older than what we've saved
+    if (snapData.version !== undefined && snapData.version < (window._localVersion || 0)) return;
     // Block if we recently saved from this tab
     if (Date.now() < (window._blockSnapshotUntil || 0)) return;
     try {
-      const remote = JSON.parse(snap.data().data);
+      const remote = JSON.parse(snapData.data);
       if (!remote) return;
 
       const merged = mergeRemoteState(remote);
