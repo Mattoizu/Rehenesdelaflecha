@@ -21,22 +21,20 @@ let firestoreReady = false;
 let saveTimeout = null;
 
 async function saveState() {
-  // Save to localStorage immediately as backup
+  // Save to localStorage immediately
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  // Block onSnapshot for 5 seconds after any save
+  // Block snapshot listener while we're saving
+  window._isSaving = true;
   window._lastSaveAt = Date.now();
-  window._blockSnapshotUntil = Date.now() + 5000;
-  // Write to Firestore immediately (no debounce for critical saves)
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(async () => {
     try {
-      const ts = Date.now();
-      window._lastSaveAt = ts;
-      await setDoc(STATE_DOC, { data: JSON.stringify(state), updatedAt: ts });
-      // Keep blocking for 2 more seconds after write confirms
-      window._blockSnapshotUntil = Date.now() + 2000;
+      await setDoc(STATE_DOC, { data: JSON.stringify(state), updatedAt: Date.now() });
     } catch (e) {
-      console.warn("Firestore save failed, using localStorage:", e);
+      console.warn("Firestore save failed:", e);
+    } finally {
+      // Unblock snapshot 3 seconds after write completes
+      setTimeout(() => { window._isSaving = false; }, 3000);
     }
   }, 200);
 }
@@ -61,11 +59,9 @@ function subscribeToChanges() {
     // Block if we recently saved from this tab
     if (Date.now() < (window._blockSnapshotUntil || 0)) return;
     try {
-      const remoteData = snap.data();
-      const remote = JSON.parse(remoteData.data);
+      const remote = JSON.parse(snap.data().data);
       if (!remote) return;
-      // Ignore if remote is older than our last local write
-      if (remoteData.updatedAt && remoteData.updatedAt < (window._lastSaveAt || 0)) return;
+
       const merged = mergeRemoteState(remote);
       state.activity = merged.activity;
       state.characters.forEach((ch) => {
