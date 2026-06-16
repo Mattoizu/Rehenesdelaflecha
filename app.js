@@ -70,6 +70,10 @@ function subscribeToChanges() {
           ch.currency = remote_ch.currency || ch.currency;
           ch.condition = remote_ch.condition || ch.condition;
           ch.resourceUses = remote_ch.resourceUses || {};
+          ch.sheetImage = remote_ch.sheetImage ?? ch.sheetImage;
+          ch.sheetImageType = remote_ch.sheetImageType ?? ch.sheetImageType;
+          ch.spellState = remote_ch.spellState ?? ch.spellState;
+          ch.photos = remote_ch.photos ?? ch.photos;
         }
       });
       if (activeCharacterId) renderCharacter();
@@ -95,6 +99,10 @@ function mergeRemoteState(saved) {
       equipped: normalizeEquipped(stored.equipped ?? clone(initial.equipped || []), mergeInventory(initial.id, initial.inventory, stored.inventory || [])),
       currency: mergeCurrency(initial.currency, stored),
       resourceUses: stored.resourceUses || {},
+      sheetImage: stored.sheetImage ?? null,
+      sheetImageType: stored.sheetImageType ?? null,
+      spellState: stored.spellState ?? null,
+      photos: stored.photos ?? [],
     };
   });
   return { characters, activity: saved.activity || {} };
