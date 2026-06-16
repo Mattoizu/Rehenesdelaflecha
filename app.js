@@ -1315,7 +1315,6 @@ function showView(viewId) {
   if (topbarNav) topbarNav.classList.toggle("hidden", isCharView);
   if (bottomNav) bottomNav.classList.toggle("hidden", isCharView);
   window.scrollTo({ top: 0, behavior: "smooth" });
-  if (viewId === "gallery-view") renderGalleryView();
   if (viewId === "loot-view") renderLootBoard();
   if (viewId === "campaign-view" || viewId === "missions-view" || viewId === "lore-view") renderHome();
 }
@@ -1448,56 +1447,8 @@ function renderCalendar() {
     ${cal.notas ? `<p class="calendar-note">${escapeHtml(cal.notas)}</p>` : ""}`;
 }
 
-// Active character gallery ID
-let activeGalleryCharId = null;
-
-function renderGalleryView() {
-  const el = document.querySelector("#character-gallery-grid");
-  if (!el) return;
-  el.innerHTML = state.characters.map(ch => `
-    <button class="char-gallery-card" data-gallery-char="${ch.id}">
-      <div class="char-gallery-portrait-wrap">
-        <img class="char-gallery-portrait" src="${escapeHtml(ch.portrait)}" alt="${escapeHtml(ch.name)}" />
-        <div class="char-gallery-overlay">
-          <span>${(ch.photos || []).length} foto${(ch.photos || []).length !== 1 ? 's' : ''}</span>
-        </div>
-      </div>
-      <div class="char-gallery-info">
-        <h3>${escapeHtml(ch.name)}</h3>
-        <p>${escapeHtml(ch.player)}</p>
-      </div>
-    </button>`).join("");
-}
-
-function renderCharGallery(charId) {
-  activeGalleryCharId = charId;
-  const ch = state.characters.find(c => c.id === charId);
-  if (!ch) return;
-  showView("char-gallery-view");
-
-  // Hero
-  document.querySelector("#char-gallery-eyebrow").textContent = `Galeria de ${ch.player}`;
-  document.querySelector("#char-gallery-title").textContent = ch.name;
-  document.querySelector("#char-gallery-hero").style.backgroundImage = `url('${ch.portrait}')`;
-
-  // Photos grid
-  const photos = ch.photos || [];
-  const el = document.querySelector("#char-gallery-photos");
-  if (!photos.length) {
-    el.innerHTML = '<p class="helper-copy" style="padding:20px 0">Sin fotos aun. Sube la primera con el boton de arriba.</p>';
-    return;
-  }
-  el.innerHTML = photos.map((photo, i) => `
-    <div class="gallery-photo-card">
-      <img src="${escapeHtml(photo.url)}" alt="${escapeHtml(photo.caption || '')}" class="gallery-photo-img" />
-      ${photo.caption ? `<p class="gallery-photo-caption">${escapeHtml(photo.caption)}</p>` : ""}
-      <button class="gallery-photo-delete" data-delete-photo="${i}" title="Eliminar">✕</button>
-    </div>`).join("");
-}
 
 function renderLootBoard() {
-  // Update home preview
-  const preview = document.querySelector("#loot-preview");
   const chestEl = document.querySelector("#chest-contents");
   const summaryEl = document.querySelector("#loot-summary");
 
@@ -1534,12 +1485,6 @@ function renderLootBoard() {
       </div>
     </article>`).join("") : '<p class="helper-copy" style="padding:8px">Sin tesoros aun.</p>';
 
-  // Home preview: just count
-  if (preview) {
-    preview.innerHTML = items.length
-      ? `<p style="color:var(--muted);font-size:.82rem;margin-top:6px">${items.length} tipo${items.length !== 1 ? "s" : ""} de tesoro · ${items.reduce((s,r)=>s+r.qty,0)} objetos${totalValue > 0 ? ` · ${totalValue} PO estimado` : ""}</p>`
-      : '<p style="color:var(--muted);font-size:.82rem;margin-top:6px">El baul esta vacio.</p>';
-  }
 
   // Chest view
   if (chestEl) {
@@ -2364,48 +2309,7 @@ function restoreSpellState(item) {
 // Rope dialog handlers
 document.querySelector("#rope-cancel").addEventListener("click", () => document.querySelector("#rope-dialog").close());
 
-// Gallery handlers
-document.addEventListener("click", (event) => {
-  // Open character gallery
-  const galleryChar = event.target.closest("[data-gallery-char]");
-  if (galleryChar) renderCharGallery(galleryChar.dataset.galleryChar);
 
-  // Open file picker
-  const uploadBtn = event.target.closest("#open-upload-photo");
-  if (uploadBtn) document.querySelector("#photo-upload-input").click();
-
-  // Delete photo
-  const deleteBtn = event.target.closest("[data-delete-photo]");
-  if (deleteBtn && activeGalleryCharId) {
-    const ch = state.characters.find(c => c.id === activeGalleryCharId);
-    if (!ch) return;
-    const idx = parseInt(deleteBtn.dataset.deletePhoto);
-    ch.photos = (ch.photos || []).filter((_, i) => i !== idx);
-    saveState(); renderCharGallery(activeGalleryCharId); showToast("Foto eliminada.");
-  }
-});
-
-document.querySelector("#photo-upload-input").addEventListener("change", (event) => {
-  if (!activeGalleryCharId) return;
-  const ch = state.characters.find(c => c.id === activeGalleryCharId);
-  if (!ch) return;
-  ch.photos = ch.photos || [];
-  const files = Array.from(event.target.files);
-  let loaded = 0;
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      ch.photos.push({ url: e.target.result, caption: "", uploadedAt: Date.now() });
-      loaded++;
-      if (loaded === files.length) {
-        saveState(); renderCharGallery(activeGalleryCharId);
-        showToast(`${files.length} foto${files.length > 1 ? 's' : ''} subida${files.length > 1 ? 's' : ''}.`);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-  event.target.value = "";
-});
 
 // Drop dialog handlers
 document.querySelector("#drop-cancel").addEventListener("click", () => document.querySelector("#drop-dialog").close());
