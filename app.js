@@ -1255,12 +1255,20 @@ function showToast(message) {
 }
 function showView(viewId) {
   document.querySelectorAll(".view").forEach((view) => view.classList.toggle("active", view.id === viewId));
-  const homeViews = ["home-view", "campaign-view", "missions-view", "lore-view", "gallery-view", "loot-view", "char-gallery-view"];
-  const isTopLevel = homeViews.includes(viewId);
-  document.querySelector("#back-button").classList.toggle("hidden", viewId === "home-view");
+  const isHome = viewId === "home-view";
+  const isCharView = viewId === "character-view";
+  document.querySelector("#back-button").classList.toggle("hidden", isHome);
+  // Highlight active topbar nav btn
+  document.querySelectorAll(".topbar-nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.go === viewId);
+  });
+  // Show/hide topbar nav (hide when inside a character)
+  const topbarNav = document.querySelector("#topbar-nav");
+  if (topbarNav) topbarNav.classList.toggle("hidden", isCharView);
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (viewId === "gallery-view") renderGalleryView();
   if (viewId === "loot-view") renderLootBoard();
+  if (viewId === "campaign-view" || viewId === "missions-view" || viewId === "lore-view") renderHome();
 }
 function renderHome() {
   // Re-render all sub-views that depend on campaign data
