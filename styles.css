@@ -1128,56 +1128,67 @@ button[data-edit-item] { font-size: .82rem; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 6px;
+  padding: 12px 6px 10px;
   border: 1px solid var(--gold-dark);
-  border-radius: 12px;
-  background: rgba(123, 87, 42, .08);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(123, 87, 42, .14), rgba(39, 25, 24, .7));
   text-align: center;
-}
-.attr-readonly-mod {
-  color: var(--gold);
-  font-family: Georgia, serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1;
-}
-.attr-readonly-val {
-  color: var(--muted);
-  font-size: .72rem;
-  margin: 3px 0 2px;
+  gap: 2px;
 }
 .attr-readonly-name {
   color: var(--muted);
   font-size: .58rem;
-  font-weight: 800;
-  letter-spacing: .08em;
+  font-weight: 900;
+  letter-spacing: .1em;
   text-transform: uppercase;
+  margin-bottom: 4px;
 }
+.attr-readonly-mod {
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.attr-readonly-val {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border: 1px solid rgba(123, 87, 42, .4);
+  border-radius: 99px;
+  color: var(--muted);
+  font-size: .68rem;
+  background: rgba(16, 11, 11, .4);
+}
+/* Stats row */
 .stats-readonly-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 6px;
+  margin-top: 12px;
 }
 .stat-readonly-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 8px 11px;
+  gap: 10px;
+  padding: 10px 13px;
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: 10px;
   background: rgba(39, 25, 24, .5);
 }
+.stat-readonly-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
 .stat-readonly-label {
+  flex: 1;
   color: var(--muted);
-  font-size: .75rem;
+  font-size: .82rem;
 }
 .stat-readonly-val {
   color: var(--gold);
-  font-size: .9rem;
+  font-size: 1rem;
   font-weight: 800;
   font-family: Georgia, serif;
 }
 
 @media (max-width: 420px) {
   .attrs-readonly-grid { grid-template-columns: repeat(3, 1fr); }
+  .attr-readonly-mod { font-size: 1.4rem; }
 }

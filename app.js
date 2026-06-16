@@ -1723,24 +1723,26 @@ function renderSheetReadonly() {
   if (!el) return;
   const cd = CLASS_DATA[item.id];
 
+  const ATTR_SHORT = { Fuerza: "FUE", Destreza: "DES", Constitucion: "CON", Inteligencia: "INT", Sabiduria: "SAB", Carisma: "CAR" };
   const attrHtml = Object.entries(item.attributes).map(([name, value]) => {
     const mod = Math.floor((value - 10) / 2);
     const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
+    const short = ATTR_SHORT[name] || name.substring(0,3).toUpperCase();
     return `<div class="attr-readonly-card">
+      <span class="attr-readonly-name">${short}</span>
       <span class="attr-readonly-mod">${modStr}</span>
       <span class="attr-readonly-val">${value}</span>
-      <span class="attr-readonly-name">${escapeHtml(name.substring(0,3).toUpperCase())}</span>
     </div>`;
   }).join("");
 
   const statsHtml = [
-    ["Nivel", item.stats.level],
-    ["CA", item.stats.ac],
-    ["PG Max", item.stats.maxHp],
-    ["Iniciativa", item.stats.initiative >= 0 ? `+${item.stats.initiative}` : item.stats.initiative],
-    ["Velocidad", item.stats.speed],
-    ["Percepcion", item.stats.passivePerception],
-  ].map(([label, val]) => `<div class="stat-readonly-row"><span class="stat-readonly-label">${label}</span><span class="stat-readonly-val">${escapeHtml(String(val))}</span></div>`).join("");
+    ["⚔️", "CA", item.stats.ac],
+    ["❤️", "PG", `${item.stats.hp}/${item.stats.maxHp}`],
+    ["⚡", "Iniciativa", item.stats.initiative >= 0 ? `+${item.stats.initiative}` : item.stats.initiative],
+    ["👟", "Velocidad", item.stats.speed],
+    ["👁️", "Percepcion pasiva", item.stats.passivePerception],
+    ["⭐", "Nivel", item.stats.level],
+  ].map(([icon, label, val]) => `<div class="stat-readonly-row"><span class="stat-readonly-icon">${icon}</span><span class="stat-readonly-label">${label}</span><span class="stat-readonly-val">${escapeHtml(String(val))}</span></div>`).join("");
 
   const competenciasHtml = cd ? `
     <div class="competencias-block" style="margin-top:14px">
