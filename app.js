@@ -22,15 +22,23 @@ let firestoreReady = false;
 let saveTimeout = null;
 window._clientId = Math.random().toString(36).slice(2);
 
-window._localVersion = window._localVersion || 0;
-
 async function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(STORAGE_KEY + "-ts", String(Date.now()));
+  // Never write to Firestore before we've confirmed we have the latest cloud data —
+  // otherwise a stale localStorage snapshot could overwrite someone else's recent changes.
+  if (!window._firestoreLoaded) {
+    console.warn("Save deferred: waiting for initial Firestore sync.");
+    const waitForLoad = setInterval(() => {
+      if (window._firestoreLoaded) {
+        clearInterval(waitForLoad);
+        saveState();
+      }
+    }, 300);
+    return;
+  }
   pauseSync();
   clearTimeout(saveTimeout);
-  // Increment version on every save
-  window._localVersion++;
-  const myVersion = window._localVersion;
   saveTimeout = setTimeout(async () => {
     try {
       // Strip heavy fields (images) before saving to Firestore
@@ -41,13 +49,14 @@ async function saveState() {
           return rest;
         })
       };
-      await setDoc(STATE_DOC, { 
-        data: JSON.stringify(stateForCloud), 
-        updatedAt: Date.now(),
-        version: myVersion,
+      const ts = Date.now();
+      await setDoc(STATE_DOC, {
+        data: JSON.stringify(stateForCloud),
+        updatedAt: ts,
         clientId: window._clientId
       });
-      console.log("Saved version", myVersion);
+      window._lastAppliedTs = ts;
+      console.log("Saved at", ts);
     } catch (e) {
       console.warn("Firestore save failed:", e);
     } finally {
@@ -83,13 +92,14 @@ function subscribeToChanges() {
     if (!snap.exists() || !firestoreReady) return;
     // Skip local echoes of our own writes
     if (snap.metadata.hasPendingWrites) return;
-    // Ignore snapshots written by this same client
     const snapData = snap.data();
+    // Ignore snapshots written by this same client (avoid self-echo)
     if (snapData.clientId === window._clientId) return;
-    // Ignore if the snapshot version is older than what we've saved
-    if (snapData.version !== undefined && snapData.version < (window._localVersion || 0)) return;
-    // Block if we recently saved from this tab
-    if (Date.now() < (window._blockSnapshotUntil || 0)) return;
+    // Always trust the server: if this snapshot is newer than what we last applied, apply it.
+    // If it's older or equal, ignore it (prevents stale data from overwriting newer local changes).
+    const incomingTs = snapData.updatedAt || 0;
+    if (incomingTs <= (window._lastAppliedTs || 0)) return;
+    window._lastAppliedTs = incomingTs;
     try {
       const remote = JSON.parse(snapData.data);
       if (!remote) return;
@@ -1213,17 +1223,41 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
   saveState(); renderInventory(); showToast(`+${amount} m.`);
 });
 
-// Initial render from localStorage, then update from Firestore
+// Initial render from localStorage (instant, may be stale), then sync from Firestore (authoritative)
+window._firestoreLoaded = false;
 renderHome();
 
-(async () => {
-  const remote = await loadStateFromFirestore();
-  if (remote) {
-    state = mergeRemoteState(remote);
+async function initFirestoreSync(retries = 3) {
+  const snap = await (async () => {
+    try {
+      const s = await getDoc(STATE_DOC);
+      return s.exists() ? s : null;
+    } catch (e) {
+      console.warn("Firestore initial load failed:", e);
+      return null;
+    }
+  })();
+
+  if (snap) {
+    const data = snap.data();
+    state = mergeRemoteState(JSON.parse(data.data));
+    window._lastAppliedTs = data.updatedAt || Date.now();
+    window._firestoreLoaded = true;
     renderHome();
+    if (activeCharacterId) renderCharacter();
+  } else if (retries > 0) {
+    // Retry shortly in case of transient network issue — never fall back silently to stale localStorage
+    setTimeout(() => initFirestoreSync(retries - 1), 1500);
+    return;
+  } else {
+    // Could not reach Firestore after retries — proceed with localStorage but warn
+    console.warn("Could not load Firestore after retries, using local data only.");
+    window._firestoreLoaded = true;
   }
   firestoreReady = true;
   subscribeToChanges();
-})();
+}
+
+initFirestoreSync();
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js");
