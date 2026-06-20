@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#130d0c" />
-    <meta name="description" content="Bitacora interactiva para los jugadores de La Ciudadela Sombria." />
+    <meta name="description" content="Inventarios de los aventureros de La Ciudadela Sombria." />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
-    <title>La Ciudadela Sombria | Aventureros</title>
+    <title>La Ciudadela Sombria | Inventarios</title>
   </head>
   <body>
     <header class="topbar">
@@ -47,225 +47,53 @@
           </svg>
         </span>
         <span class="brand-text">
-          <small>Bitacora de aventureros</small>
+          <small>Inventarios</small>
           <strong>La Ciudadela Sombria</strong>
         </span>
       </button>
-
-      <nav class="topbar-nav" id="topbar-nav">
-        <button class="topbar-nav-btn" data-go="campaign-view">Campaña</button>
-        <button class="topbar-nav-btn" data-go="missions-view">Misiones</button>
-        <button class="topbar-nav-btn" data-go="loot-view">Botin</button>
-      <button class="topbar-nav-btn" data-go="lore-view">Bitacora</button>
-      </nav>
-
       <button class="ghost-button hidden" id="back-button" type="button">Volver</button>
     </header>
 
     <main>
       <section class="view active" id="home-view">
-
-        <!-- Hero card -->
         <article class="hero-card">
-          <p class="eyebrow">Capitulo I - Sesion 5</p>
-          <h1>La llave y el sacerdote dragon</h1>
-          <p>Calcryx fue devuelta con vida, Amber quedo libre y Yusdrayl entrego la llave draconica. Tras el descanso en territorio kobold, la compania abrio nuevas salas antiguas, sobrevivio al orbe musical y derribo a un sacerdote dragon fallido que solo murio al arder.</p>
-          <div class="chip-row">
-            <span class="chip">Nivel 2</span>
-            <span class="chip danger">Nilux y Galahad agotados</span>
-            <span class="chip">Llave draconica conseguida</span>
-          </div>
+          <p class="eyebrow">Bitacora de inventarios</p>
+          <h1>La Ciudadela Sombria</h1>
+          <p>Elige tu aventurero para ver y editar su inventario.</p>
         </article>
 
-        <!-- Personajes -->
         <section class="home-characters">
           <p class="home-section-label">Aventureros</p>
           <div class="character-grid" id="character-grid"></div>
         </section>
-
-        <!-- Galería del grupo -->
-        <section class="section-block">
-          <p class="eyebrow">Ilustraciones del grupo</p>
-          <h2>Galeria de la compania</h2>
-          <div class="gallery-grid" id="campaign-gallery"></div>
-        </section>
       </section>
 
+      <!-- Character view: inventory only -->
       <section class="view" id="character-view">
         <article class="profile-hero" id="profile-hero"></article>
-        <nav class="profile-tabs" aria-label="Secciones del personaje">
-          <button class="profile-tab active" data-tab="summary-panel"><span class="tab-icon">⚔️</span><span class="tab-label">Resumen</span></button>
-          <button class="profile-tab" data-tab="sheet-panel"><span class="tab-icon">📋</span><span class="tab-label">Ficha</span></button>
-          <button class="profile-tab" data-tab="inventory-panel"><span class="tab-icon">🎒</span><span class="tab-label">Inventario</span></button>
-          <button class="profile-tab" data-tab="spells-panel"><span class="tab-icon">✨</span><span class="tab-label">Conjuros</span></button>
-          <button class="profile-tab" data-tab="level-panel"><span class="tab-icon">📈</span><span class="tab-label">Nivel</span></button>
-          <button class="profile-tab" data-tab="memories-panel"><span class="tab-icon">📖</span><span class="tab-label">Recuerdos</span></button>
-        </nav>
 
-        <section class="tab-panel active" id="summary-panel">
-          <div class="stat-grid" id="summary-stats"></div>
-          <div class="two-column">
-            <article class="panel-card">
-              <p class="eyebrow">En combate</p>
-              <h2>Ataques y recursos</h2>
-              <div class="stack" id="combat-summary"></div>
-            </article>
-            <article class="panel-card">
-              <p class="eyebrow">Estado actual</p>
-              <h2>Notas</h2>
-              <p class="body-copy" id="current-condition"></p>
-            </article>
-          </div>
-        </section>
-
-        <section class="tab-panel" id="sheet-panel">
-          <article class="panel-card">
-            <div class="section-title-row">
-              <div>
-                <p class="eyebrow">Hoja de personaje</p>
-                <h2 id="sheet-panel-title">Estadisticas</h2>
-              </div>
-              <div style="display:flex;gap:8px">
-                <button class="small-button gold-button hidden" id="save-sheet" type="button">💾 Guardar</button>
-                <button class="small-button" id="toggle-edit-sheet" type="button">✏️ Editar</button>
-              </div>
+        <article class="panel-card">
+          <div class="section-title-row">
+            <div>
+              <p class="eyebrow">Equipo y objetos</p>
+              <h2>Inventario</h2>
             </div>
-            <div id="sheet-readonly"></div>
-            <div class="form-grid hidden" id="sheet-form"></div>
-          </article>
-        </section>
-
-        <section class="tab-panel" id="inventory-panel">
-          <article class="panel-card">
-            <div class="section-title-row">
-              <div>
-                <p class="eyebrow">Mochila personal</p>
-                <h2>Inventario</h2>
-              </div>
-              <button class="small-button gold-button" id="open-add-item" type="button">+ Agregar</button>
-            </div>
-            <p class="helper-copy">Los consumibles se gastan al usarlos. El equipo se equipa sin desaparecer. El boton +1 sirve para registrar compras o hallazgos repetidos.</p>
-            <section class="currency-card">
-              <div>
-                <p class="eyebrow">Monedas</p>
-                <h3>Bolsa</h3>
-              </div>
-              <div class="currency-grid" id="currency-grid"></div>
-              <p class="coin-weight-note" id="coin-weight-total"></p>
-            </section>
-            <section class="carry-card" id="carry-card"></section>
-            <div class="inventory-list" id="inventory-list"></div>
-          </article>
-          <article class="panel-card compact-card">
-            <p class="eyebrow">Registro reciente</p>
-            <h2>Actividad</h2>
-            <div class="activity-list" id="activity-list"></div>
-          </article>
-        </section>
-
-        <section class="tab-panel" id="level-panel">
-          <div id="recommendation-list"></div>
-        </section>
-
-        <section class="tab-panel" id="spells-panel">
-          <div id="spells-content"></div>
-        </section>
-
-        <section class="tab-panel" id="memories-panel">
-          <article class="panel-card">
-            <p class="eyebrow">Historia personal</p>
-            <h2>Recuerdos y vinculos</h2>
-            <div class="stack" id="memory-list"></div>
-          </article>
-        </section>
-      </section>
-      <!-- Campaign view -->
-      <section class="view" id="campaign-view">
-        <div id="session-history"></div>
-        <section class="session-board" id="session-board"></section>
-        <section class="episode-grid" style="margin-top:16px">
-          <article class="episode-card">
-            <p class="eyebrow">Anteriormente</p>
-            <h2>Calcryx vuelve al trono</h2>
-            <p>El grupo encontro a Calcryx, sobrevivio a su aliento helado, la dejo inconsciente y huyo hacia Yusdrayl mientras los goblins corrian a avisar a su lider.</p>
-          </article>
-          <article class="episode-card next-card">
-            <p class="eyebrow">Proxima sesion</p>
-            <h2>Despues del sarcofago</h2>
-            <p>El sacerdote dragon fallido fue destruido con fuego. La compania tiene botin nuevo, una antorcha verde eterna y mas preguntas sobre las ruinas draconicas.</p>
-          </article>
-        </section>
-        <section class="section-block">
-          <p class="eyebrow">En pocas palabras</p>
-          <h2>La situacion actual</h2>
-          <div class="objective-grid" id="current-objectives"></div>
-        </section>
-        <section class="section-block">
-          <p class="eyebrow">Rostros conocidos</p>
-          <h2>Personajes de la historia</h2>
-          <div class="card-grid" id="known-npcs"></div>
-        </section>
-        <section class="section-block">
-          <p class="eyebrow">La mesa tambien se recuerda asi</p>
-          <h2>Momentos de la compania</h2>
-          <div class="moment-grid" id="campaign-moments"></div>
-        </section>
-        <section class="quote-card" id="campaign-quote"></section>
-        <section class="knowledge-note">
-          <strong>Bitacora de jugadores</strong>
-          <span>Esta pagina muestra solamente lugares, rumores y personajes que la compania ya conoce.</span>
-        </section>
-      </section>
-
-      <!-- Missions view -->
-      <section class="view" id="missions-view">
-        <section class="section-block">
-          <p class="eyebrow">Hilos de la historia</p>
-          <h2>Misiones y rumores</h2>
-          <div class="quest-grid" id="quest-board"></div>
-        </section>
-      </section>
-
-      <!-- Lore view -->
-      <section class="view" id="lore-view">
-        <section class="section-block">
-          <p class="eyebrow">Solo lo descubierto</p>
-          <h2>Lugares conocidos</h2>
-          <div class="known-map" id="known-map"></div>
-        </section>
-        <section class="section-block">
-          <p class="eyebrow">Pistas reunidas</p>
-          <h2>Saberes descubiertos</h2>
-          <div class="lore-grid" id="known-lore"></div>
-        </section>
-        <section class="section-block">
-          <p class="eyebrow">Mesa de investigacion</p>
-          <h2>Lo que saben y lo que falta</h2>
-          <div class="intel-board" id="intel-board"></div>
-        </section>
-        <section class="section-block">
-          <p class="eyebrow">Lo que el grupo recuerda</p>
-          <h2>Bitacora de la compania</h2>
-          <div class="timeline" id="timeline"></div>
-        </section>
-      </section>
-
-      <!-- Loot view -->
-      <section class="view" id="loot-view">
-        <div class="chest-hero">
-          <div class="chest-lid">
-            <div class="chest-lid-band"></div>
-            <div class="chest-lock">⬡</div>
+            <button class="small-button gold-button" id="open-add-item" type="button">+ Agregar</button>
           </div>
-          <div class="chest-body">
-            <div class="chest-band"></div>
-            <div class="chest-contents" id="chest-contents"></div>
+          <div class="currency-card">
+            <p class="eyebrow">Monedas</p>
+            <div class="currency-grid" id="currency-grid"></div>
+            <p class="coin-weight-note" id="coin-weight-total"></p>
           </div>
-        </div>
-        <div class="section-block">
-          <p class="eyebrow">Resumen del grupo</p>
-          <div class="loot-summary" id="loot-summary"></div>
-        </div>
+          <section class="carry-card" id="carry-card"></section>
+          <div class="inventory-list" id="inventory-list"></div>
+        </article>
+
+        <article class="panel-card compact-card">
+          <p class="eyebrow">Registro reciente</p>
+          <h2>Actividad</h2>
+          <div class="activity-list" id="activity-list"></div>
+        </article>
       </section>
     </main>
 
@@ -355,29 +183,6 @@
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <!-- Bottom nav for mobile -->
-    <nav class="bottom-nav" id="bottom-nav">
-      <button class="bottom-nav-btn" data-go="home-view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>Inicio</span>
-      </button>
-      <button class="bottom-nav-btn" data-go="campaign-view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        <span>Campaña</span>
-      </button>
-      <button class="bottom-nav-btn" data-go="missions-view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-        <span>Misiones</span>
-      </button>
-      <button class="bottom-nav-btn" data-go="loot-view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14M5 8a2 2 0 010-4h14a2 2 0 010 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-        <span>Botin</span>
-      </button>
-      <button class="bottom-nav-btn" data-go="lore-view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-        <span>Bitacora</span>
-      </button>
-    </nav>
 
     <script type="module" src="app.js"></script>
   </body>
