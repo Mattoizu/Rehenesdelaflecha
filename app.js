@@ -847,6 +847,44 @@ function renderCharacter() {
     </div>`;
   renderInventory();
 }
+function renderItemCard(entry, equipped, showEquip) {
+  const [id, name, quantity, itemCategory, description] = entry;
+  const valueField = entry[7] ?? 0;
+  const descConverted = piesAMetros(description);
+  const isConsumable = itemCategory === "Consumible";
+  const isEquip = itemCategory === "Equipo";
+  const isRope = /cuerda|soga/i.test(name);
+  const primaryAction = isEquip
+    ? `<button class="small-button gold-button" data-equip-item="${id}">${equipped ? "Quitar" : "Equipar"}</button>`
+    : isConsumable
+      ? `<div class="use-controls">
+           <button class="small-button gold-button" data-use-item="${id}" ${quantity < 1 ? "disabled" : ""}>Usar</button>
+           <input class="use-amount-input" type="number" min="1" max="${quantity}" value="1" data-use-amount-for="${id}" />
+         </div>`
+      : "";
+  const weightLb = entry[6] ?? 0;
+  const weightDisplay = weightLb > 0 ? `${weightLb} lb` : null;
+  const metaChips = [
+    weightDisplay ? `<span class="item-meta-chip">⚖ ${weightDisplay}</span>` : null,
+    valueField > 0 ? `<span class="item-meta-chip item-meta-gold">◈ ${valueField} PO</span>` : null,
+  ].filter(Boolean).join("");
+  return `
+    <article class="inventory-item">
+      <div>
+        <h3>${escapeHtml(name)} <span class="quantity">${isRope ? quantity + ' m' : 'x' + quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
+        <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
+        ${metaChips ? `<div class="item-meta-row">${metaChips}</div>` : ""}
+      </div>
+      <div class="item-actions">
+        ${primaryAction}
+        ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± metros</button>` : ''}
+        ${!isRope ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
+        <button class="small-button" data-edit-item="${id}">✎</button>
+        <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
+      </div>
+    </article>`;
+}
+
 function renderInventory() {
   const item = character();
   item.equipped ||= [];
@@ -1095,53 +1133,6 @@ document.querySelector("#item-search-results").addEventListener("click", (event)
   document.querySelector("#item-slot-field").classList.toggle("hidden", cat !== "Equipo");
   document.querySelector("#item-search-results").classList.add("hidden");
   document.querySelector("#item-search").value = "";
-});
-// Short rest handler
-document.addEventListener("click", (event) => {
-  const shortRest = event.target.closest("#btn-short-rest");
-  if (shortRest) {
-    const item = character();
-    if (!item) return;
-    // Roll hit die (d10 Fighter, d8 Cleric/Paladin, d6 Ranger)
-    const hitDice = { arthas: 10, "miguel-angel": 8, nilux: 10, galahad: 10, amber: 10 };
-    const die = hitDice[item.id] || 8;
-    const roll = Math.ceil(Math.random() * die);
-    const conMod = Math.floor(((item.attributes.Constitucion || 10) - 10) / 2);
-    const healed = Math.max(1, roll + conMod);
-    const oldHp = item.stats.hp;
-    item.stats.hp = Math.min(item.stats.maxHp, item.stats.hp + healed);
-    // Reset short-rest resources
-    if (!item.resourceUses) item.resourceUses = {};
-    const resources = parseResources(item.resources);
-    resources.forEach((r, i) => {
-      if (r.reset.toLowerCase().includes('corto') || r.reset.toLowerCase().includes('largo')) {
-        item.resourceUses[i] = 0;
-      }
-    });
-    addActivity(`Descanso corto: recuperaste ${item.stats.hp - oldHp} PG (d${die}+${conMod}).`);
-    saveState(); renderCharacter(); showToast(`Descanso corto: +${item.stats.hp - oldHp} PG`);
-  }
-  const longRest = event.target.closest("#btn-long-rest");
-  if (longRest) {
-    const item = character();
-    if (!item) return;
-    item.stats.hp = item.stats.maxHp;
-    item.resourceUses = {};
-    addActivity("Descanso largo: PG restaurados al maximo y recursos recuperados.");
-    saveState(); renderCharacter(); showToast("Descanso largo completado.");
-  }
-  const pip = event.target.closest("[data-resource-idx]");
-  if (pip && !pip.closest("[data-use-item]") && !pip.closest("[data-equip-item]")) {
-    const item = character();
-    if (!item) return;
-    const rIdx = parseInt(pip.dataset.resourceIdx);
-    const pIdx = parseInt(pip.dataset.pipIdx);
-    item.resourceUses ||= {};
-    const currentUsed = item.resourceUses[rIdx] || 0;
-    // Toggle: if clicking on the last used pip, unmark it; else mark up to this pip
-    item.resourceUses[rIdx] = currentUsed > pIdx ? pIdx : pIdx + 1;
-    saveState(); renderCharacter();
-  }
 });
 
 document.querySelector("#item-form").addEventListener("submit", (event) => {
