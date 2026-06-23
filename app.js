@@ -596,6 +596,15 @@ const ITEM_DATABASE = [
 
 // Items that belong in the "Mochila" tab (Historia/Utilidad)
 const MOCHILA_CATEGORIES = ["Utilidad", "Historia"];
+
+// Display order for equipped slots
+const SLOT_ORDER = [
+  "body", "armor", "head", "neck", "hands", "feet", "back", "belt",
+  "ring-left", "ring-right",
+  "shield", "focus",
+  "two-hands", "main-hand", "off-hand",
+  "other"
+];
 // Items that belong in the main inventory tab
 const ACTIVO_CATEGORIES = ["Equipo", "Consumible", "Tesoro"];
 
@@ -1073,17 +1082,36 @@ function renderInventory() {
     <div class="carry-track"><span style="width: ${weightPercent}%"></span></div>
     <p>${weight > capacity ? "Estas superando tu capacidad de carga." : "Capacidad maxima: Fuerza x 15 lb. Cada 50 monedas pesan 1 lb."}</p>`;
 
-  // ── Tab: En uso (Equipo equipped + Consumibles + Tesoro) ──
+  // ── Tab: En uso ── sorted by slot, equipped first ──
   const activoItems = item.inventory.filter(e => ACTIVO_CATEGORIES.includes(e[3]));
-  const activoOrder = ["Equipo", "Consumible", "Tesoro"];
-  const activoSections = activoOrder.map((cat) => {
-    const catItems = activoItems.filter(e => e[3] === cat);
-    if (!catItems.length) return "";
-    return `<section class="inventory-section">
-      <h3 class="inventory-section-title">${escapeHtml(cat)}</h3>
-      ${catItems.map(e => renderItemCard(e, item.equipped.includes(e[0]), true)).join("")}
-    </section>`;
-  }).join("");
+  const slotRank = (entry) => {
+    const slot = equipmentSlot(entry);
+    const idx = SLOT_ORDER.indexOf(slot);
+    return idx === -1 ? SLOT_ORDER.length : idx;
+  };
+  const equippedSorted = activoItems
+    .filter(e => item.equipped.includes(e[0]))
+    .sort((a, b) => slotRank(a) - slotRank(b));
+  const unequippedSorted = activoItems
+    .filter(e => !item.equipped.includes(e[0]))
+    .sort((a, b) => {
+      // Equipo first, then Consumible, then Tesoro; within same cat sort by slot
+      const catOrder = ["Equipo", "Consumible", "Tesoro"];
+      const catDiff = catOrder.indexOf(a[3]) - catOrder.indexOf(b[3]);
+      if (catDiff !== 0) return catDiff;
+      return slotRank(a) - slotRank(b);
+    });
+  const equippedSection = equippedSorted.length ? `
+    <section class="inventory-section">
+      <h3 class="inventory-section-title">Equipado</h3>
+      ${equippedSorted.map(e => renderItemCard(e, true, true)).join("")}
+    </section>` : "";
+  const unequippedSection = unequippedSorted.length ? `
+    <section class="inventory-section">
+      <h3 class="inventory-section-title">Sin equipar</h3>
+      ${unequippedSorted.map(e => renderItemCard(e, false, true)).join("")}
+    </section>` : "";
+  const activoSections = equippedSection + unequippedSection;
 
   // ── Tab: Mochila (Utilidad + Historia) ──
   const mochilaItems = item.inventory.filter(e => MOCHILA_CATEGORIES.includes(e[3]));
@@ -1232,7 +1260,7 @@ function openItemDialog(editId = null) {
     document.querySelector("#item-weight").value = inv[6] ?? 0;
     document.querySelector("#item-value").value = inv[7] ?? 0;
     document.querySelector("#item-slot").value = inv[5] || "other";
-    document.querySelector("#item-slot-field").classList.toggle("hidden", inv[3] !== "Equipo");
+    document.querySelector("#item-slot-field").classList.add("hidden");
   } else {
     title.textContent = "Agregar objeto";
     submitBtn.textContent = "Agregar";
@@ -1248,7 +1276,7 @@ function openItemDialog(editId = null) {
 document.querySelector("#open-add-item").addEventListener("click", () => openItemDialog());
 document.querySelector("#cancel-item").addEventListener("click", () => document.querySelector("#item-dialog").close());
 document.querySelector("#item-category").addEventListener("change", (event) => {
-  document.querySelector("#item-slot-field").classList.toggle("hidden", event.target.value !== "Equipo");
+  // slot always auto-assigned
 });
 
 document.querySelector("#item-search").addEventListener("input", (event) => {
@@ -1279,7 +1307,7 @@ document.querySelector("#item-search-results").addEventListener("click", (event)
   document.querySelector("#item-weight").value = weight;
   document.querySelector("#item-value").value = value;
   document.querySelector("#item-description").value = desc;
-  document.querySelector("#item-slot-field").classList.toggle("hidden", cat !== "Equipo");
+  document.querySelector("#item-slot-field").classList.add("hidden");
   document.querySelector("#item-search-results").classList.add("hidden");
   document.querySelector("#item-search").value = "";
 });
