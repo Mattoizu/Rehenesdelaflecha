@@ -1146,13 +1146,34 @@ function renderInventory() {
     </section>`;
   }).join("");
 
-  // Render with sub-tabs
+  // ── Tab: Equipo (equipado primero, luego sin equipar por slot) ──
+  const equipoItems = item.inventory.filter(e => e[3] === "Equipo");
+  const equippedItems4 = equipoItems.filter(e => item.equipped.includes(e[0])).sort((a,b) => slotRank(a)-slotRank(b));
+  const unequippedItems4 = equipoItems.filter(e => !item.equipped.includes(e[0])).sort((a,b) => slotRank(a)-slotRank(b));
+  const equipoHTML = [
+    equippedItems4.length ? `<section class="inventory-section"><h3 class="inventory-section-title">Equipado</h3>${equippedItems4.map(e=>renderItemCard(e,true,true)).join("")}</section>` : "",
+    unequippedItems4.length ? `<section class="inventory-section"><h3 class="inventory-section-title">Sin equipar</h3>${unequippedItems4.map(e=>renderItemCard(e,false,true)).join("")}</section>` : "",
+  ].join("") || '<p class="helper-copy">Sin equipo.</p>';
+
+  // ── Tab: Consumibles ──
+  const consumItems = item.inventory.filter(e => e[3] === "Consumible");
+  const consumHTML = consumItems.length ? consumItems.map(e=>renderItemCard(e,false,false)).join("") : '<p class="helper-copy">Sin consumibles.</p>';
+
+  // ── Tab: Tesoros ──
+  const tesItems = item.inventory.filter(e => e[3] === "Tesoro");
+  const tesHTML = tesItems.length ? tesItems.map(e=>renderItemCard(e,false,false)).join("") : '<p class="helper-copy">Sin tesoros.</p>';
+
+  // Render with 4 tabs
   document.querySelector("#inventory-list").innerHTML = `
     <div class="inv-tabs">
-      <button class="inv-tab active" data-inv-tab="activo">En uso</button>
+      <button class="inv-tab active" data-inv-tab="equipo">Equipo</button>
+      <button class="inv-tab" data-inv-tab="consumibles">Consumibles</button>
+      <button class="inv-tab" data-inv-tab="tesoros">Tesoros</button>
       <button class="inv-tab" data-inv-tab="mochila">Mochila</button>
     </div>
-    <div class="inv-panel active" id="inv-activo">${activoSections || '<p class="helper-copy">Sin objetos activos.</p>'}</div>
+    <div class="inv-panel active" id="inv-equipo">${equipoHTML}</div>
+    <div class="inv-panel" id="inv-consumibles">${consumHTML}</div>
+    <div class="inv-panel" id="inv-tesoros">${tesHTML}</div>
     <div class="inv-panel" id="inv-mochila">${mochilaSections || '<p class="helper-copy">La mochila esta vacia.</p>'}</div>`;
 
   const activity = state.activity[item.id] || [];
