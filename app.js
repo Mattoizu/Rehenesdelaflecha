@@ -369,7 +369,7 @@ const ITEM_DATABASE = [
   ['yesquero', 'Yesquero', 'Utilidad', 1, 0.5, 'Encender fuego en 1 accion (o 1 min si falla). 5 PP.', 'General'],
 
   // Municion
-  ['flechas', 'Flechas (20)', 'Consumible', 1, 1, 'Municion para arco corto o largo. 1 PO por 20.', 'General'],
+  ['flechas', 'Flechas (20)', 'Consumible', 0.05, 1, 'Municion para arco corto o largo. 1 PO por 20.', 'General'],
   ['virotes', 'Virotes de ballesta (20)', 'Consumible', 1.5, 1, 'Municion para ballesta. 1 PO por 20.', 'General'],
   ['balas-honda', 'Balas de honda (20)', 'Consumible', 1.5, 0.04, 'Municion para honda. 4 PE por 20.', 'General'],
   ['dardos-cerbatana', 'Dardos de cerbatana (50)', 'Consumible', 1, 1, 'Municion para cerbatana. 1 PO por 50.', 'General'],
@@ -736,7 +736,7 @@ const initialCharacters = [
     resources: ["Carcaj de Vaelor - ventaja 1 vez por descanso largo; siguiente ataque con desventaja", "Percepcion pasiva - 15"],
     inventory: [
       ["arco-largo", "Arco largo", 1, "Equipo", "1d8 perforante. Municion (alcance 45/180 m). A dos manos, pesado.", "two-hands", 2, 50],
-      ["flecha", "Flecha", 20, "Consumible", "Municion para arco largo o corto. 1 PO por 20.", "other", 1, 1],
+      ["flecha", "Flecha", 20, "Consumible", "Municion para arco largo o corto. 1 PO por 20.", "other", 0.05, 1],
       ["espada-corta", "Espada corta", 2, "Equipo", "1d6 perforante. Ligera, sutil.", "main-hand", 2, 10],
       ["cuero", "Armadura de cuero", 1, "Equipo", "CA 11 + mod. Destreza. Armadura ligera.", "armor", 10, 10],
       ["carcaj-vaelor", "Carcaj de Vaelor", 1, "Equipo", "Carcaj de cuero oscuro de Vaelor. Homebrew: 1 vez por descanso largo puedes obtener ventaja en un ataque; el siguiente ataque tendra desventaja.", "back", 1, 0],
@@ -812,7 +812,7 @@ const initialCharacters = [
       ["tajo", "Tajo", 1, "Equipo", "Alabarda personal de Amber. 1d10 cortante. A dos manos, gran alcance, pesada.", "two-hands", 6, 20],
       ["cuero", "Armadura de cuero", 1, "Equipo", "CA 11 + mod. Destreza. Armadura ligera.", "armor", 10, 10],
       ["arco-largo", "Arco largo", 1, "Equipo", "1d8 perforante. Municion (alcance 45/180 m). A dos manos, pesado.", "back", 2, 50],
-      ["flecha", "Flecha", 20, "Consumible", "Municion para arco largo o corto. 1 PO por 20.", "other", 1, 1],
+      ["flecha", "Flecha", 20, "Consumible", "Municion para arco largo o corto. 1 PO por 20.", "other", 0.05, 1],
       ["espada-larga", "Espada larga", 1, "Equipo", "1d8 cortante. Versatil (1d10 a dos manos).", "main-hand", 3, 15],
       ["calavera-magica", "Skully", 1, "Historia", "Calavera reanimada conservada tras derrotar a un gnomo nigromante. Conserva magia aunque nadie entiende bien que hace.", "belt", 1, 0],
       ["tomahawk-enano", "Tomahawk enano", 2, "Equipo", "Hachas de mano enanas regaladas por su padre Errik. 1d6 cortante. Ligera, arrojadiza (alcance 6/18 m).", "main-hand", 2, 5],
