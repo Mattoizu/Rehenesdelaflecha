@@ -1041,7 +1041,7 @@ function renderItemCard(entry, equipped, showEquip) {
     valueField > 0 ? `<span class="item-meta-chip item-meta-gold">◈ ${valueField} PO</span>` : null,
   ].filter(Boolean).join("");
   return `
-    <article class="inventory-item">
+    <article class="inventory-item${equipped ? ' is-equipped' : ''}">
       <div>
         <h3>${escapeHtml(name)} <span class="quantity">${isRope ? quantity + ' ft' : 'x' + quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
         <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
@@ -1093,8 +1093,8 @@ function renderInventory() {
       <span>Carga transportada</span>
       <strong>${weight.toFixed(1)} / ${capacity} lb</strong>
     </div>
-    <div class="carry-track"><span style="width: ${weightPercent}%"></span></div>
-    <p>${weight > capacity ? "Estas superando tu capacidad de carga." : "Capacidad maxima: Fuerza x 15 lb. Cada 50 monedas pesan 1 lb."}</p>`;
+    <div class="carry-track"><span style="width: ${weightPercent}%" class="${weightPercent >= 90 ? 'danger' : weightPercent >= 75 ? 'warn' : ''}"></span></div>
+    <p>${weight > capacity ? "⚠️ Superando capacidad de carga." : `${weightPercent.toFixed(0)}% de capacidad usada`}</p>`;
 
   // ── Tab: En uso ── sorted by slot, equipped first ──
   const activoItems = item.inventory.filter(e => ACTIVO_CATEGORIES.includes(e[3]));
