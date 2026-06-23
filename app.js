@@ -165,7 +165,11 @@ const SLOT_BY_ITEM = {
   "collar-padre": "neck", "arco-largo": "two-hands", "espada-corta": "main-hand", cuero: "armor",
   "carcaj-vaelor": "back", espadon: "two-hands", "hacha-mano": "main-hand", "tatuaje-belfegor": "body",
   tajo: "two-hands", "espada-larga": "main-hand", "calavera-magica": "belt", "tomahawk-enano": "main-hand",
-  "ropa-comun": "other", "ropa-viajero": "other",
+  "ropa-comun": "body", "ropa-viajero": "body", "cuchillo-pequeno": "off-hand",
+  "armadura-cuero": "armor", "armadura-acolchada": "armor", "armadura-cuero-tachonado": "armor",
+  "camisa-malla": "armor", "cota-escamas": "armor", "coraza": "armor", "media-armadura": "armor",
+  "pieles": "armor", "armadura-bandas": "armor", "cota-guarnecida": "armor", "armadura-placas": "armor",
+  "herramientas-herrero": "other", "carta-gremio": "other",
 };
 
 const ITEM_DATABASE = [
@@ -673,7 +677,7 @@ const initialCharacters = [
       ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado. Recuerdo de tu servicio.", "other", 0, 0],
       ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado. Recuerdo de una batalla anterior.", "other", 0.5, 0],
       ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
-      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "other", 3, 0.5],
+      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "body", 3, 0.5],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
     equipped: ["espada-ancestral", "cota-malla", "escudo"],
@@ -713,7 +717,7 @@ const initialCharacters = [
       ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado.", "other", 0, 0],
       ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado.", "other", 0.5, 0],
       ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
-      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "other", 3, 0.5],
+      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "body", 3, 0.5],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
     equipped: ["martillo-jesucristo", "cota-malla", "escudo", "sombrero", "collar-padre"],
@@ -753,7 +757,7 @@ const initialCharacters = [
       ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Historia", "Mapa con lugares importantes de la ciudad donde creciste con los Edena Ruh.", "other", 0, 0],
       ["raton-mascota", "Raton como mascota", 1, "Historia", "Pequeno companero de tu trasfondo de huerfano. Lo llevas contigo.", "other", 0, 0],
       ["recuerdo-padres", "Recuerdo de tus padres", 1, "Historia", "Un objeto pequeno que conservas de tu familia biologica.", "other", 0.1, 0],
-      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "other", 3, 0.5],
+      ["ropa-comun", "Ropa comun", 1, "Equipo", "Vestimenta cotidiana sencilla.", "body", 3, 0.5],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 10, ppt: 0 },
     equipped: ["arco-largo", "cuero", "carcaj-vaelor"],
@@ -827,7 +831,7 @@ const initialCharacters = [
       ["cuerda-canamo", "Cuerda de canamo", 50, "Consumible", "Aguanta 1.000 lb. Se gasta con el uso. (50 pies)", "other", 0.2, 1],
       ["herramientas-herrero", "Herramientas de herrero", 1, "Historia", "Herramientas de artesano para trabajar metal. Las de Amber son enanas, herencia de Regrus.", "other", 8, 20],
       ["carta-gremio", "Carta de presentacion del gremio", 1, "Historia", "Documento de tu trasfondo de artesana gremial. Acredita tu oficio de herrera.", "other", 0, 0],
-      ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Ropa resistente y comoda para el camino.", "other", 4, 2],
+      ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Ropa resistente y comoda para el camino.", "body", 4, 2],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 15, ppt: 0 },
     equipped: ["tajo", "cuero", "calavera-magica"],
@@ -1204,7 +1208,7 @@ document.addEventListener("click", (event) => {
     if (!inv) return;
     const dlg = document.querySelector("#rope-dialog");
     document.querySelector("#rope-dialog-title").textContent = inv[1];
-    document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} ft`;
+    document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} pies`;
     dlg._ropeId = ropeButton.dataset.ropeItem;
     dlg.showModal();
   }
@@ -1343,7 +1347,7 @@ document.querySelector("#rope-minus").addEventListener("click", () => {
   if (!inv) return;
   const amount = Number(document.querySelector("#rope-amount").value) || 1;
   inv[2] = Math.max(0, inv[2] - amount);
-  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} ft`;
+  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} pies`;
   addActivity(`Usaste ${amount} m de ${inv[1]}. Quedan ${inv[2]} m.`);
   saveState(); renderInventory(); showToast(`${amount} m usados.`);
 });
@@ -1353,9 +1357,9 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
   if (!inv) return;
   const amount = Number(document.querySelector("#rope-amount").value) || 1;
   inv[2] += amount;
-  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} ft`;
-  addActivity(`Agregaste ${amount} ft a ${inv[1]}. Total: ${inv[2]} ft.`);
-  saveState(); renderInventory(); showToast(`+${amount} ft.`);
+  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} pies`;
+  addActivity(`Agregaste ${amount} pies a ${inv[1]}. Total: ${inv[2]} pies.`);
+  saveState(); renderInventory(); showToast(`+${amount} pies.`);
 });
 
 // Initial render from localStorage (instant, may be stale), then sync from Firestore (authoritative)
