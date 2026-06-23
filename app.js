@@ -891,7 +891,7 @@ function mergeCurrency(initialCurrency, stored) {
   if (!stored.currency && legacyGold) currency.po = legacyGold[2];
   return currency;
 }
-function equipmentSlot(item) { return item[5] || SLOT_BY_ITEM[item[0]] || "other"; }
+function equipmentSlot(item) { return SLOT_BY_ITEM[item[0]] || item[5] || "other"; }
 function itemWeight(item) { return item[6] ?? WEIGHT_BY_ITEM[item[0]] ?? 0; }
 function carriedWeight(currentCharacter) {
   const equipmentWeight = currentCharacter.inventory.reduce((total, item) => total + itemWeight(item) * item[2], 0);
@@ -1092,26 +1092,32 @@ function renderInventory() {
   const equippedSorted = activoItems
     .filter(e => item.equipped.includes(e[0]))
     .sort((a, b) => slotRank(a) - slotRank(b));
-  const unequippedSorted = activoItems
-    .filter(e => !item.equipped.includes(e[0]))
+  const catOrder = ["Equipo", "Consumible", "Tesoro"];
+  const unequippedEquipo = activoItems
+    .filter(e => !item.equipped.includes(e[0]) && e[3] === "Equipo")
+    .sort((a, b) => slotRank(a) - slotRank(b));
+  const unequippedRest = activoItems
+    .filter(e => !item.equipped.includes(e[0]) && e[3] !== "Equipo")
     .sort((a, b) => {
-      // Equipo first, then Consumible, then Tesoro; within same cat sort by slot
-      const catOrder = ["Equipo", "Consumible", "Tesoro"];
       const catDiff = catOrder.indexOf(a[3]) - catOrder.indexOf(b[3]);
-      if (catDiff !== 0) return catDiff;
-      return slotRank(a) - slotRank(b);
+      return catDiff !== 0 ? catDiff : slotRank(a) - slotRank(b);
     });
   const equippedSection = equippedSorted.length ? `
     <section class="inventory-section">
       <h3 class="inventory-section-title">Equipado</h3>
       ${equippedSorted.map(e => renderItemCard(e, true, true)).join("")}
     </section>` : "";
-  const unequippedSection = unequippedSorted.length ? `
+  const unequippedEquipoSection = unequippedEquipo.length ? `
     <section class="inventory-section">
       <h3 class="inventory-section-title">Sin equipar</h3>
-      ${unequippedSorted.map(e => renderItemCard(e, false, true)).join("")}
+      ${unequippedEquipo.map(e => renderItemCard(e, false, true)).join("")}
     </section>` : "";
-  const activoSections = equippedSection + unequippedSection;
+  const unequippedRestSection = unequippedRest.length ? `
+    <section class="inventory-section">
+      <h3 class="inventory-section-title">Consumibles y tesoros</h3>
+      ${unequippedRest.map(e => renderItemCard(e, false, true)).join("")}
+    </section>` : "";
+  const activoSections = equippedSection + unequippedEquipoSection + unequippedRestSection;
 
   // ── Tab: Mochila (Utilidad + Historia) ──
   const mochilaItems = item.inventory.filter(e => MOCHILA_CATEGORIES.includes(e[3]));
