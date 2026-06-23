@@ -166,7 +166,7 @@ const SLOT_BY_ITEM = {
   "carcaj-vaelor": "back", espadon: "two-hands", "hacha-mano": "main-hand", "tatuaje-belfegor": "body",
   tajo: "two-hands", "espada-larga": "main-hand", "calavera-magica": "belt", "tomahawk-enano": "main-hand",
   "ropa-comun": "body", "ropa-viajero": "body", "cuchillo-pequeno": "off-hand",
-  "armadura-cuero": "armor", "armadura-acolchada": "armor", "armadura-cuero-tachonado": "armor",
+  "armadura-cuero": "armor", "armadura-acolchada": "armor", "armadura-cuero-tachonado": "armor", "cuero": "armor", "cuero-tachonado": "armor",
   "camisa-malla": "armor", "cota-escamas": "armor", "coraza": "armor", "media-armadura": "armor",
   "pieles": "armor", "armadura-bandas": "armor", "cota-guarnecida": "armor", "armadura-placas": "armor",
   "herramientas-herrero": "other", "carta-gremio": "other",
@@ -644,7 +644,7 @@ const WEIGHT_BY_ITEM = {
   "arco-largo": 2, "arco-corto": 2, flecha: 0.05, virotes: 0.075,
   tajo: 6, "tomahawk-enano": 2, "cuchillo-pequeno": 0.5, daga: 1,
   // Armaduras
-  "cota-malla": 55, cuero: 10, "cuero-tachonado": 13, coraza: 20,
+  "cota-malla": 55, "cuero": 10, "cuero-tachonado": 13, coraza: 20,
   "armadura-placas": 65, "armadura-bandas": 55, "cota-guarnecida": 40,
   "media-armadura": 20, pieles: 45, "cota-escamas": 45,
   escudo: 6,
