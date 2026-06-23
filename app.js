@@ -152,7 +152,7 @@ function mergeRemoteState(saved) {
   return { characters, activity: saved.activity || {} };
 }
 const EMPTY_CURRENCY = { pc: 0, pp: 0, pe: 0, po: 0, ppt: 0 };
-const CURRENCY_LABELS = { pc: "PC", pp: "PP", pe: "PE", po: "PO", ppt: "PPT" };
+const CURRENCY_LABELS = { pc: "Piezas de Cobre (PC)", pp: "Piezas de Plata (PP)", pe: "Piezas de Electrum (PE)", po: "Piezas de Oro (PO)", ppt: "Piezas de Platino (PPT)" };
 const SLOT_LABELS = {
   "main-hand": "Mano principal", "off-hand": "Mano secundaria", "two-hands": "Dos manos",
   armor: "Armadura", shield: "Escudo", focus: "Foco", head: "Cabeza", neck: "Cuello",
@@ -1044,7 +1044,7 @@ function renderItemCard(entry, equipped, showEquip) {
     <article class="inventory-item${equipped ? ' is-equipped' : ''}">
       <div>
         <h3>${escapeHtml(name)} <span class="quantity">${isRope ? quantity + ' ft' : 'x' + quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
-        <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
+        <p class="item-desc">${isEquip ? `<span class="item-slot-label">${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])}</span> · ` : ""}${escapeHtml(descConverted)}</p>
         ${metaChips ? `<div class="item-meta-row">${metaChips}</div>` : ""}
       </div>
       <div class="item-actions">

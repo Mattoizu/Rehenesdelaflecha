@@ -1693,3 +1693,112 @@ button[data-edit-item] { font-size: .82rem; }
   .inv-tab { font-size: .62rem; padding: 9px 4px; }
   .small-button { padding: 5px 8px; font-size: .7rem; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   OPTIMIZACIÓN MÓVIL
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Perfil compacto horizontal ───────────────────────────────────── */
+@media (max-width: 600px) {
+  .profile-hero {
+    grid-template-columns: 64px 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .profile-portrait {
+    width: 64px;
+    height: 64px;
+    border-radius: 9px;
+  }
+  .profile-hero h1 { font-size: 1.2rem; margin-bottom: 1px; }
+  .profile-hero p { font-size: .72rem; }
+
+  /* ── Barra de carga arriba y compacta ── */
+  .carry-card {
+    padding: 8px 12px;
+  }
+  .carry-heading { font-size: .7rem; }
+  .carry-track { height: 4px; margin: 5px 0 3px; }
+  .carry-card p { font-size: .65rem; }
+
+  /* ── Pestañas: más compactas ── */
+  .inv-tabs { position: sticky; top: 56px; z-index: 4; background: rgba(16,11,11,.96); backdrop-filter: blur(10px); }
+  .inv-tab { font-size: .6rem; padding: 10px 3px; letter-spacing: .04em; }
+
+  /* ── Cards de inventario en móvil ── */
+  .inventory-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .inventory-item h3 { font-size: .9rem; }
+  .inventory-item p { font-size: .72rem; }
+
+  /* ── Botones más grandes para táctil ── */
+  .item-actions {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  .small-button {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: .72rem;
+    border-radius: 9px;
+  }
+
+  /* ── Monedas: botones más grandes ── */
+  .currency-item { padding: 9px 4px; }
+  .currency-item span { font-size: .52rem; margin-bottom: 7px; }
+  .currency-item strong { font-size: .9rem; }
+  .currency-button {
+    width: 24px;
+    height: 24px;
+    font-size: .82rem;
+  }
+  .currency-grid { gap: 5px; }
+
+  /* ── Panel inventario sin padding lateral extra ── */
+  .inv-panel { padding: 10px; gap: 7px; }
+  .section-title-row { padding: 10px 10px 0; }
+
+  /* ── Activity list más compacta ── */
+  .activity-list { padding: 0 10px 10px; }
+  .activity-entry { font-size: .72rem; padding: 6px 8px; }
+
+  /* ── Use controls ── */
+  .use-controls { display: flex; gap: 5px; align-items: center; }
+  .use-amount-input { width: 44px; padding: 6px 4px; text-align: center; font-size: .8rem; }
+
+  /* ── Meta chips ── */
+  .item-meta-chip { font-size: .62rem; padding: 2px 6px; }
+
+  /* ── Main padding ── */
+  main { padding-bottom: 80px; }
+}
+
+/* ── Touch feedback ──────────────────────────────────────────────── */
+@media (hover: none) {
+  .inventory-item:active {
+    border-color: rgba(123,87,42,.7);
+    background: linear-gradient(135deg, rgba(53,32,28,.98), rgba(24,15,15,.99));
+  }
+  .small-button:active {
+    transform: scale(0.96);
+    opacity: .85;
+  }
+  .inv-tab:active { background: rgba(123,87,42,.15); }
+  .currency-button:active { transform: scale(0.9); }
+}
+
+/* ── Slot label destacado ─────────────────────────────────────────── */
+.item-slot-label {
+  color: var(--gold);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.item-desc { margin-bottom: 0; }
