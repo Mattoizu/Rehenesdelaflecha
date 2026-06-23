@@ -1802,3 +1802,105 @@ button[data-edit-item] { font-size: .82rem; }
   text-transform: uppercase;
 }
 .item-desc { margin-bottom: 0; }
+
+/* ── Monedas rediseñadas ──────────────────────────────────────────── */
+.currency-card {
+  padding: 10px 12px;
+}
+.currency-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  margin-top: 8px;
+}
+.currency-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 2px;
+  border: 1px solid rgba(75,48,41,.5);
+  border-radius: 10px;
+  background: rgba(16,11,11,.5);
+  text-align: center;
+}
+.coin-abbr {
+  color: var(--gold);
+  font-size: .75rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  line-height: 1;
+}
+.coin-name {
+  color: var(--muted);
+  font-size: .55rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1;
+}
+.coin-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+.coin-controls strong {
+  min-width: 22px;
+  color: #f4d898;
+  font-size: .9rem;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1;
+}
+.currency-button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(75,48,41,.5);
+  border-radius: 50%;
+  background: rgba(27,18,18,.8);
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .currency-grid { gap: 4px; }
+  .currency-item { padding: 7px 1px; border-radius: 8px; }
+  .coin-abbr { font-size: .7rem; }
+  .coin-name { font-size: .5rem; }
+  .coin-controls strong { font-size: .85rem; min-width: 18px; }
+  .currency-button { width: 20px; height: 20px; font-size: .75rem; }
+}
+
+/* ── Tabla de conversión de monedas ───────────────────────────────── */
+.coin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: .72rem;
+}
+.coin-table th {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--gold-dark);
+  color: var(--gold);
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-align: center;
+}
+.coin-table td {
+  padding: 5px 4px;
+  border-bottom: 1px solid rgba(75,48,41,.3);
+  color: var(--muted);
+  text-align: center;
+}
+.coin-table td:first-child {
+  color: #f4d898;
+  font-weight: 700;
+  text-align: left;
+}
+.coin-table tr:last-child td { border-bottom: none; }
