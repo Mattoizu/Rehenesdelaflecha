@@ -315,8 +315,8 @@ const ITEM_DATABASE = [
   ['cerradura', 'Cerradura', 'Utilidad', 1, 10, 'CD 15 con herramientas de ladron para abrir sin llave.', 'General'],
   ['cesta', 'Cesta', 'Utilidad', 2, 0.4, 'Contenedor de mimbre. 4 PP.', 'General'],
   ['cofre', 'Cofre', 'Utilidad', 25, 5, 'Contenedor de madera y metal. 5 PO.', 'General'],
-  ['cuerda-canamo', 'Cuerda de canamo (15 m)', 'Consumible', 0.67, 1, 'Aguanta 1.000 lb. Se gasta con el uso. 1 PO.', 'General'],
-  ['cuerda-seda', 'Cuerda de seda (15 m)', 'Consumible', 0.33, 10, 'Aguanta 750 lb. Mas ligera. 10 PO.', 'General'],
+  ['cuerda-canamo', 'Cuerda de canamo (50 pies)', 'Consumible', 0.2, 1, 'Aguanta 1.000 lb. Se gasta con el uso. 1 PO.', 'General'],
+  ['cuerda-seda', 'Cuerda de seda (50 pies)', 'Consumible', 0.1, 10, 'Aguanta 750 lb. Mas ligera. 10 PO.', 'General'],
   ['cubo', 'Cubo', 'Utilidad', 2, 0.5, 'Cubo de metal o madera. 5 PP.', 'General'],
   ['escalera', 'Escalera (3 m)', 'Utilidad', 25, 0.1, 'Escalera de madera de 10 pies (3 m). 1 PP.', 'General'],
   ['espejo-acero', 'Espejo de acero', 'Utilidad', 0.5, 5, 'Ver alrededor de esquinas o en oscuridad con luz. 5 PO.', 'General'],
@@ -640,7 +640,7 @@ const WEIGHT_BY_ITEM = {
   "calavera-magica": 1, "tatuaje-belfegor": 0,
   // Mochila y utilidades — pesos oficiales PHB
   mochila: 5, petate: 7, "utensilios-cocina": 8, yesquero: 1,
-  antorcha: 1, racion: 2, odre: 5, "cuerda-canamo": 0.67, "cuerda-seda": 0.33,
+  antorcha: 1, racion: 2, odre: 5, "cuerda-canamo": 0.2, "cuerda-seda": 0.1,
   palanca: 5, piton: 0.25, "ropa-comun": 3, "ropa-viajero": 4, "ropa-calidad": 6,
   "herramientas-herrero": 8, "libro-edena-ruh": 0.5,
 };
@@ -669,7 +669,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros de liquido.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 50, "Consumible", "Aguanta 1.000 lb. Se gasta con el uso. (50 pies)", "other", 0.2, 1],
       ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado. Recuerdo de tu servicio.", "other", 0, 0],
       ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado. Recuerdo de una batalla anterior.", "other", 0.5, 0],
       ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
@@ -709,7 +709,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 50, "Consumible", "Aguanta 1.000 lb. Se gasta con el uso. (50 pies)", "other", 0.2, 1],
       ["insignia-rango", "Insignia de rango", 1, "Historia", "Insignia militar de tu trasfondo de soldado.", "other", 0, 0],
       ["trofeo-enemigo", "Trofeo de un enemigo caido", 1, "Historia", "Objeto tomado de un enemigo derrotado.", "other", 0.5, 0],
       ["dados-hueso", "Dados de hueso", 1, "Historia", "Juego de dados de tu pasado como soldado.", "other", 0, 0.1],
@@ -747,7 +747,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 50, "Consumible", "Aguanta 1.000 lb. Se gasta con el uso. (50 pies)", "other", 0.2, 1],
       ["libro-edena-ruh", "Libro de los Edena Ruh", 1, "Historia", "Libro con historias, cuentos infantiles y palabras de aliento de la troupe Edena Ruh en su ultima pagina.", "other", 0.5, 0],
       ["cuchillo-pequeno", "Cuchillo pequeno", 1, "Equipo", "1d4 perforante. Objeto de tu trasfondo de huerfano.", "off-hand", 0.5, 1],
       ["mapa-ciudad", "Mapa de la ciudad natal", 1, "Historia", "Mapa con lugares importantes de la ciudad donde creciste con los Edena Ruh.", "other", 0, 0],
@@ -787,7 +787,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 50, "Consumible", "Aguanta 1.000 lb. Se gasta con el uso. (50 pies)", "other", 0.2, 1],
     ],
     currency: { pc: 0, pp: 0, pe: 0, po: 0, ppt: 0 },
     equipped: ["espadon", "cota-malla", "tatuaje-belfegor"],
@@ -824,7 +824,7 @@ const initialCharacters = [
       ["antorcha", "Antorcha", 10, "Consumible", "Ilumina 6 m de luz brillante y 6 m de tenue. Dura 1 hora.", "other", 1, 0.01],
       ["racion", "Racion de viaje", 10, "Consumible", "Comida seca para un dia de viaje.", "other", 2, 0.5],
       ["odre", "Odre", 1, "Utilidad", "Contenedor de cuero. Capacidad 4 litros.", "other", 5, 0.2],
-      ["cuerda-canamo", "Cuerda de canamo", 15, "Consumible", "Aguanta 450 kg. Se gasta con el uso. (15 m)", "other", 0.67, 1],
+      ["cuerda-canamo", "Cuerda de canamo", 50, "Consumible", "Aguanta 1.000 lb. Se gasta con el uso. (50 pies)", "other", 0.2, 1],
       ["herramientas-herrero", "Herramientas de herrero", 1, "Historia", "Herramientas de artesano para trabajar metal. Las de Amber son enanas, herencia de Regrus.", "other", 8, 20],
       ["carta-gremio", "Carta de presentacion del gremio", 1, "Historia", "Documento de tu trasfondo de artesana gremial. Acredita tu oficio de herrera.", "other", 0, 0],
       ["ropa-viajero", "Ropa de viajero", 1, "Equipo", "Ropa resistente y comoda para el camino.", "other", 4, 2],
@@ -1001,7 +1001,7 @@ function renderItemCard(entry, equipped, showEquip) {
   const isRope = /cuerda|soga/i.test(name);
   const primaryAction = isEquip
     ? `<button class="small-button gold-button" data-equip-item="${id}">${equipped ? "Quitar" : "Equipar"}</button>`
-    : isConsumable
+    : isConsumable && !isRope
       ? `<div class="use-controls">
            <button class="small-button gold-button" data-use-item="${id}" ${quantity < 1 ? "disabled" : ""}>Usar</button>
            <input class="use-amount-input" type="number" min="1" max="${quantity}" value="1" data-use-amount-for="${id}" />
@@ -1016,13 +1016,13 @@ function renderItemCard(entry, equipped, showEquip) {
   return `
     <article class="inventory-item">
       <div>
-        <h3>${escapeHtml(name)} <span class="quantity">${isRope ? quantity + ' m' : 'x' + quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
+        <h3>${escapeHtml(name)} <span class="quantity">${isRope ? quantity + ' ft' : 'x' + quantity}</span>${equipped ? ' <span class="equipped-badge">Equipado</span>' : ""}</h3>
         <p>${isEquip ? `${escapeHtml(SLOT_LABELS[equipmentSlot(entry)])} · ` : ""}${escapeHtml(descConverted)}</p>
         ${metaChips ? `<div class="item-meta-row">${metaChips}</div>` : ""}
       </div>
       <div class="item-actions">
         ${primaryAction}
-        ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± metros</button>` : ''}
+        ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± pies</button>` : ''}
         ${!isRope ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
         <button class="small-button" data-edit-item="${id}">✎</button>
         <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
@@ -1204,7 +1204,7 @@ document.addEventListener("click", (event) => {
     if (!inv) return;
     const dlg = document.querySelector("#rope-dialog");
     document.querySelector("#rope-dialog-title").textContent = inv[1];
-    document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
+    document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} ft`;
     dlg._ropeId = ropeButton.dataset.ropeItem;
     dlg.showModal();
   }
@@ -1343,7 +1343,7 @@ document.querySelector("#rope-minus").addEventListener("click", () => {
   if (!inv) return;
   const amount = Number(document.querySelector("#rope-amount").value) || 1;
   inv[2] = Math.max(0, inv[2] - amount);
-  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
+  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} ft`;
   addActivity(`Usaste ${amount} m de ${inv[1]}. Quedan ${inv[2]} m.`);
   saveState(); renderInventory(); showToast(`${amount} m usados.`);
 });
@@ -1353,9 +1353,9 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
   if (!inv) return;
   const amount = Number(document.querySelector("#rope-amount").value) || 1;
   inv[2] += amount;
-  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} m`;
-  addActivity(`Agregaste ${amount} m a ${inv[1]}. Total: ${inv[2]} m.`);
-  saveState(); renderInventory(); showToast(`+${amount} m.`);
+  document.querySelector("#rope-current-label").textContent = `Cantidad actual: ${inv[2]} ft`;
+  addActivity(`Agregaste ${amount} ft a ${inv[1]}. Total: ${inv[2]} ft.`);
+  saveState(); renderInventory(); showToast(`+${amount} ft.`);
 });
 
 // Initial render from localStorage (instant, may be stale), then sync from Firestore (authoritative)
