@@ -921,8 +921,22 @@ function normalizeEquipped(equipped, inventory = []) {
   });
   return [...new Set(normalized)];
 }
+function fixStoredSlots(inventory) {
+  // Fix any items with wrong slots saved in Firestore
+  return inventory.map(item => {
+    const officialSlot = SLOT_BY_ITEM[item[0]];
+    if (officialSlot && item[5] && item[5] !== officialSlot) {
+      const fixed = [...item];
+      fixed[5] = officialSlot;
+      return fixed;
+    }
+    return item;
+  });
+}
+
 function mergeInventory(characterId, initialInventory, storedInventory) {
-  const storedById = new Map(storedInventory.map((item) => [item[0], item]));
+  const fixedStored = fixStoredSlots(storedInventory);
+  const storedById = new Map(fixedStored.map((item) => [item[0], item]));
   return [
     ...initialInventory.map((item) => {
       const stored = storedById.get(item[0]);
@@ -939,7 +953,7 @@ function mergeInventory(characterId, initialInventory, storedInventory) {
         stored[7] ?? item[7] ?? 0,    // value (player can edit, fallback to official)
       ];
     }),
-    ...storedInventory.filter((item) => !initialInventory.some((initial) => initial[0] === item[0]) && !(retiredItems[characterId] || []).includes(item[0])),
+    ...fixedStored.filter((item) => !initialInventory.some((initial) => initial[0] === item[0]) && !(retiredItems[characterId] || []).includes(item[0])),
   ];
 }
 // saveState defined above with Firebase support
@@ -1324,7 +1338,10 @@ document.querySelector("#item-form").addEventListener("submit", (event) => {
   if (!name) return;
   const quantity = Number(document.querySelector("#item-quantity").value);
   const category = document.querySelector("#item-category").value;
-  const slot = category === "Equipo" ? document.querySelector("#item-slot").value : "";
+  // Auto-assign slot from SLOT_BY_ITEM, never from the hidden selector
+  const itemIdForSlot = document.querySelector("#item-edit-id").value ||
+    (ITEM_DATABASE.find(([,n]) => n === name)?.[0] || "");
+  const slot = category === "Equipo" ? (SLOT_BY_ITEM[itemIdForSlot] || "other") : "";
   const weight = Number(document.querySelector("#item-weight").value) || 0;
   const value = Number(document.querySelector("#item-value").value) || 0;
   const description = document.querySelector("#item-description").value.trim() || "Sin descripcion.";
