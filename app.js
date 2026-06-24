@@ -1010,14 +1010,17 @@ function renderHome() {
   }).join("");
 }
 
-// DM mode activation - logo click counter
+// DM mode activation - tap hero card 5 times
 let _dmClicks = 0;
 let _dmClickTimer = null;
-document.querySelector(".brand-button").addEventListener("click", () => {
-  if (showView.toString().includes("character-view") && activeCharacterId) return;
+document.addEventListener("click", (e) => {
+  const heroCard = e.target.closest(".hero-card");
+  if (!heroCard) return;
+  const isHomeView = document.querySelector("#home-view")?.classList.contains("active");
+  if (!isHomeView) return;
   _dmClicks++;
   clearTimeout(_dmClickTimer);
-  _dmClickTimer = setTimeout(() => { _dmClicks = 0; }, 2000);
+  _dmClickTimer = setTimeout(() => { _dmClicks = 0; }, 3000);
   if (_dmClicks >= 5) {
     _dmClicks = 0;
     const pw = prompt("Contraseña DM:");
@@ -1414,9 +1417,9 @@ document.addEventListener("click", (event) => {
     currentCharacter.currency[key] = Math.max(0, (currentCharacter.currency[key] || 0) + delta);
     saveState(); renderInventory();
   }
-  // Open currency dialog
+  // Open currency dialog — only for DM
   const openCurrency = event.target.closest("[data-open-currency]");
-  if (openCurrency) {
+  if (openCurrency && window._isDM) {
     const key = openCurrency.dataset.openCurrency;
     const labelParts = CURRENCY_LABELS[key].split("|");
     const current = character()?.currency[key] || 0;
