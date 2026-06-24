@@ -1038,7 +1038,10 @@ function renderDMTradePanel() {
     <div class="dm-trade-section">
       <h3 style="color:var(--gold);margin-bottom:10px">Vender objeto a jugador</h3>
       <div style="display:grid;gap:8px">
-        <label>Objeto<input id="dm-trade-item-name" placeholder="Nombre del objeto..." /></label>
+        <label>Objeto
+          <input id="dm-trade-item-name" placeholder="Busca en la base de datos..." autocomplete="off" />
+          <div id="dm-trade-search-results" class="item-search-results hidden"></div>
+        </label>
         <label>Precio (PO)<input id="dm-trade-price" type="number" min="0" value="0" /></label>
         <label>Destinatario
           <select id="dm-trade-target">
@@ -1053,7 +1056,10 @@ function renderDMTradePanel() {
       <div style="display:grid;gap:8px">
         <label>De <select id="dm-from-char">${state.characters.map(ch => '<option value="' + ch.id + '">' + escapeHtml(ch.name) + '</option>').join("")}</select></label>
         <label>A <select id="dm-to-char">${state.characters.map((ch,i) => '<option value="' + ch.id + '"' + (i===1?' selected':'') + '>' + escapeHtml(ch.name) + '</option>').join("")}</select></label>
-        <label>Objeto o monedas (ej: "Espada larga" o "50 PO")<input id="dm-transfer-item" placeholder="Nombre o cantidad..." /></label>
+        <label>Objeto o monedas (ej: "50 PO")
+          <input id="dm-transfer-item" placeholder="Busca en el inventario o escribe monedas..." autocomplete="off" />
+          <div id="dm-transfer-search-results" class="item-search-results hidden"></div>
+        </label>
         <button class="small-button gold-button" id="dm-send-transfer" style="width:100%;margin-top:4px">Transferir ahora</button>
       </div>
     </div>`;
@@ -1098,6 +1104,59 @@ function renderDMTradePanel() {
     to.inventory.push(item);
     saveState(); showToast("Transferido: " + item[1] + ".");
     document.querySelector("#dm-transfer-item").value = "";
+    document.querySelector("#dm-transfer-search-results").classList.add("hidden");
+  });
+
+  // DB search for DM trade item
+  document.querySelector("#dm-trade-item-name")?.addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    const resultsEl = document.querySelector("#dm-trade-search-results");
+    if (!q || q.length < 2) { resultsEl.classList.add("hidden"); return; }
+    const matches = ITEM_DATABASE.filter(([,name]) => name.toLowerCase().includes(q)).slice(0, 8);
+    if (!matches.length) { resultsEl.classList.add("hidden"); return; }
+    resultsEl.innerHTML = matches.map(([id, name, cat, w, val]) =>
+      `<button class="search-result-btn" data-dm-sell-item="${escapeHtml(name)}" data-dm-sell-val="${val}" type="button">
+        <strong>${escapeHtml(name)}</strong>
+        <span>${escapeHtml(cat)} · ${val > 0 ? val + " PO" : "sin precio"}</span>
+      </button>`).join("");
+    resultsEl.classList.remove("hidden");
+  });
+  document.querySelector("#dm-trade-search-results")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-dm-sell-item]");
+    if (!btn) return;
+    document.querySelector("#dm-trade-item-name").value = btn.dataset.dmSellItem;
+    if (!document.querySelector("#dm-trade-price").value || document.querySelector("#dm-trade-price").value === "0") {
+      document.querySelector("#dm-trade-price").value = btn.dataset.dmSellVal || "0";
+    }
+    document.querySelector("#dm-trade-search-results").classList.add("hidden");
+  });
+
+  // Inventory search for transfer (from character)
+  document.querySelector("#dm-from-char")?.addEventListener("change", () => {
+    document.querySelector("#dm-transfer-item").value = "";
+    document.querySelector("#dm-transfer-search-results").classList.add("hidden");
+  });
+  document.querySelector("#dm-transfer-item")?.addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    const resultsEl = document.querySelector("#dm-transfer-search-results");
+    if (!q || q.length < 1) { resultsEl.classList.add("hidden"); return; }
+    const fromId = document.querySelector("#dm-from-char").value;
+    const from = state.characters.find(c => c.id === fromId);
+    if (!from) return;
+    const matches = from.inventory.filter(i => i[1].toLowerCase().includes(q)).slice(0, 8);
+    if (!matches.length) { resultsEl.classList.add("hidden"); return; }
+    resultsEl.innerHTML = matches.map(i =>
+      `<button class="search-result-btn" data-dm-transfer-item="${escapeHtml(i[1])}" type="button">
+        <strong>${escapeHtml(i[1])}</strong>
+        <span>${escapeHtml(i[3])} · x${i[2]}</span>
+      </button>`).join("");
+    resultsEl.classList.remove("hidden");
+  });
+  document.querySelector("#dm-transfer-search-results")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-dm-transfer-item]");
+    if (!btn) return;
+    document.querySelector("#dm-transfer-item").value = btn.dataset.dmTransferItem;
+    document.querySelector("#dm-transfer-search-results").classList.add("hidden");
   });
 }
 
