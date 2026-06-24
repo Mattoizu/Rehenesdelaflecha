@@ -197,6 +197,20 @@
       </div>
     </dialog>
 
+    <dialog id="sell-dialog">
+      <div style="padding:4px;min-width:240px">
+        <h2 id="sell-dialog-title">Vender objeto</h2>
+        <p style="color:var(--muted);font-size:.82rem;margin:8px 0 6px">Precio de venta (PO)</p>
+        <input id="sell-price-input" type="number" min="0" inputmode="numeric"
+          style="width:100%;margin-bottom:14px;font-size:1.1rem" />
+        <p style="color:var(--muted);font-size:.72rem;margin-bottom:14px">El valor sugerido es la mitad del precio de lista. Puedes cambiarlo.</p>
+        <div class="dialog-actions">
+          <button class="small-button" id="sell-cancel">Cancelar</button>
+          <button class="small-button gold-button" id="sell-confirm">Confirmar venta</button>
+        </div>
+      </div>
+    </dialog>
+
     <dialog id="rope-dialog">
       <div style="padding:4px">
         <h2 id="rope-dialog-title">Ajustar cuerda</h2>

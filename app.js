@@ -47,6 +47,7 @@ async function saveState() {
         ...state,
         characters: state.characters.map(ch => {
           const { sheetImage, sheetImageType, photos, ...rest } = ch;
+          // pendingTrades must go to cloud so other devices see them
           return rest;
         })
       };
@@ -117,6 +118,12 @@ function subscribeToChanges() {
           ch.currency = remote_ch.currency || ch.currency;
           ch.condition = remote_ch.condition || ch.condition;
           ch.resourceUses = remote_ch.resourceUses || {};
+          // Merge pendingTrades - always take remote (DM sends trades from another device)
+          // Filter out trades the user already rejected
+          const rejected = ch.rejectedTradeIds || [];
+          ch.pendingTrades = (remote_ch.pendingTrades ?? ch.pendingTrades ?? [])
+            .filter(t => !rejected.includes(t.id));
+          ch.rejectedTradeIds = ch.rejectedTradeIds ?? [];
           // Never overwrite local-only fields from remote (images stay local)
           ch.spellState = remote_ch.spellState ?? ch.spellState;
         }
@@ -157,7 +164,10 @@ function mergeRemoteState(saved) {
       sheetImageType: stored.sheetImageType ?? null,
       spellState: stored.spellState ?? null,
       photos: stored.photos ?? [],
-      pendingTrades: stored.pendingTrades ?? [],
+      pendingTrades: (stored.pendingTrades ?? []).filter(t => 
+        !(stored.rejectedTradeIds || []).includes(t.id)
+      ),
+      rejectedTradeIds: stored.rejectedTradeIds ?? [],
     };
   });
   return { characters, activity: saved.activity || {} };
@@ -1194,8 +1204,11 @@ function renderPendingTrades() {
       (t.type === "purchase"
         ? 'El DM te ofrece: "' + escapeHtml(t.itemName) + '" por ' + t.price + ' PO'
         : t.type === "exchange"
-          ? escapeHtml(t.fromName) + ' te ofrece "' + escapeHtml(t.offerItem) + '" a cambio de "' + escapeHtml(t.requestItem) + '"'
-          : escapeHtml(t.itemName)) +
+          ? escapeHtml(t.fromName) + ' te ofrece "' + escapeHtml(t.offerItem) + '"' +
+            (t.offerPO > 0 ? ' + ' + t.offerPO + ' PO' : '') +
+            (t.requestItem ? ' a cambio de "' + escapeHtml(t.requestItem) + '"' : '') +
+            (t.requestPO > 0 ? (t.requestItem ? ' + ' : ' a cambio de ') + t.requestPO + ' PO' : '')
+          : escapeHtml(t.itemName || "")) +
       '</span><div style="display:flex;gap:6px;margin-top:8px"><button class="small-button gold-button" data-accept-trade="' + i + '" style="flex:1">Aceptar</button><button class="small-button danger-button" data-reject-trade="' + i + '" style="flex:1">Rechazar</button></div></div>').join("");
   document.querySelector(".panel-card")?.insertAdjacentElement("afterbegin", notif);
 }
@@ -1254,7 +1267,8 @@ function renderItemCard(entry, equipped, showEquip) {
       <div class="item-actions">
         ${primaryAction}
         ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± pies</button>` : ''}
-        ${!isRope ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
+        ${!isRope && window._isDM ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
+        ${window._isDM ? `<button class="small-button" data-sell-item="${id}" data-sell-value="${valueField}">Vender</button>` : ''}
         <button class="small-button" data-edit-item="${id}">✎</button>
         <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
       </div>
@@ -1288,8 +1302,16 @@ function renderTradePanel(item) {
         <label>Tu ofreces
           <select id="tp-offer-item">${invOpts || '<option value="">Sin objetos</option>'}</select>
         </label>
+        <label style="display:flex;align-items:center;gap:8px">
+          <span style="white-space:nowrap;color:var(--muted);font-size:.78rem">+ PO extras</span>
+          <input id="tp-offer-po" type="number" min="0" value="0" style="width:80px" />
+        </label>
         <label>A cambio de (nombre del objeto)
-          <input id="tp-request-item" placeholder="Nombre del objeto que quieres..." />
+          <input id="tp-request-item" placeholder="Nombre del objeto o dejar en blanco..." />
+        </label>
+        <label style="display:flex;align-items:center;gap:8px">
+          <span style="white-space:nowrap;color:var(--muted);font-size:.78rem">+ PO que pides</span>
+          <input id="tp-request-po" type="number" min="0" value="0" style="width:80px" />
         </label>
         <label>Con quien
           <select id="tp-trade-to">${othersOpts}</select>
@@ -1299,7 +1321,16 @@ function renderTradePanel(item) {
     </div>`;
 }
 
+function getActiveTab() {
+  return document.querySelector(".inv-tab.active")?.dataset?.invTab || "equipo";
+}
+function setActiveTab(tabId) {
+  document.querySelectorAll(".inv-tab").forEach(t => t.classList.toggle("active", t.dataset.invTab === tabId));
+  document.querySelectorAll(".inv-panel").forEach(p => p.classList.toggle("active", p.id === "inv-" + tabId));
+}
+
 function renderInventory() {
+  const activeTab = getActiveTab();
   const item = character();
   item.equipped ||= [];
   item.currency ||= { ...EMPTY_CURRENCY };
@@ -1443,13 +1474,16 @@ function renderInventory() {
       <button class="inv-tab" data-inv-tab="consumibles">Consumibles</button>
       <button class="inv-tab" data-inv-tab="tesoros">Tesoros</button>
       <button class="inv-tab" data-inv-tab="mochila">Mochila</button>
-      <button class="inv-tab" data-inv-tab="envios">Envios</button>
+      <button class="inv-tab" data-inv-tab="envios">Comercio</button>
     </div>
     <div class="inv-panel active" id="inv-equipo">${equipoHTML}</div>
     <div class="inv-panel" id="inv-consumibles">${consumHTML}</div>
     <div class="inv-panel" id="inv-tesoros">${tesHTML}</div>
     <div class="inv-panel" id="inv-mochila">${mochilaSections || '<p class="helper-copy">La mochila esta vacia.</p>'}</div>
     <div class="inv-panel" id="inv-envios">${renderTradePanel(item)}</div>`;
+
+  // Restore active tab
+  setActiveTab(activeTab);
 
   const activity = state.activity[item.id] || [];
   document.querySelector("#activity-list").innerHTML = activity.map((entry) => `<p class="activity-entry">${escapeHtml(entry)}</p>`).join("") || '<p class="helper-copy">Todavia no hay movimientos.</p>';
@@ -1578,16 +1612,26 @@ document.addEventListener("click", (event) => {
       }
       addActivity("Compraste " + trade.itemName + " por " + trade.price + " PO.");
     } else if (trade.type === "exchange") {
-      // Move offered item from sender to receiver
       const sender = state.characters.find(c => c.id === trade.fromId);
       if (sender) {
+        // Transfer offered item
         const sIdx = sender.inventory.findIndex(i => i[0] === trade.offeredItemId);
         if (sIdx !== -1) {
           const sent = sender.inventory.splice(sIdx, 1)[0];
           sender.equipped = sender.equipped.filter(id => id !== sent[0]);
           item.inventory.push(sent);
-          addActivity("Aceptaste el intercambio con " + trade.fromName + ". Recibiste " + sent[1] + ".");
         }
+        // Transfer PO from sender to receiver (offer PO)
+        if (trade.offerPO > 0) {
+          sender.currency.po = Math.max(0, (sender.currency.po || 0) - trade.offerPO);
+          item.currency.po = (item.currency.po || 0) + trade.offerPO;
+        }
+        // Transfer PO from receiver to sender (requested PO)
+        if (trade.requestPO > 0) {
+          item.currency.po = Math.max(0, (item.currency.po || 0) - trade.requestPO);
+          sender.currency.po = (sender.currency.po || 0) + trade.requestPO;
+        }
+        addActivity("Intercambio aceptado con " + trade.fromName + ".");
       }
     }
     item.pendingTrades.splice(idx, 1);
@@ -1599,9 +1643,37 @@ document.addEventListener("click", (event) => {
     const item = character();
     if (!item) return;
     const idx = parseInt(rejectTrade.dataset.rejectTrade);
+    const trade = item.pendingTrades[idx];
+    if (!trade) return;
+    // Add to rejected list to prevent re-appearing on reload
+    item.rejectedTradeIds = item.rejectedTradeIds || [];
+    item.rejectedTradeIds.push(trade.id);
+    // Keep only last 20 rejected IDs
+    if (item.rejectedTradeIds.length > 20) item.rejectedTradeIds = item.rejectedTradeIds.slice(-20);
     item.pendingTrades.splice(idx, 1);
     document.querySelector("#trade-notification")?.remove();
     saveState(); renderCharacter(); showToast("Oferta rechazada.");
+  }
+
+  // DM sell button
+  const sellBtn = event.target.closest("[data-sell-item]");
+  if (sellBtn && window._isDM) {
+    const itemId = sellBtn.dataset.sellItem;
+    const itemValue = parseFloat(sellBtn.dataset.sellValue) || 0;
+    const suggested = Math.floor(itemValue / 2);
+    const item = character();
+    if (!item) return;
+    const inv = item.inventory.find(i => i[0] === itemId);
+    if (!inv) return;
+    document.querySelector("#sell-dialog-title").textContent = 'Vender: ' + inv[1];
+    const input = document.querySelector("#sell-price-input");
+    input.placeholder = suggested + " PO (valor aprox.)";
+    input.value = "";
+    input.dataset.itemId = itemId;
+    input.dataset.suggested = suggested;
+    document.querySelector("#sell-dialog").showModal();
+    input.focus();
+    return;
   }
 
   // Trade panel - send direct
@@ -1638,9 +1710,12 @@ document.addEventListener("click", (event) => {
     const target = state.characters.find(c => c.id === toId);
     if (!target) return;
     target.pendingTrades = target.pendingTrades || [];
+    const offerPO = parseInt(document.querySelector("#tp-offer-po")?.value) || 0;
+    const requestPO = parseInt(document.querySelector("#tp-request-po")?.value) || 0;
     target.pendingTrades.push({
       id: Date.now(), type: "exchange",
-      offerItem: offeredItem[1], requestItem: requestName || "cualquier cosa",
+      offerItem: offeredItem[1], requestItem: requestName || "",
+      offerPO, requestPO,
       fromId: item.id, fromName: item.name,
       offeredItemId: itemId, ts: Date.now()
     });
@@ -1852,6 +1927,27 @@ document.querySelector("#currency-set").addEventListener("click", () => {
 });
 document.querySelector("#currency-cancel").addEventListener("click", () => {
   document.querySelector("#currency-dialog").close();
+});
+
+// Sell dialog
+document.querySelector("#sell-confirm").addEventListener("click", () => {
+  const input = document.querySelector("#sell-price-input");
+  const itemId = input.dataset.itemId;
+  const price = parseInt(input.value) || parseInt(input.dataset.suggested) || 0;
+  const item = character();
+  if (!item) return;
+  const idx = item.inventory.findIndex(i => i[0] === itemId);
+  if (idx === -1) return;
+  const sold = item.inventory.splice(idx, 1)[0];
+  item.equipped = item.equipped.filter(id => id !== sold[0]);
+  item.currency.po = (item.currency.po || 0) + price;
+  addActivity("Vendiste " + sold[1] + " por " + price + " PO.");
+  saveState(); renderCharacter();
+  document.querySelector("#sell-dialog").close();
+  showToast(sold[1] + " vendido por " + price + " PO.");
+});
+document.querySelector("#sell-cancel").addEventListener("click", () => {
+  document.querySelector("#sell-dialog").close();
 });
 
 
