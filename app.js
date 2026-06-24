@@ -1105,15 +1105,11 @@ function renderInventory() {
     const name = labelParts[1];
     const qty = item.currency[key] || 0;
     return `
-    <article class="currency-item">
+    <button class="currency-item" data-open-currency="${key}" type="button">
       <span class="coin-abbr">${abbr}</span>
       <span class="coin-name">${name}</span>
-      <div class="coin-controls">
-        <button class="currency-button" data-currency="${key}" data-currency-delta="-1" type="button">−</button>
-        <strong>${qty}</strong>
-        <button class="currency-button" data-currency="${key}" data-currency-delta="1" type="button">+</button>
-      </div>
-    </article>`;
+      <strong class="coin-qty">${qty}</strong>
+    </button>`;
   }).join("");
   // Show total coin weight below grid
   const coinWeightEl = document.querySelector("#coin-weight-total");
@@ -1422,6 +1418,47 @@ document.querySelector("#item-form").addEventListener("submit", (event) => {
 
 // Rope dialog handlers
 document.querySelector("#rope-cancel").addEventListener("click", () => document.querySelector("#rope-dialog").close());
+
+// Currency dialog handlers
+document.querySelector("#currency-add").addEventListener("click", () => {
+  const dlg = document.querySelector("#currency-dialog");
+  const key = dlg.dataset.currencyKey;
+  const amount = parseInt(document.querySelector("#currency-dialog-amount").value) || 0;
+  if (amount === 0) { dlg.close(); return; }
+  const item = character();
+  if (!item) return;
+  item.currency[key] = Math.max(0, (item.currency[key] || 0) + amount);
+  const labelParts = CURRENCY_LABELS[key].split("|");
+  addActivity(`+${amount} ${labelParts[0]}.`);
+  saveState(); renderInventory(); dlg.close();
+});
+document.querySelector("#currency-subtract").addEventListener("click", () => {
+  const dlg = document.querySelector("#currency-dialog");
+  const key = dlg.dataset.currencyKey;
+  const amount = parseInt(document.querySelector("#currency-dialog-amount").value) || 0;
+  if (amount === 0) { dlg.close(); return; }
+  const item = character();
+  if (!item) return;
+  item.currency[key] = Math.max(0, (item.currency[key] || 0) - amount);
+  const labelParts = CURRENCY_LABELS[key].split("|");
+  addActivity(`-${amount} ${labelParts[0]}.`);
+  saveState(); renderInventory(); dlg.close();
+});
+document.querySelector("#currency-set").addEventListener("click", () => {
+  const dlg = document.querySelector("#currency-dialog");
+  const key = dlg.dataset.currencyKey;
+  const amount = parseInt(document.querySelector("#currency-dialog-amount").value);
+  if (isNaN(amount)) { dlg.close(); return; }
+  const item = character();
+  if (!item) return;
+  item.currency[key] = Math.max(0, amount);
+  const labelParts = CURRENCY_LABELS[key].split("|");
+  addActivity(`${labelParts[0]} → ${amount}.`);
+  saveState(); renderInventory(); dlg.close();
+});
+document.querySelector("#currency-cancel").addEventListener("click", () => {
+  document.querySelector("#currency-dialog").close();
+});
 
 
 

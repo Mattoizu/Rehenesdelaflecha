@@ -148,6 +148,23 @@
       </form>
     </dialog>
 
+    <dialog id="currency-dialog">
+      <div style="padding:4px;min-width:220px">
+        <h2 id="currency-dialog-title">Monedas</h2>
+        <p style="color:var(--muted);font-size:.84rem;margin:8px 0 14px" id="currency-dialog-current"></p>
+        <label style="color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">Cantidad</label>
+        <input id="currency-dialog-amount" type="number" min="0" inputmode="numeric" placeholder="0" style="width:100%;margin-bottom:14px" />
+        <div class="dialog-actions" style="flex-direction:column;gap:6px">
+          <div style="display:flex;gap:6px">
+            <button class="small-button gold-button" id="currency-add" style="flex:1">+ Agregar</button>
+            <button class="small-button danger-button" id="currency-subtract" style="flex:1">− Quitar</button>
+          </div>
+          <button class="small-button" id="currency-set" style="width:100%">= Establecer total</button>
+          <button class="small-button" id="currency-cancel" style="width:100%">Cancelar</button>
+        </div>
+      </div>
+    </dialog>
+
     <dialog id="rope-dialog">
       <div style="padding:4px">
         <h2 id="rope-dialog-title">Ajustar cuerda</h2>

@@ -395,13 +395,6 @@ input, textarea, select { width: 100%; border: 1px solid var(--line); border-rad
 textarea { min-height: 74px; resize: vertical; }
 .wide-field { grid-column: 1 / -1; }
 .inventory-list, .activity-list, .recommendation-list { display: grid; gap: 8px; margin-top: 12px; }
-.currency-card { display: grid; gap: 10px; margin-top: 13px; padding: 11px; border: 1px solid var(--gold-dark); border-radius: 11px; background: rgba(123, 87, 42, .1); }
-.currency-grid { display: grid; grid-template-columns: repeat(5, minmax(52px, 1fr)); gap: 6px; }
-.currency-item { padding: 7px 4px; border: 1px solid var(--line); border-radius: 9px; background: rgba(16, 11, 11, .45); text-align: center; }
-.currency-item span { display: block; margin-bottom: 6px; color: var(--gold); font-size: .66rem; font-weight: 800; letter-spacing: .08em; }
-.currency-item div { display: flex; align-items: center; justify-content: center; gap: 4px; }
-.currency-item strong { min-width: 18px; color: var(--text); font-size: .78rem; }
-.currency-button { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--text); background: var(--panel-soft); font-size: .72rem; line-height: 1; }
 .carry-card { margin-top: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(39, 25, 24, .42); }
 .carry-heading { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: .74rem; font-weight: 750; }
 .carry-heading strong { color: var(--gold); }
@@ -502,8 +495,7 @@ dialog form { display: grid; gap: 12px; }
   .profile-tabs { padding: 0 0 3px; margin: 12px -14px 12px; padding-inline: 14px; }
   .inventory-item { grid-template-columns: 1fr; }
   .item-actions { justify-content: flex-start; }
-  .currency-grid { grid-template-columns: repeat(5, minmax(48px, 1fr)); gap: 4px; }
-  .knowledge-note { display: grid; }
+    .knowledge-note { display: grid; }
   .character-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .rest-buttons { gap: 6px; }
   .rest-btn { flex: 1; justify-content: center; font-size: .74rem; padding: 8px 10px; }
@@ -786,21 +778,6 @@ button[data-edit-item] { font-size: .82rem; }
 }
 
 /* ── Coin weight ───────────────────────────────────────────────────── */
-.coin-weight {
-  display: block;
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: .6rem;
-  font-weight: 700;
-  letter-spacing: .04em;
-  text-align: center;
-}
-.coin-weight-note {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: .72rem;
-  text-align: center;
-}
 
 /* ── Atributos con modificador ────────────────────────────────────── */
 .attr-mod {
@@ -1609,48 +1586,6 @@ button[data-edit-item] { font-size: .82rem; }
 }
 
 /* ── Monedas ──────────────────────────────────────────────────────── */
-.currency-card {
-  margin: 0;
-  padding: 12px 14px;
-  border: none;
-  border-top: 1px solid rgba(75,48,41,.4);
-  border-radius: 0;
-  background: rgba(123,87,42,.06);
-}
-.currency-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  margin-top: 8px;
-}
-.currency-item {
-  padding: 8px 4px;
-  border: 1px solid rgba(75,48,41,.4);
-  border-radius: 10px;
-  background: rgba(16,11,11,.5);
-  text-align: center;
-  transition: border-color .12s;
-}
-.currency-item:hover { border-color: var(--gold-dark); }
-.currency-item span {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--gold);
-  font-size: .6rem;
-  font-weight: 900;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.currency-item strong { color: #f4d898; font-size: .84rem; }
-.currency-button {
-  width: 18px;
-  height: 18px;
-  border: 1px solid rgba(75,48,41,.5);
-  border-radius: 50%;
-  background: rgba(27,18,18,.8);
-  color: var(--muted);
-  font-size: .7rem;
-}
 
 /* ── Sección + agregar ────────────────────────────────────────────── */
 .section-title-row {
@@ -1750,16 +1685,7 @@ button[data-edit-item] { font-size: .82rem; }
   }
 
   /* ── Monedas: botones más grandes ── */
-  .currency-item { padding: 9px 4px; }
-  .currency-item span { font-size: .52rem; margin-bottom: 7px; }
-  .currency-item strong { font-size: .9rem; }
-  .currency-button {
-    width: 24px;
-    height: 24px;
-    font-size: .82rem;
-  }
-  .currency-grid { gap: 5px; }
-
+          
   /* ── Panel inventario sin padding lateral extra ── */
   .inv-panel { padding: 10px; gap: 7px; }
   .section-title-row { padding: 10px 10px 0; }
@@ -1804,8 +1730,14 @@ button[data-edit-item] { font-size: .82rem; }
 .item-desc { margin-bottom: 0; }
 
 /* ── Monedas rediseñadas ──────────────────────────────────────────── */
+
+/* ── Tabla de conversión de monedas ───────────────────────────────── */
+
+/* ── Monedas (definición única) ──────────────────────────────────── */
 .currency-card {
   padding: 10px 12px;
+  border-top: 1px solid rgba(75,48,41,.4);
+  background: rgba(123,87,42,.06);
 }
 .currency-grid {
   display: flex;
@@ -1813,7 +1745,7 @@ button[data-edit-item] { font-size: .82rem; }
   margin-top: 8px;
   overflow-x: auto;
   scrollbar-width: none;
-  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
 }
 .currency-grid::-webkit-scrollbar { display: none; }
 .currency-item {
@@ -1821,24 +1753,23 @@ button[data-edit-item] { font-size: .82rem; }
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 8px 6px;
+  padding: 8px 4px;
   border: 1px solid rgba(75,48,41,.5);
   border-radius: 10px;
   background: rgba(16,11,11,.5);
   text-align: center;
-  flex: 0 0 calc(20% - 4px);
-  min-width: 58px;
+  flex: 0 0 18%;
+  min-width: 56px;
 }
 .coin-abbr {
   color: var(--gold);
   font-size: .78rem;
   font-weight: 900;
-  letter-spacing: .02em;
   line-height: 1;
 }
 .coin-name {
   color: var(--muted);
-  font-size: .56rem;
+  font-size: .54rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -1846,13 +1777,13 @@ button[data-edit-item] { font-size: .82rem; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   margin-top: 2px;
 }
 .coin-controls strong {
   min-width: 20px;
   color: #f4d898;
-  font-size: .92rem;
+  font-size: .9rem;
   font-weight: 800;
   text-align: center;
   line-height: 1;
@@ -1860,26 +1791,30 @@ button[data-edit-item] { font-size: .82rem; }
 .currency-button {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border: 1px solid rgba(75,48,41,.5);
   border-radius: 50%;
   background: rgba(27,18,18,.8);
   color: var(--muted);
-  font-size: .82rem;
-  line-height: 1;
+  font-size: .85rem;
   flex-shrink: 0;
 }
-
-/* ── Tabla de conversión de monedas ───────────────────────────────── */
+.coin-weight-note {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: .7rem;
+  text-align: center;
+}
 .coin-table-wrap {
   overflow-x: auto;
-  margin-top: 8px;
+  margin-top: 6px;
   border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
 }
 .coin-table {
   width: 100%;
-  min-width: 320px;
+  min-width: 300px;
   border-collapse: collapse;
   font-size: .72rem;
 }
@@ -1898,9 +1833,22 @@ button[data-edit-item] { font-size: .82rem; }
   color: var(--muted);
   text-align: center;
 }
-.coin-table td:first-child {
-  color: #f4d898;
-  font-weight: 700;
-  text-align: left;
-}
+.coin-table td:first-child { color: #f4d898; font-weight: 700; text-align: left; }
 .coin-table tr:last-child td { border-bottom: none; }
+
+/* ── Monedas como botón ───────────────────────────────────────────── */
+button.currency-item {
+  cursor: pointer;
+  border: 1px solid rgba(75,48,41,.5);
+  transition: border-color .15s, background .15s, transform .1s;
+}
+button.currency-item:hover { border-color: var(--gold-dark); background: rgba(123,87,42,.15); }
+button.currency-item:active { transform: scale(0.95); }
+.coin-qty {
+  display: block;
+  color: #f4d898;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-top: 3px;
+}
