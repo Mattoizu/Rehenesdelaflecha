@@ -1083,9 +1083,9 @@ function renderInventory() {
     };
     const table = document.createElement("div");
     table.id = "coin-conversion-table";
-    table.className = "hidden";
+    table.className = "hidden"; table.style.cssText = "margin-top:6px";
     table.innerHTML = `
-      <table class="coin-table">
+      <div class="coin-table-wrap"><table class="coin-table">
         <thead><tr><th>Moneda</th><th>PC</th><th>PP</th><th>PE</th><th>PO</th><th>PPT</th></tr></thead>
         <tbody>
           <tr><td>1 PC</td><td>1</td><td>1/10</td><td>1/50</td><td>1/100</td><td>1/1000</td></tr>
@@ -1094,7 +1094,7 @@ function renderInventory() {
           <tr><td>1 PO</td><td>100</td><td>10</td><td>2</td><td>1</td><td>1/10</td></tr>
           <tr><td>1 PPT</td><td>1000</td><td>100</td><td>20</td><td>10</td><td>1</td></tr>
         </tbody>
-      </table>`;
+      </table></div>`;
     coinWeightElParent.appendChild(toggleBtn);
     coinWeightElParent.appendChild(table);
   }
