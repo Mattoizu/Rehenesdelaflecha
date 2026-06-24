@@ -123,7 +123,14 @@ function subscribeToChanges() {
       });
       if (activeCharacterId) {
         renderCharacter();
-        renderPendingTrades();
+        // Check for new pending trades specifically
+        const currentChar = state.characters.find(c => c.id === activeCharacterId);
+        if (currentChar?.pendingTrades?.length) {
+          document.querySelector("#trade-notification")?.remove();
+          renderPendingTrades();
+        } else {
+          document.querySelector("#trade-notification")?.remove();
+        }
       } else renderHome();
     } catch(e) { console.warn("onSnapshot error:", e); }
   });
@@ -626,11 +633,17 @@ const CHARACTER_PASSWORDS = {
 };
 function checkPassword(characterId) {
   const pw = CHARACTER_PASSWORDS[characterId];
-  if (!pw) return true; // sin contraseña = acceso libre
-  const input = prompt(`Contraseña para este personaje:`);
-  if (input === null) return false; // canceló
-  if (input === MASTER_PASSWORD || input === pw) return true;
-  return false;
+  if (!pw) return true;
+  return new Promise((resolve) => {
+    const dlg = document.querySelector("#pin-dialog");
+    document.querySelector("#pin-title").textContent = "Ingresa tu PIN";
+    document.querySelector("#pin-input").value = "";
+    dlg.dataset.resolve = "pending";
+    dlg._resolve = resolve;
+    dlg.showModal();
+    dlg._charPw = pw;
+    setTimeout(() => document.querySelector("#pin-input").focus(), 50);
+  });
 }
 
 // Convert feet to meters in text
@@ -1025,11 +1038,14 @@ document.addEventListener("click", (e) => {
   _dmClickTimer = setTimeout(() => { _dmClicks = 0; }, 3000);
   if (_dmClicks >= 5) {
     _dmClicks = 0;
-    const pw = prompt("Contraseña DM:");
-    if (pw === MASTER_PASSWORD) {
-      window._isDM = true;
-      showView("dm-view");
-    }
+    const dlg = document.querySelector("#pin-dialog");
+    document.querySelector("#pin-title").textContent = "PIN del Dungeon Master";
+    document.querySelector("#pin-input").value = "";
+    dlg._charPw = MASTER_PASSWORD;
+    dlg._isDMMode = true;
+    dlg._resolve = null;
+    dlg.showModal();
+    setTimeout(() => document.querySelector("#pin-input").focus(), 50);
   }
 });
 
@@ -1443,12 +1459,12 @@ function addActivity(message) {
   state.activity[activeCharacterId].unshift(message);
   state.activity[activeCharacterId] = state.activity[activeCharacterId].slice(0, 8);
 }
-function activateCharacter(id) {
-  if (!checkPassword(id)) return;
+async function activateCharacter(id) {
+  const ok = await checkPassword(id);
+  if (!ok) return;
   activeCharacterId = id;
   renderCharacter();
   showView("character-view");
-  // Show add button only for DM
   document.querySelector("#open-add-item").classList.toggle("hidden", !window._isDM);
 }
 
@@ -1763,6 +1779,39 @@ document.querySelector("#item-form").addEventListener("submit", (event) => {
 
 // Rope dialog handlers
 document.querySelector("#rope-cancel").addEventListener("click", () => document.querySelector("#rope-dialog").close());
+
+// PIN dialog handlers
+document.querySelector("#pin-confirm").addEventListener("click", () => {
+  const dlg = document.querySelector("#pin-dialog");
+  const input = document.querySelector("#pin-input").value.trim();
+  const pw = dlg._charPw;
+  const ok = input === MASTER_PASSWORD || input === pw;
+  if (!ok) {
+    document.querySelector("#pin-error").textContent = "PIN incorrecto.";
+    document.querySelector("#pin-input").value = "";
+    document.querySelector("#pin-input").focus();
+    return;
+  }
+  document.querySelector("#pin-error").textContent = "";
+  dlg.close();
+  if (dlg._isDMMode) {
+    dlg._isDMMode = false;
+    window._isDM = true;
+    showView("dm-view");
+  } else if (dlg._resolve) {
+    dlg._resolve(true);
+    dlg._resolve = null;
+  }
+});
+document.querySelector("#pin-cancel").addEventListener("click", () => {
+  const dlg = document.querySelector("#pin-dialog");
+  dlg.close();
+  if (dlg._resolve) { dlg._resolve(false); dlg._resolve = null; }
+  dlg._isDMMode = false;
+});
+document.querySelector("#pin-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") document.querySelector("#pin-confirm").click();
+});
 
 // Currency dialog handlers
 document.querySelector("#currency-add").addEventListener("click", () => {

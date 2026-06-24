@@ -166,6 +166,20 @@
       </form>
     </dialog>
 
+    <dialog id="pin-dialog">
+      <div style="padding:4px;min-width:200px;text-align:center">
+        <h2 id="pin-title" style="margin-bottom:12px">Ingresa tu PIN</h2>
+        <input id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*"
+          placeholder="••••" autocomplete="off"
+          style="text-align:center;font-size:1.6rem;letter-spacing:.3em;width:100%;margin-bottom:8px" />
+        <p id="pin-error" style="color:#f1a49b;font-size:.78rem;min-height:1.2em;margin-bottom:10px"></p>
+        <div style="display:flex;gap:8px">
+          <button class="small-button" id="pin-cancel" style="flex:1">Cancelar</button>
+          <button class="small-button gold-button" id="pin-confirm" style="flex:1">Entrar</button>
+        </div>
+      </div>
+    </dialog>
+
     <dialog id="currency-dialog">
       <div style="padding:4px;min-width:220px">
         <h2 id="currency-dialog-title">Monedas</h2>
