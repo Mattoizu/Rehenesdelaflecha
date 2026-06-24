@@ -1852,3 +1852,53 @@ button.currency-item:active { transform: scale(0.95); }
   line-height: 1;
   margin-top: 3px;
 }
+
+/* ── Sistema de comercio ──────────────────────────────────────────── */
+.trade-notification {
+  margin-bottom: 10px;
+  padding: 14px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(123,87,42,.15), rgba(16,11,11,.9));
+}
+.trade-notif-title {
+  display: block;
+  color: var(--gold);
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.trade-offer {
+  padding: 10px;
+  border: 1px solid rgba(75,48,41,.4);
+  border-radius: 9px;
+  background: rgba(16,11,11,.4);
+  margin-bottom: 8px;
+  font-size: .84rem;
+  color: var(--muted);
+}
+.trade-offer:last-child { margin-bottom: 0; }
+.dm-trade-section {
+  padding: 14px;
+  border: 1px solid rgba(75,48,41,.4);
+  border-radius: 12px;
+  background: rgba(16,11,11,.4);
+}
+.dm-char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border: 1px solid rgba(75,48,41,.4);
+  border-radius: 12px;
+  background: rgba(16,11,11,.5);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.dm-char-btn:hover { border-color: var(--gold-dark); background: rgba(123,87,42,.12); }
+.dm-char-btn img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+.dm-char-btn span { font-size: .72rem; font-weight: 700; color: #f4d898; }

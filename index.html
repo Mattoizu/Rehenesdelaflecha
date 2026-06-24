@@ -78,7 +78,7 @@
               <p class="eyebrow">Equipo y objetos</p>
               <h2>Inventario</h2>
             </div>
-            <button class="small-button gold-button" id="open-add-item" type="button">+ Agregar</button>
+            <button class="small-button gold-button hidden" id="open-add-item" type="button">+ Agregar</button>
           </div>
           <div class="currency-card">
             <p class="eyebrow">Monedas</p>
@@ -94,6 +94,24 @@
           <h2>Actividad</h2>
           <div class="activity-list" id="activity-list"></div>
         </article>
+      </section>
+      <!-- DM View -->
+      <section class="view" id="dm-view">
+        <article class="hero-card" style="min-height:auto;padding:18px 20px">
+          <p class="eyebrow">Panel del Dungeon Master</p>
+          <h1>Modo DM</h1>
+          <p style="margin-top:4px;font-size:.85rem">Selecciona un personaje para gestionar su inventario o usa el sistema de comercio.</p>
+        </article>
+
+        <section class="section-block" style="margin-top:12px">
+          <p class="home-section-label">Aventureros</p>
+          <div class="character-grid" id="dm-character-grid"></div>
+        </section>
+
+        <section class="section-block" style="margin-top:12px">
+          <p class="home-section-label">Comercio e intercambios</p>
+          <div id="dm-trade-panel"></div>
+        </section>
       </section>
     </main>
 

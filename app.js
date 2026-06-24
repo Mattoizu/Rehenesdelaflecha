@@ -21,6 +21,7 @@ const STATE_DOC = doc(db, "campana", "estado");
 let firestoreReady = false;
 let saveTimeout = null;
 window._clientId = Math.random().toString(36).slice(2);
+window._isDM = false;
 
 async function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -147,6 +148,7 @@ function mergeRemoteState(saved) {
       sheetImageType: stored.sheetImageType ?? null,
       spellState: stored.spellState ?? null,
       photos: stored.photos ?? [],
+      pendingTrades: stored.pendingTrades ?? [],
     };
   });
   return { characters, activity: saved.activity || {} };
@@ -989,6 +991,7 @@ function showView(viewId) {
   if (topbarNav) topbarNav.classList.toggle("hidden", isCharView);
   if (bottomNav) bottomNav.classList.toggle("hidden", isCharView);
   window.scrollTo({ top: 0, behavior: "smooth" });
+  if (viewId === "dm-view") { renderDMPanel(); renderDMTradePanel(); }
 }
 function renderHome() {
   document.querySelector("#character-grid").innerHTML = state.characters.map((item) => {
@@ -1007,6 +1010,118 @@ function renderHome() {
   }).join("");
 }
 
+// DM mode activation - logo click counter
+let _dmClicks = 0;
+let _dmClickTimer = null;
+document.querySelector(".brand-button").addEventListener("click", () => {
+  if (showView.toString().includes("character-view") && activeCharacterId) return;
+  _dmClicks++;
+  clearTimeout(_dmClickTimer);
+  _dmClickTimer = setTimeout(() => { _dmClicks = 0; }, 2000);
+  if (_dmClicks >= 5) {
+    _dmClicks = 0;
+    const pw = prompt("Contraseña DM:");
+    if (pw === MASTER_PASSWORD) {
+      window._isDM = true;
+      showView("dm-view");
+    }
+  }
+});
+
+function renderDMTradePanel() {
+  const el = document.querySelector("#dm-trade-panel");
+  if (!el) return;
+  el.innerHTML = `
+    <div class="dm-trade-section">
+      <h3 style="color:var(--gold);margin-bottom:10px">Vender objeto a jugador</h3>
+      <div style="display:grid;gap:8px">
+        <label>Objeto<input id="dm-trade-item-name" placeholder="Nombre del objeto..." /></label>
+        <label>Precio (PO)<input id="dm-trade-price" type="number" min="0" value="0" /></label>
+        <label>Destinatario
+          <select id="dm-trade-target">
+            ${state.characters.map(ch => '<option value="' + ch.id + '">' + escapeHtml(ch.name) + ' (' + escapeHtml(ch.player) + ')' + '</option>').join("")}
+          </select>
+        </label>
+        <button class="small-button gold-button" id="dm-send-trade" style="width:100%;margin-top:4px">Enviar oferta</button>
+      </div>
+    </div>
+    <div class="dm-trade-section" style="margin-top:16px">
+      <h3 style="color:var(--gold);margin-bottom:10px">Transferencia directa</h3>
+      <div style="display:grid;gap:8px">
+        <label>De <select id="dm-from-char">${state.characters.map(ch => '<option value="' + ch.id + '">' + escapeHtml(ch.name) + '</option>').join("")}</select></label>
+        <label>A <select id="dm-to-char">${state.characters.map((ch,i) => '<option value="' + ch.id + '"' + (i===1?' selected':'') + '>' + escapeHtml(ch.name) + '</option>').join("")}</select></label>
+        <label>Objeto o monedas (ej: "Espada larga" o "50 PO")<input id="dm-transfer-item" placeholder="Nombre o cantidad..." /></label>
+        <button class="small-button gold-button" id="dm-send-transfer" style="width:100%;margin-top:4px">Transferir ahora</button>
+      </div>
+    </div>`;
+
+  document.querySelector("#dm-send-trade")?.addEventListener("click", () => {
+    const itemName = document.querySelector("#dm-trade-item-name").value.trim();
+    const price = parseInt(document.querySelector("#dm-trade-price").value) || 0;
+    const targetId = document.querySelector("#dm-trade-target").value;
+    if (!itemName) { showToast("Escribe el nombre del objeto."); return; }
+    const target = state.characters.find(c => c.id === targetId);
+    if (!target) return;
+    target.pendingTrades = target.pendingTrades || [];
+    target.pendingTrades.push({ id: Date.now(), type: "purchase", itemName, price, ts: Date.now() });
+    saveState(); showToast("Oferta enviada a " + target.name + ".");
+    document.querySelector("#dm-trade-item-name").value = "";
+  });
+
+  document.querySelector("#dm-send-transfer")?.addEventListener("click", () => {
+    const fromId = document.querySelector("#dm-from-char").value;
+    const toId = document.querySelector("#dm-to-char").value;
+    if (fromId === toId) { showToast("Origen y destino deben ser distintos."); return; }
+    const itemInput = document.querySelector("#dm-transfer-item").value.trim();
+    if (!itemInput) { showToast("Escribe que transferir."); return; }
+    const from = state.characters.find(c => c.id === fromId);
+    const to = state.characters.find(c => c.id === toId);
+    if (!from || !to) return;
+    const coinMatch = itemInput.match(/^(\d+)\s*(PC|PP|PE|PO|PPT)$/i);
+    if (coinMatch) {
+      const amount = parseInt(coinMatch[1]);
+      const coinKey = coinMatch[2].toLowerCase();
+      if ((from.currency[coinKey] || 0) < amount) { showToast("No tiene suficientes monedas."); return; }
+      from.currency[coinKey] -= amount;
+      to.currency[coinKey] = (to.currency[coinKey] || 0) + amount;
+      saveState(); showToast("Transferido: " + amount + " " + coinMatch[2].toUpperCase() + ".");
+      document.querySelector("#dm-transfer-item").value = "";
+      return;
+    }
+    const itemIdx = from.inventory.findIndex(i => i[1].toLowerCase().includes(itemInput.toLowerCase()));
+    if (itemIdx === -1) { showToast("No encontrado en inventario de " + from.name + "."); return; }
+    const item = from.inventory.splice(itemIdx, 1)[0];
+    from.equipped = from.equipped.filter(id => id !== item[0]);
+    to.inventory.push(item);
+    saveState(); showToast("Transferido: " + item[1] + ".");
+    document.querySelector("#dm-transfer-item").value = "";
+  });
+}
+
+function renderPendingTrades() {
+  const item = character();
+  if (!item || !item.pendingTrades?.length) return;
+  document.querySelector("#trade-notification")?.remove();
+  const notif = document.createElement("div");
+  notif.id = "trade-notification";
+  notif.className = "trade-notification";
+  notif.innerHTML = "<strong class='trade-notif-title'>Oferta" + (item.pendingTrades.length > 1 ? "s" : "") + " pendiente" + (item.pendingTrades.length > 1 ? "s" : "") + " (" + item.pendingTrades.length + ")</strong>" +
+    item.pendingTrades.map((t, i) => '<div class="trade-offer"><span>' +
+      (t.type === "purchase" ? 'Comprar "' + escapeHtml(t.itemName) + '" por ' + t.price + ' PO' : escapeHtml(t.itemName)) +
+      '</span><div style="display:flex;gap:6px;margin-top:8px"><button class="small-button gold-button" data-accept-trade="' + i + '" style="flex:1">Aceptar</button><button class="small-button danger-button" data-reject-trade="' + i + '" style="flex:1">Rechazar</button></div></div>').join("");
+  document.querySelector(".panel-card")?.insertAdjacentElement("afterbegin", notif);
+}
+
+function renderDMPanel() {
+  const grid = document.querySelector("#dm-character-grid");
+  if (!grid) return;
+  grid.innerHTML = state.characters.map(ch => `
+    <button class="dm-char-btn" data-dm-character="${ch.id}">
+      <img src="${escapeHtml(ch.portrait)}" alt="${escapeHtml(ch.name)}" />
+      <span>${escapeHtml(ch.name)}</span>
+    </button>`).join("");
+}
+
 function renderCharacter() {
   const item = character();
   if (!item) return;
@@ -1018,6 +1133,7 @@ function renderCharacter() {
       <p>${escapeHtml(item.identity)} · Nivel ${item.stats?.level || 1}</p>
     </div>`;
   renderInventory();
+  renderPendingTrades();
 }
 function renderItemCard(entry, equipped, showEquip) {
   const [id, name, quantity, itemCategory, description] = entry;
@@ -1220,11 +1336,22 @@ function activateCharacter(id) {
   activeCharacterId = id;
   renderCharacter();
   showView("character-view");
+  // Show add button only for DM
+  document.querySelector("#open-add-item").classList.toggle("hidden", !window._isDM);
 }
 
 document.addEventListener("click", (event) => {
   const characterButton = event.target.closest("[data-character]");
   if (characterButton) activateCharacter(characterButton.dataset.character);
+
+  // DM panel - click on character
+  const dmCharBtn = event.target.closest("[data-dm-character]");
+  if (dmCharBtn && window._isDM) {
+    activeCharacterId = dmCharBtn.dataset.dmCharacter;
+    renderCharacter();
+    showView("character-view");
+    document.querySelector("#open-add-item").classList.remove("hidden");
+  }
   const goButton = event.target.closest("[data-go]");
   if (goButton) showView(goButton.dataset.go);
   const tab = event.target.closest("[data-tab]");
@@ -1300,6 +1427,43 @@ document.addEventListener("click", (event) => {
     document.querySelector("#currency-dialog").showModal();
     setTimeout(() => document.querySelector("#currency-dialog-amount").focus(), 50);
     return;
+  }
+
+  // Accept/reject trades
+  const acceptTrade = event.target.closest("[data-accept-trade]");
+  if (acceptTrade) {
+    const item = character();
+    if (!item) return;
+    const idx = parseInt(acceptTrade.dataset.acceptTrade);
+    const trade = item.pendingTrades[idx];
+    if (!trade) return;
+    if (trade.type === "purchase") {
+      const po = item.currency.po || 0;
+      if (po < trade.price) { showToast(`No tienes suficientes PO. Necesitas ${trade.price} PO.`); return; }
+      item.currency.po -= trade.price;
+      // Find item in DB
+      const dbItem = ITEM_DATABASE.find(([,n]) => n.toLowerCase() === trade.itemName.toLowerCase())
+        || ITEM_DATABASE.find(([,n]) => n.toLowerCase().includes(trade.itemName.toLowerCase()));
+      if (dbItem) {
+        const newItem = [dbItem[0], dbItem[1], 1, dbItem[2], dbItem[5] || "", SLOT_BY_ITEM[dbItem[0]] || "other", dbItem[3] || 0, dbItem[4] || 0];
+        item.inventory.push(newItem);
+      } else {
+        item.inventory.push([`custom-${Date.now()}`, trade.itemName, 1, "Equipo", "Comprado en la tienda.", "other", 0, trade.price]);
+      }
+      addActivity(`Compraste "${trade.itemName}" por ${trade.price} PO.`);
+    }
+    item.pendingTrades.splice(idx, 1);
+    document.querySelector("#trade-notification")?.remove();
+    saveState(); renderCharacter(); showToast("Trato aceptado.");
+  }
+  const rejectTrade = event.target.closest("[data-reject-trade]");
+  if (rejectTrade) {
+    const item = character();
+    if (!item) return;
+    const idx = parseInt(rejectTrade.dataset.rejectTrade);
+    item.pendingTrades.splice(idx, 1);
+    document.querySelector("#trade-notification")?.remove();
+    saveState(); renderCharacter(); showToast("Oferta rechazada.");
   }
 
   const dropButton = event.target.closest("[data-drop-item]");
