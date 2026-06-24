@@ -1287,6 +1287,21 @@ document.addEventListener("click", (event) => {
     currentCharacter.currency[key] = Math.max(0, (currentCharacter.currency[key] || 0) + delta);
     saveState(); renderInventory();
   }
+  // Open currency dialog
+  const openCurrency = event.target.closest("[data-open-currency]");
+  if (openCurrency) {
+    const key = openCurrency.dataset.openCurrency;
+    const labelParts = CURRENCY_LABELS[key].split("|");
+    const current = character()?.currency[key] || 0;
+    document.querySelector("#currency-dialog-title").textContent = `${labelParts[1]} (${labelParts[0]})`;
+    document.querySelector("#currency-dialog-current").textContent = `Tienes: ${current} ${labelParts[0]}`;
+    document.querySelector("#currency-dialog-amount").value = "";
+    document.querySelector("#currency-dialog").dataset.currencyKey = key;
+    document.querySelector("#currency-dialog").showModal();
+    setTimeout(() => document.querySelector("#currency-dialog-amount").focus(), 50);
+    return;
+  }
+
   const dropButton = event.target.closest("[data-drop-item]");
   if (dropButton) {
     const inv = character().inventory.find(([id]) => id === dropButton.dataset.dropItem);
