@@ -616,10 +616,10 @@ const ACTIVO_CATEGORIES = ["Equipo", "Consumible", "Tesoro"];
 // ══════════════════════════════════════════════════════════════════
 const MASTER_PASSWORD = "0951";
 const CHARACTER_PASSWORDS = {
-  "arthas": null,         // Checo — sin contraseña aun
+  "arthas": "5555",       // Checo
   "miguel-angel": "1890", // Koko
   "nilux": "1001",        // Vasito
-  "galahad": null,        // Rodrigo — sin contraseña aun
+  "galahad": "4321",      // Rodrigo
   "amber": "7235",        // Cris
 };
 function checkPassword(characterId) {
