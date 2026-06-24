@@ -1902,3 +1902,19 @@ button.currency-item:active { transform: scale(0.95); }
 .dm-char-btn:hover { border-color: var(--gold-dark); background: rgba(123,87,42,.12); }
 .dm-char-btn img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
 .dm-char-btn span { font-size: .72rem; font-weight: 700; color: #f4d898; }
+
+/* ── Panel de envios e intercambios ──────────────────────────────── */
+.trade-panel-section {
+  padding: 13px;
+  border: 1px solid rgba(75,48,41,.4);
+  border-radius: 12px;
+  background: rgba(16,11,11,.4);
+}
+.trade-panel-title {
+  color: var(--gold);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
