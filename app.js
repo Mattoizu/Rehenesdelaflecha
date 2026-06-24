@@ -1086,11 +1086,15 @@ function renderDMTradePanel() {
       <div style="display:grid;gap:8px">
         <label>De <select id="dm-from-char">${state.characters.map(ch => '<option value="' + ch.id + '">' + escapeHtml(ch.name) + '</option>').join("")}</select></label>
         <label>A <select id="dm-to-char">${state.characters.map((ch,i) => '<option value="' + ch.id + '"' + (i===1?' selected':'') + '>' + escapeHtml(ch.name) + '</option>').join("")}</select></label>
-        <label>Objeto o monedas (ej: "50 PO")
+        <label>Objeto
           <div style="position:relative">
-            <input id="dm-transfer-item" placeholder="Busca en el inventario o escribe monedas..." autocomplete="off" />
+            <input id="dm-transfer-item" placeholder="Busca en el inventario..." autocomplete="off" />
             <div id="dm-transfer-search-results" class="item-search-results hidden" style="position:absolute;top:100%;left:0;right:0;z-index:10;max-height:200px;overflow-y:auto"></div>
           </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px">
+          <span style="white-space:nowrap;color:var(--muted);font-size:.78rem">+ PO extras</span>
+          <input id="dm-transfer-po" type="number" min="0" value="0" style="width:80px" />
         </label>
         <button class="small-button gold-button" id="dm-send-transfer" style="width:100%;margin-top:4px">Transferir ahora</button>
       </div>
@@ -1118,24 +1122,22 @@ function renderDMTradePanel() {
     const from = state.characters.find(c => c.id === fromId);
     const to = state.characters.find(c => c.id === toId);
     if (!from || !to) return;
-    const coinMatch = itemInput.match(/^(\d+)\s*(PC|PP|PE|PO|PPT)$/i);
-    if (coinMatch) {
-      const amount = parseInt(coinMatch[1]);
-      const coinKey = coinMatch[2].toLowerCase();
-      if ((from.currency[coinKey] || 0) < amount) { showToast("No tiene suficientes monedas."); return; }
-      from.currency[coinKey] -= amount;
-      to.currency[coinKey] = (to.currency[coinKey] || 0) + amount;
-      saveState(); showToast("Transferido: " + amount + " " + coinMatch[2].toUpperCase() + ".");
-      document.querySelector("#dm-transfer-item").value = "";
-      return;
+    const transferPO = parseInt(document.querySelector("#dm-transfer-po")?.value) || 0;
+    if (itemInput) {
+      const itemIdx = from.inventory.findIndex(i => i[1].toLowerCase().includes(itemInput.toLowerCase()));
+      if (itemIdx === -1) { showToast("No encontrado en inventario de " + from.name + "."); return; }
+      const item = from.inventory.splice(itemIdx, 1)[0];
+      from.equipped = from.equipped.filter(id => id !== item[0]);
+      to.inventory.push(item);
     }
-    const itemIdx = from.inventory.findIndex(i => i[1].toLowerCase().includes(itemInput.toLowerCase()));
-    if (itemIdx === -1) { showToast("No encontrado en inventario de " + from.name + "."); return; }
-    const item = from.inventory.splice(itemIdx, 1)[0];
-    from.equipped = from.equipped.filter(id => id !== item[0]);
-    to.inventory.push(item);
-    saveState(); showToast("Transferido: " + item[1] + ".");
+    if (transferPO > 0) {
+      if ((from.currency.po || 0) < transferPO) { showToast("No tiene suficientes PO."); return; }
+      from.currency.po -= transferPO;
+      to.currency.po = (to.currency.po || 0) + transferPO;
+    }
+    saveState(); showToast("Transferencia completada.");
     document.querySelector("#dm-transfer-item").value = "";
+    document.querySelector("#dm-transfer-po").value = "0";
     document.querySelector("#dm-transfer-search-results").classList.add("hidden");
   });
 
@@ -1269,7 +1271,7 @@ function renderItemCard(entry, equipped, showEquip) {
         ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± pies</button>` : ''}
         ${!isRope && window._isDM ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
         ${window._isDM ? `<button class="small-button" data-sell-item="${id}" data-sell-value="${valueField}">Vender</button>` : ''}
-        <button class="small-button" data-edit-item="${id}">✎</button>
+        ${window._isDM ? `<button class="small-button" data-edit-item="${id}">✎</button>` : ''}
         <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
       </div>
     </article>`;
@@ -1288,6 +1290,10 @@ function renderTradePanel(item) {
       <div style="display:grid;gap:8px">
         <label>Objeto a enviar
           <select id="tp-send-item">${invOpts || '<option value="">Sin objetos</option>'}</select>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px">
+          <span style="white-space:nowrap;color:var(--muted);font-size:.78rem">+ PO extras</span>
+          <input id="tp-send-po" type="number" min="0" value="0" style="width:80px" />
         </label>
         <label>Enviar a
           <select id="tp-send-to">${othersOpts}</select>
@@ -1682,6 +1688,7 @@ document.addEventListener("click", (event) => {
     const item = character();
     if (!item) return;
     const itemId = document.querySelector("#tp-send-item")?.value;
+    const sendPO = parseInt(document.querySelector("#tp-send-po")?.value) || 0;
     const toId = document.querySelector("#tp-send-to")?.value;
     if (!itemId || !toId) return;
     const idx = item.inventory.findIndex(i => i[0] === itemId);
@@ -1691,8 +1698,12 @@ document.addEventListener("click", (event) => {
     const target = state.characters.find(c => c.id === toId);
     if (!target) return;
     target.inventory.push(sent);
-    addActivity(`Enviaste ${sent[1]} a ${target.name}.`);
-    saveState(); renderCharacter(); showToast(`${sent[1]} enviado a ${target.name}.`);
+    if (sendPO > 0) {
+      item.currency.po = Math.max(0, (item.currency.po || 0) - sendPO);
+      target.currency.po = (target.currency.po || 0) + sendPO;
+    }
+    addActivity("Enviaste " + sent[1] + (sendPO > 0 ? " + " + sendPO + " PO" : "") + " a " + target.name + ".");
+    saveState(); renderCharacter(); showToast(sent[1] + " enviado a " + target.name + ".");
     return;
   }
 
