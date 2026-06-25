@@ -1982,7 +1982,8 @@ document.querySelector("#sell-confirm").addEventListener("click", () => {
   } else {
     inv2[2] -= qty;
   }
-  item.currency.po = (item.currency.po || 0) + price;
+  const totalPrice = price * qty;
+  item.currency.po = (item.currency.po || 0) + totalPrice;
   // If item is from initial inventory, add to retired list so it doesn't come back
   if (!inv2[0].startsWith("custom-")) {
     retiredItems[activeCharacterId] = retiredItems[activeCharacterId] || [];
@@ -1990,10 +1991,10 @@ document.querySelector("#sell-confirm").addEventListener("click", () => {
       retiredItems[activeCharacterId].push(inv2[0]);
     }
   }
-  addActivity("Vendiste " + qty + "x " + inv2[1] + " por " + price + " PO.");
+  addActivity("Vendiste " + qty + "x " + inv2[1] + " por " + totalPrice + " PO.");
   saveState(); renderCharacter();
   document.querySelector("#sell-dialog").close();
-  showToast(inv2[1] + " vendido por " + price + " PO.");
+  showToast(qty + "x " + inv2[1] + " vendido por " + totalPrice + " PO.");
 });
 document.querySelector("#sell-cancel").addEventListener("click", () => {
   document.querySelector("#sell-dialog").close();
