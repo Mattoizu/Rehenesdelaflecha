@@ -1206,10 +1206,16 @@ function renderPendingTrades() {
       (t.type === "purchase"
         ? 'El DM te ofrece: "' + escapeHtml(t.itemName) + '" por ' + t.price + ' PO'
         : t.type === "exchange"
-          ? escapeHtml(t.fromName) + ' te ofrece "' + escapeHtml(t.offerItem) + '"' +
+          ? escapeHtml(t.fromName) + ' te ofrece' +
+            (t.offerItem ? ' "' + escapeHtml(t.offerItem) + '"' : '') +
             (t.offerPO > 0 ? ' + ' + t.offerPO + ' PO' : '') +
-            (t.requestItem ? ' a cambio de "' + escapeHtml(t.requestItem) + '"' : '') +
-            (t.requestPO > 0 ? (t.requestItem ? ' + ' : ' a cambio de ') + t.requestPO + ' PO' : '')
+            (t.offerPP > 0 ? ' + ' + t.offerPP + ' PP' : '') +
+            (t.offerPC > 0 ? ' + ' + t.offerPC + ' PC' : '') +
+            (t.requestItem || t.requestPO || t.requestPP || t.requestPC ? ' a cambio de' : '') +
+            (t.requestItem ? ' "' + escapeHtml(t.requestItem) + '"' : '') +
+            (t.requestPO > 0 ? ' + ' + t.requestPO + ' PO' : '') +
+            (t.requestPP > 0 ? ' + ' + t.requestPP + ' PP' : '') +
+            (t.requestPC > 0 ? ' + ' + t.requestPC + ' PC' : '')
           : escapeHtml(t.itemName || "")) +
       '</span><div style="display:flex;gap:6px;margin-top:8px"><button class="small-button gold-button" data-accept-trade="' + i + '" style="flex:1">Aceptar</button><button class="small-button danger-button" data-reject-trade="' + i + '" style="flex:1">Rechazar</button></div></div>').join("");
   document.querySelector(".panel-card")?.insertAdjacentElement("afterbegin", notif);
@@ -1270,7 +1276,7 @@ function renderItemCard(entry, equipped, showEquip) {
         ${primaryAction}
         ${isRope ? `<button class="small-button gold-button" data-rope-item="${id}">± pies</button>` : ''}
         ${!isRope && window._isDM ? `<button class="small-button" data-add-one-item="${id}">+1</button>` : ''}
-        ${window._isDM ? `<button class="small-button" data-sell-item="${id}" data-sell-value="${valueField}">Vender</button>` : ''}
+        ${window._isDM ? `<button class="small-button" data-sell-item="${id}" data-sell-value="${valueField}" data-sell-qty="${quantity}">Vender</button>` : ''}
         ${window._isDM ? `<button class="small-button" data-edit-item="${id}">✎</button>` : ''}
         <button class="small-button danger-button" data-drop-item="${id}">Tirar</button>
       </div>
@@ -1305,20 +1311,22 @@ function renderTradePanel(item) {
       <h3 class="trade-panel-title">Proponer intercambio</h3>
       <p style="color:var(--muted);font-size:.75rem;margin-bottom:10px">El otro jugador debe aceptar.</p>
       <div style="display:grid;gap:8px">
-        <label>Tu ofreces
-          <select id="tp-offer-item">${invOpts || '<option value="">Sin objetos</option>'}</select>
+        <label>Tu ofreces (objeto, opcional)
+          <select id="tp-offer-item"><option value="">-- Sin objeto --</option>${invOpts}</select>
         </label>
-        <label style="display:flex;align-items:center;gap:8px">
-          <span style="white-space:nowrap;color:var(--muted);font-size:.78rem">+ PO extras</span>
-          <input id="tp-offer-po" type="number" min="0" value="0" style="width:80px" />
-        </label>
-        <label>A cambio de (nombre del objeto)
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          <label style="font-size:.72rem">PO<input id="tp-offer-po" type="number" min="0" value="0" /></label>
+          <label style="font-size:.72rem">PP<input id="tp-offer-pp" type="number" min="0" value="0" /></label>
+          <label style="font-size:.72rem">PC<input id="tp-offer-pc" type="number" min="0" value="0" /></label>
+        </div>
+        <label>A cambio de (objeto, opcional)
           <input id="tp-request-item" placeholder="Nombre del objeto o dejar en blanco..." />
         </label>
-        <label style="display:flex;align-items:center;gap:8px">
-          <span style="white-space:nowrap;color:var(--muted);font-size:.78rem">+ PO que pides</span>
-          <input id="tp-request-po" type="number" min="0" value="0" style="width:80px" />
-        </label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          <label style="font-size:.72rem">PO<input id="tp-request-po" type="number" min="0" value="0" /></label>
+          <label style="font-size:.72rem">PP<input id="tp-request-pp" type="number" min="0" value="0" /></label>
+          <label style="font-size:.72rem">PC<input id="tp-request-pc" type="number" min="0" value="0" /></label>
+        </div>
         <label>Con quien
           <select id="tp-trade-to">${othersOpts}</select>
         </label>
@@ -1671,12 +1679,24 @@ document.addEventListener("click", (event) => {
     if (!item) return;
     const inv = item.inventory.find(i => i[0] === itemId);
     if (!inv) return;
+    const maxQty = parseInt(sellBtn.dataset.sellQty) || 1;
     document.querySelector("#sell-dialog-title").textContent = 'Vender: ' + inv[1];
     const input = document.querySelector("#sell-price-input");
     input.placeholder = suggested + " PO (valor aprox.)";
     input.value = "";
     input.dataset.itemId = itemId;
     input.dataset.suggested = suggested;
+    // Show quantity selector
+    const qtyWrap = document.querySelector("#sell-qty-wrap");
+    const qtyInput = document.querySelector("#sell-qty-input");
+    if (maxQty > 1) {
+      qtyWrap.style.display = "block";
+      qtyInput.max = maxQty;
+      qtyInput.value = 1;
+    } else {
+      qtyWrap.style.display = "none";
+      qtyInput.value = 1;
+    }
     document.querySelector("#sell-dialog").showModal();
     input.focus();
     return;
@@ -1722,13 +1742,18 @@ document.addEventListener("click", (event) => {
     if (!target) return;
     target.pendingTrades = target.pendingTrades || [];
     const offerPO = parseInt(document.querySelector("#tp-offer-po")?.value) || 0;
+    const offerPP = parseInt(document.querySelector("#tp-offer-pp")?.value) || 0;
+    const offerPC = parseInt(document.querySelector("#tp-offer-pc")?.value) || 0;
     const requestPO = parseInt(document.querySelector("#tp-request-po")?.value) || 0;
+    const requestPP = parseInt(document.querySelector("#tp-request-pp")?.value) || 0;
+    const requestPC = parseInt(document.querySelector("#tp-request-pc")?.value) || 0;
+    if (!itemId && !offerPO && !offerPP && !offerPC) { showToast("Agrega algo para ofrecer."); return; }
     target.pendingTrades.push({
       id: Date.now(), type: "exchange",
-      offerItem: offeredItem[1], requestItem: requestName || "",
-      offerPO, requestPO,
+      offerItem: offeredItem ? offeredItem[1] : "", requestItem: requestName || "",
+      offerPO, offerPP, offerPC, requestPO, requestPP, requestPC,
       fromId: item.id, fromName: item.name,
-      offeredItemId: itemId, ts: Date.now()
+      offeredItemId: itemId || null, ts: Date.now()
     });
     saveState(); showToast(`Intercambio propuesto a ${target.name}.`);
     return;
@@ -1949,13 +1974,26 @@ document.querySelector("#sell-confirm").addEventListener("click", () => {
   if (!item) return;
   const idx = item.inventory.findIndex(i => i[0] === itemId);
   if (idx === -1) return;
-  const sold = item.inventory.splice(idx, 1)[0];
-  item.equipped = item.equipped.filter(id => id !== sold[0]);
+  const qty = parseInt(document.querySelector("#sell-qty-input").value) || 1;
+  const inv2 = item.inventory[idx];
+  if (inv2[2] <= qty) {
+    item.inventory.splice(idx, 1);
+    item.equipped = item.equipped.filter(id => id !== inv2[0]);
+  } else {
+    inv2[2] -= qty;
+  }
   item.currency.po = (item.currency.po || 0) + price;
-  addActivity("Vendiste " + sold[1] + " por " + price + " PO.");
+  // If item is from initial inventory, add to retired list so it doesn't come back
+  if (!inv2[0].startsWith("custom-")) {
+    retiredItems[activeCharacterId] = retiredItems[activeCharacterId] || [];
+    if (!retiredItems[activeCharacterId].includes(inv2[0])) {
+      retiredItems[activeCharacterId].push(inv2[0]);
+    }
+  }
+  addActivity("Vendiste " + qty + "x " + inv2[1] + " por " + price + " PO.");
   saveState(); renderCharacter();
   document.querySelector("#sell-dialog").close();
-  showToast(sold[1] + " vendido por " + price + " PO.");
+  showToast(inv2[1] + " vendido por " + price + " PO.");
 });
 document.querySelector("#sell-cancel").addEventListener("click", () => {
   document.querySelector("#sell-dialog").close();

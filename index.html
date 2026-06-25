@@ -200,7 +200,11 @@
     <dialog id="sell-dialog">
       <div style="padding:4px;min-width:240px">
         <h2 id="sell-dialog-title">Vender objeto</h2>
-        <p style="color:var(--muted);font-size:.82rem;margin:8px 0 6px">Precio de venta (PO)</p>
+        <div id="sell-qty-wrap" style="display:none;margin-bottom:10px">
+          <p style="color:var(--muted);font-size:.82rem;margin-bottom:6px">Cantidad a vender</p>
+          <input id="sell-qty-input" type="number" min="1" value="1" inputmode="numeric" style="width:100%" />
+        </div>
+        <p style="color:var(--muted);font-size:.82rem;margin:8px 0 6px">Precio de venta total (PO)</p>
         <input id="sell-price-input" type="number" min="0" inputmode="numeric"
           style="width:100%;margin-bottom:14px;font-size:1.1rem" />
         <p style="color:var(--muted);font-size:.72rem;margin-bottom:14px">El valor sugerido es la mitad del precio de lista. Puedes cambiarlo.</p>
