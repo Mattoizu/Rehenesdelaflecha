@@ -2051,7 +2051,7 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
 
 // ── Auth gating ───────────────────────────────────────────────────
 // Show login screen until user is authenticated
-document.querySelector("#auth-screen").classList.remove("hidden");
+document.querySelector("#auth-screen").style.display = "";
 document.querySelector("#app-screen").classList.add("hidden");
 
 onAuthStateChanged(auth, (user) => {
@@ -2061,16 +2061,16 @@ onAuthStateChanged(auth, (user) => {
     const authEl = document.querySelector("#auth-screen");
     const appEl = document.querySelector("#app-screen");
     console.log("auth-screen:", authEl, "app-screen:", appEl);
-    if (authEl) authEl.classList.add("hidden");
-    if (appEl) appEl.classList.remove("hidden");
+    if (authEl) authEl.style.display = "none";
+    if (appEl) appEl.style.display = "";
     window._firestoreLoaded = false;
     renderHome();
     initFirestoreSync();
   } else {
     const authEl = document.querySelector("#auth-screen");
     const appEl = document.querySelector("#app-screen");
-    if (authEl) authEl.classList.remove("hidden");
-    if (appEl) appEl.classList.add("hidden");
+    if (authEl) authEl.style.display = "";
+    if (appEl) appEl.style.display = "none";
     window._isDM = false;
   }
 });
