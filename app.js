@@ -2104,34 +2104,34 @@ async function initFirestoreSync(retries = 3) {
 }
 
 
-// ── Auth handlers ─────────────────────────────────────────────────
-document.querySelector("#auth-login-btn").addEventListener("click", async () => {
-  const email = document.querySelector("#auth-email").value.trim();
-  const password = document.querySelector("#auth-password").value;
-  const err = document.querySelector("#auth-error");
-  if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    err.textContent = "";
-  } catch(e) {
-    err.textContent = e.code === "auth/invalid-credential" ? "Email o contraseña incorrectos." : "Error al iniciar sesión.";
+// ── Auth handlers (event delegation to avoid null issues) ─────────
+document.addEventListener("click", async (e) => {
+  if (e.target.id === "auth-login-btn" || e.target.closest("#auth-login-btn")) {
+    const email = document.querySelector("#auth-email").value.trim();
+    const password = document.querySelector("#auth-password").value;
+    const err = document.querySelector("#auth-error");
+    if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      err.textContent = "";
+    } catch(e2) {
+      err.textContent = e2.code === "auth/invalid-credential" ? "Email o contraseña incorrectos." : "Error: " + e2.message;
+    }
   }
-});
-
-document.querySelector("#auth-register-btn").addEventListener("click", async () => {
-  const email = document.querySelector("#auth-email").value.trim();
-  const password = document.querySelector("#auth-password").value;
-  const err = document.querySelector("#auth-error");
-  if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
-  if (password.length < 6) { err.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    err.textContent = "";
-  } catch(e) {
-    err.textContent = e.code === "auth/email-already-in-use" ? "Ese email ya tiene una cuenta." : "Error al registrarse.";
+  if (e.target.id === "auth-register-btn" || e.target.closest("#auth-register-btn")) {
+    const email = document.querySelector("#auth-email").value.trim();
+    const password = document.querySelector("#auth-password").value;
+    const err = document.querySelector("#auth-error");
+    if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
+    if (password.length < 6) { err.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      err.textContent = "";
+    } catch(e2) {
+      err.textContent = e2.code === "auth/email-already-in-use" ? "Ese email ya tiene una cuenta." : "Error: " + e2.message;
+    }
   }
+  if (e.target.id === "auth-logout-btn") signOut(auth);
 });
-
-document.querySelector("#auth-logout-btn")?.addEventListener("click", () => signOut(auth));
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js");
