@@ -2055,19 +2055,22 @@ document.querySelector("#auth-screen").classList.remove("hidden");
 document.querySelector("#app-screen").classList.add("hidden");
 
 onAuthStateChanged(auth, (user) => {
+  console.log("Auth state changed:", user ? user.email : "null");
   if (user) {
-    // Logged in
     if (user.email === DM_EMAIL) window._isDM = true;
-    document.querySelector("#auth-screen").classList.add("hidden");
-    document.querySelector("#app-screen").classList.remove("hidden");
-    // Start app
+    const authEl = document.querySelector("#auth-screen");
+    const appEl = document.querySelector("#app-screen");
+    console.log("auth-screen:", authEl, "app-screen:", appEl);
+    if (authEl) authEl.classList.add("hidden");
+    if (appEl) appEl.classList.remove("hidden");
     window._firestoreLoaded = false;
     renderHome();
     initFirestoreSync();
   } else {
-    // Not logged in - show auth screen
-    document.querySelector("#auth-screen").classList.remove("hidden");
-    document.querySelector("#app-screen").classList.add("hidden");
+    const authEl = document.querySelector("#auth-screen");
+    const appEl = document.querySelector("#app-screen");
+    if (authEl) authEl.classList.remove("hidden");
+    if (appEl) appEl.classList.add("hidden");
     window._isDM = false;
   }
 });
