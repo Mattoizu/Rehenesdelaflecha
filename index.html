@@ -52,8 +52,35 @@
         </span>
       </button>
       <button class="ghost-button hidden" id="back-button" type="button">Volver</button>
+      <button class="ghost-button" id="auth-logout-btn" type="button" style="font-size:.7rem;padding:5px 10px">Salir</button>
     </header>
 
+    <!-- Auth screen -->
+    <div id="auth-screen" class="auth-screen hidden">
+      <div class="auth-card">
+        <div style="text-align:center;margin-bottom:16px">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:64px;height:64px;border-radius:14px">
+            <rect width="512" height="512" fill="#2a2a2a" rx="96"/>
+            <circle cx="256" cy="140" r="68" fill="#111"/>
+            <rect x="214" y="234" width="84" height="190" fill="white" rx="2"/>
+            <rect x="146" y="288" width="62" height="136" fill="white" rx="2"/>
+            <rect x="304" y="288" width="62" height="136" fill="white" rx="2"/>
+            <rect x="146" y="360" width="220" height="64" fill="white" rx="2"/>
+          </svg>
+        </div>
+        <h1 class="auth-title">La Ciudadela Sombria</h1>
+        <p class="auth-subtitle">Bitácora de inventarios</p>
+        <div class="auth-form">
+          <input id="auth-email" type="email" placeholder="Email" autocomplete="email" />
+          <input id="auth-password" type="password" placeholder="Contraseña (min. 6 caracteres)" autocomplete="current-password" />
+          <p id="auth-error" class="auth-error"></p>
+          <button class="small-button gold-button" id="auth-login-btn" style="width:100%;padding:12px">Iniciar sesión</button>
+          <button class="small-button" id="auth-register-btn" style="width:100%;padding:10px;margin-top:6px">Crear cuenta nueva</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="app-screen" class="hidden">
     <main>
       <section class="view active" id="home-view">
         <article class="hero-card">
@@ -251,6 +278,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    </div>
     <script type="module" src="app.js"></script>
   </body>
 </html>

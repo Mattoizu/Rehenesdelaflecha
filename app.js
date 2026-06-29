@@ -4,6 +4,7 @@ const STORAGE_KEY = "ciudadela-sombria-jugadores-v2";
 // ── Firebase ──────────────────────────────────────────────────────────────────
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC2lZbjRyP708Tez5XKv7qRI8dRMnGBalY",
@@ -2046,9 +2047,28 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
   saveState(); renderInventory(); showToast(`+${amount} pies.`);
 });
 
-// Initial render from localStorage (instant, may be stale), then sync from Firestore (authoritative)
-window._firestoreLoaded = false;
-renderHome();
+// ── Auth gating ───────────────────────────────────────────────────
+// Show login screen until user is authenticated
+document.querySelector("#auth-screen").classList.remove("hidden");
+document.querySelector("#app-screen").classList.add("hidden");
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Logged in
+    if (user.email === DM_EMAIL) window._isDM = true;
+    document.querySelector("#auth-screen").classList.add("hidden");
+    document.querySelector("#app-screen").classList.remove("hidden");
+    // Start app
+    window._firestoreLoaded = false;
+    renderHome();
+    initFirestoreSync();
+  } else {
+    // Not logged in - show auth screen
+    document.querySelector("#auth-screen").classList.remove("hidden");
+    document.querySelector("#app-screen").classList.add("hidden");
+    window._isDM = false;
+  }
+});
 
 async function initFirestoreSync(retries = 3) {
   const snap = await (async () => {
@@ -2081,6 +2101,35 @@ async function initFirestoreSync(retries = 3) {
   subscribeToChanges();
 }
 
-initFirestoreSync();
+
+// ── Auth handlers ─────────────────────────────────────────────────
+document.querySelector("#auth-login-btn").addEventListener("click", async () => {
+  const email = document.querySelector("#auth-email").value.trim();
+  const password = document.querySelector("#auth-password").value;
+  const err = document.querySelector("#auth-error");
+  if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    err.textContent = "";
+  } catch(e) {
+    err.textContent = e.code === "auth/invalid-credential" ? "Email o contraseña incorrectos." : "Error al iniciar sesión.";
+  }
+});
+
+document.querySelector("#auth-register-btn").addEventListener("click", async () => {
+  const email = document.querySelector("#auth-email").value.trim();
+  const password = document.querySelector("#auth-password").value;
+  const err = document.querySelector("#auth-error");
+  if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
+  if (password.length < 6) { err.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    err.textContent = "";
+  } catch(e) {
+    err.textContent = e.code === "auth/email-already-in-use" ? "Ese email ya tiene una cuenta." : "Error al registrarse.";
+  }
+});
+
+document.querySelector("#auth-logout-btn")?.addEventListener("click", () => signOut(auth));
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js");
