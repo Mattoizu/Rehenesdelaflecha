@@ -645,8 +645,9 @@ const CHARACTER_PASSWORDS = {
   "amber": "7235",        // Cris
 };
 function checkPassword(characterId) {
+  if (window._isDM) return Promise.resolve(true);
   const pw = CHARACTER_PASSWORDS[characterId];
-  if (!pw) return true;
+  if (!pw) return Promise.resolve(true);
   return new Promise((resolve) => {
     const dlg = document.querySelector("#pin-dialog");
     document.querySelector("#pin-title").textContent = "Ingresa tu PIN";
