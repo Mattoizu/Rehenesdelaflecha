@@ -2052,7 +2052,7 @@ document.querySelector("#rope-plus").addEventListener("click", () => {
 // ── Auth gating ───────────────────────────────────────────────────
 // Show login screen until user is authenticated
 document.querySelector("#auth-screen").style.display = "";
-document.querySelector("#app-screen").classList.add("hidden");
+document.querySelector("#app-screen").style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
   console.log("Auth state changed:", user ? user.email : "null");
