@@ -1023,6 +1023,23 @@ function showView(viewId) {
   if (viewId === "dm-view") { renderDMPanel(); renderDMTradePanel(); }
 }
 function renderHome() {
+  // Show DM panel button if logged in as DM
+  const existingDMBtn = document.querySelector("#dm-home-btn");
+  if (existingDMBtn) existingDMBtn.remove();
+  const dmBtn = document.createElement("button");
+  dmBtn.id = "dm-home-btn";
+  dmBtn.className = "small-button gold-button";
+  dmBtn.style.cssText = "position:fixed;bottom:80px;right:16px;z-index:20;padding:10px 18px;font-size:.8rem";
+  if (window._isDM) {
+    dmBtn.textContent = "Panel DM";
+    dmBtn.onclick = () => showView("dm-view");
+  } else {
+    dmBtn.textContent = "DM";
+    dmBtn.onclick = () => {
+      document.querySelector("#auth-screen").style.display = "";
+    };
+  }
+  document.body.appendChild(dmBtn);
   document.querySelector("#character-grid").innerHTML = state.characters.map((item) => {
     const hpPct = item.stats.maxHp ? Math.min(100, (item.stats.hp / item.stats.maxHp) * 100) : 100;
     const hpLow = hpPct <= 50;
@@ -1052,14 +1069,18 @@ document.addEventListener("click", (e) => {
   _dmClickTimer = setTimeout(() => { _dmClicks = 0; }, 3000);
   if (_dmClicks >= 5) {
     _dmClicks = 0;
-    const dlg = document.querySelector("#pin-dialog");
-    document.querySelector("#pin-title").textContent = "PIN del Dungeon Master";
-    document.querySelector("#pin-input").value = "";
-    dlg._charPw = MASTER_PASSWORD;
-    dlg._isDMMode = true;
-    dlg._resolve = null;
-    dlg.showModal();
-    setTimeout(() => document.querySelector("#pin-input").focus(), 50);
+    if (window._isDM) {
+      showView("dm-view");
+    } else {
+      const dlg = document.querySelector("#pin-dialog");
+      document.querySelector("#pin-title").textContent = "PIN del Dungeon Master";
+      document.querySelector("#pin-input").value = "";
+      dlg._charPw = MASTER_PASSWORD;
+      dlg._isDMMode = true;
+      dlg._resolve = null;
+      dlg.showModal();
+      setTimeout(() => document.querySelector("#pin-input").focus(), 50);
+    }
   }
 });
 
@@ -2056,25 +2077,25 @@ document.querySelector("#auth-screen").style.display = "";
 document.querySelector("#app-screen").style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
-  console.log("Auth state changed:", user ? user.email : "null");
-  if (user) {
-    if (user.email === DM_EMAIL) window._isDM = true;
-    const authEl = document.querySelector("#auth-screen");
-    const appEl = document.querySelector("#app-screen");
-    console.log("auth-screen:", authEl, "app-screen:", appEl);
-    if (authEl) authEl.style.display = "none";
-    if (appEl) appEl.style.display = "";
+  // If DM account, set DM mode
+  if (user && user.email === DM_EMAIL) window._isDM = true;
+  // Always hide auth screen and show app
+  const authEl = document.querySelector("#auth-screen");
+  const appEl = document.querySelector("#app-screen");
+  if (authEl) authEl.style.display = "none";
+  if (appEl) appEl.style.display = "";
+  if (!window._firestoreLoaded) {
     window._firestoreLoaded = false;
     renderHome();
     initFirestoreSync();
-  } else {
-    const authEl = document.querySelector("#auth-screen");
-    const appEl = document.querySelector("#app-screen");
-    if (authEl) authEl.style.display = "";
-    if (appEl) appEl.style.display = "none";
-    window._isDM = false;
   }
 });
+
+// Show app immediately for all users, login only optional for DM
+const authEl = document.querySelector("#auth-screen");
+const appEl = document.querySelector("#app-screen");
+if (authEl) authEl.style.display = "none";
+if (appEl) appEl.style.display = "";
 
 async function initFirestoreSync(retries = 3) {
   const snap = await (async () => {
@@ -2141,6 +2162,7 @@ document.addEventListener("click", async (e) => {
     }
   }
   if (e.target.id === "auth-logout-btn") signOut(auth);
+  if (e.target.id === "auth-close-btn") document.querySelector("#auth-screen").style.display = "none";
 });
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js");
