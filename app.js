@@ -1180,7 +1180,8 @@ function renderShopIndicator() {
   const indicator = document.createElement("div");
   indicator.id = "shop-indicator";
   indicator.className = "shop-indicator";
-  indicator.innerHTML = '<span class="shop-dot"></span> Tienda abierta';
+  const openShopNames = (shopState.openShops || []).map(id => SHOP_TYPES[id]?.name).filter(Boolean).join(" · ");
+  indicator.innerHTML = `<span class="shop-dot"></span> Abierto: ${escapeHtml(openShopNames)}`;
   indicator.onclick = () => {
     renderShopPanel();
     document.querySelector("#shop-dialog").showModal();
@@ -1340,16 +1341,18 @@ function renderHome() {
   }
   document.body.appendChild(dmBtn);
   document.querySelector("#character-grid").innerHTML = state.characters.map((item) => {
-    const hpPct = item.stats.maxHp ? Math.min(100, (item.stats.hp / item.stats.maxHp) * 100) : 100;
-    const hpLow = hpPct <= 50;
     const firstName = escapeHtml(item.name.split(" ")[0]);
+    const weight = carriedWeight(item);
+    const capacity = (item.attributes?.Fuerza || 10) * 15;
+    const weightPct = capacity ? Math.min(100, (weight / capacity) * 100) : 0;
+    const weightLevel = weightPct >= 90 ? "danger" : weightPct >= 75 ? "warn" : "";
     return `
     <button class="character-card" data-character="${item.id}">
       <img class="portrait" src="${escapeHtml(item.portrait)}" alt="Retrato de ${escapeHtml(item.name)}" />
       <div class="character-card-overlay">
         <h3>${firstName}</h3>
-        <span class="char-level-badge">Nv ${item.stats?.level || 1}</span>
-        <div class="character-hp-bar"><span style="width:${hpPct}%" class="${hpLow ? 'low' : ''}"></span></div>
+        <span class="char-identity-label">${escapeHtml(item.identity)}</span>
+        <span class="char-weight-label ${weightLevel}">⚖ ${weight.toFixed(0)}/${capacity} lb</span>
       </div>
     </button>`;
   }).join("");
@@ -1804,7 +1807,10 @@ function renderInventory() {
 
   // ── Tab: Tesoros ──
   const tesItems = item.inventory.filter(e => e[3] === "Tesoro");
-  const tesHTML = tesItems.length ? tesItems.map(e=>renderItemCard(e,false,false)).join("") : '<p class="helper-copy">Sin tesoros.</p>';
+  const tesTotalValue = tesItems.reduce((sum, e) => sum + (e[7] || 0) * e[2], 0);
+  const tesHTML = tesItems.length
+    ? `<div class="treasure-total">Valor total: <strong>${tesTotalValue} PO</strong></div>` + tesItems.map(e=>renderItemCard(e,false,false)).join("")
+    : '<p class="helper-copy">Sin tesoros.</p>';
 
   // Render with 4 tabs
   document.querySelector("#inventory-list").innerHTML = `

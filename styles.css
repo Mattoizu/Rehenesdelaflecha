@@ -1499,3 +1499,43 @@ button[data-edit-item] { font-size: .82rem; }
   font-weight: 700;
   text-align: center;
 }
+
+/* ── Valor total de tesoros ───────────────────────────────────────── */
+.treasure-total {
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 10px;
+  background: rgba(123,87,42,.12);
+  color: var(--muted);
+  font-size: .82rem;
+  text-align: center;
+}
+.treasure-total strong {
+  color: var(--gold);
+  font-size: 1rem;
+  font-family: Georgia, serif;
+}
+
+/* ── Peso visible en card de personaje (home) ─────────────────────── */
+.char-weight-label {
+  display: block;
+  margin-top: 3px;
+  text-align: center;
+  color: var(--muted);
+  font-size: .58rem;
+  font-weight: 700;
+}
+.char-weight-label.warn { color: #c9a030; }
+.char-weight-label.danger { color: #e08a7e; }
+
+/* ── Trasfondo en lugar de nivel/HP ───────────────────────────────── */
+.char-identity-label {
+  display: block;
+  margin-top: 2px;
+  text-align: center;
+  color: var(--gold);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
