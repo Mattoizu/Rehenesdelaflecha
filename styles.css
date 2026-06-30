@@ -1415,3 +1415,55 @@ button[data-edit-item] { font-size: .82rem; }
   min-height: 1.2em;
   text-align: center;
 }
+
+/* ── Sistema de tiendas ───────────────────────────────────────────── */
+.shop-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(69,107,77,.5);
+  border-radius: 10px;
+  background: rgba(69,107,77,.12);
+  color: #a8d7ae;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.shop-indicator:hover { background: rgba(69,107,77,.2); }
+.shop-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4a9c55;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(74,156,85,.6);
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 6px rgba(74,156,85,.6); }
+  50% { box-shadow: 0 0 12px rgba(74,156,85,.9); }
+}
+.shop-tab { color: #a8d7ae !important; }
+.shop-tab.active { border-bottom-color: #4a9c55 !important; background: rgba(69,107,77,.12) !important; }
+.shop-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(75,48,41,.4);
+  border-radius: 10px;
+  background: rgba(16,11,11,.4);
+}
+.shop-item-card strong { color: #f4d898; font-size: .88rem; }
+.dm-stock-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(75,48,41,.2);
+}
+.dm-stock-row:last-of-type { border-bottom: none; }

@@ -20,6 +20,64 @@ const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
 const DM_EMAIL = "matias.patapia@hotmail.com";
 const STATE_DOC = doc(db, "campana", "estado");
+// ── Tiendas ────────────────────────────────────────────────────────
+const SHOP_TYPES = {
+  herrero: {
+    name: "Herrero",
+    defaultItems: ["espada-larga", "espada-corta", "hacha-mano", "hacha-batalla", "martillo-guerra", "lanza", "daga", "cimitarra", "maza", "mangual", "mangual-pesado", "arco-corto", "arco-largo", "ballesta-mano", "ballesta-ligera", "ballesta-pesada", "armadura-cuero", "armadura-cuero-tachonado", "cota-escamas", "media-armadura", "cota-malla", "armadura-placas", "coraza", "escudo", "armadura-acolchada", "pieles"],
+  },
+  boticario: {
+    name: "Boticario",
+    defaultItems: ["pocion-curacion", "pocion-curacion-mayor", "antitoxina", "aceite", "vela", "incienso", "municion-magica"],
+  },
+  tienda_general: {
+    name: "Tienda General",
+    defaultItems: ["antorcha", "racion-viaje", "cuerda-canamo", "cuerda-seda", "mochila", "bolsa", "saco", "navaja", "yesca", "linterna-bullseye", "linterna-capucha", "espejo-acero", "palanca", "martillo", "clavos-hierro", "escalera", "polea", "cadena", "candado", "garfio-escalar", "cuerda-seda"],
+  },
+  mercader_magico: {
+    name: "Mercader Mágico",
+    defaultItems: ["pocion-curacion-superior", "pocion-curacion-suprema", "pergamino-conjuro", "arma-mas-1", "armadura-mas-1", "pocion-trepar", "pocion-respirar-agua", "anillo-natacion", "varita-deteccion-magica", "varita-secretos", "varita-proyectiles-magicos"],
+  },
+  establos: {
+    name: "Establos",
+    defaultItems: ["caballo-montar", "caballo-guerra", "poni", "mula", "camello", "silla-montar", "alforjas", "manta"],
+  },
+  taberna: {
+    name: "Taberna",
+    defaultItems: ["racion-viaje", "antorcha", "vela"],
+  },
+};
+
+// Shop state in Firestore: { openShops: ["herrero", "boticario"], shopStock: { "herrero": { "espada-larga": {qty: 5, price: 15} } } }
+const SHOP_DOC = doc(db, "campana", "tienda");
+
+async function loadShopState() {
+  try {
+    const snap = await getDoc(SHOP_DOC);
+    return snap.exists() ? snap.data() : { openShops: [], shopStock: {} };
+  } catch(e) { return { openShops: [], shopStock: {} }; }
+}
+
+async function saveShopState(shopState) {
+  try {
+    await setDoc(SHOP_DOC, shopState);
+  } catch(e) { console.warn("Shop save failed:", e); }
+}
+
+let shopState = { openShops: [], shopStock: {} };
+
+// Subscribe to shop changes in real time
+function subscribeToShopChanges() {
+  onSnapshot(SHOP_DOC, (snap) => {
+    if (!snap.exists()) return;
+    shopState = snap.data();
+    renderShopIndicator();
+    if (document.querySelector("#shop-panel")?.closest(".inv-panel.active")) {
+      renderShopPanel();
+    }
+  });
+}
+
 
 let firestoreReady = false;
 let saveTimeout = null;
@@ -1022,6 +1080,119 @@ function showView(viewId) {
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (viewId === "dm-view") { renderDMPanel(); renderDMTradePanel(); }
 }
+function renderShopIndicator() {
+  const existing = document.querySelector("#shop-indicator");
+  if (existing) existing.remove();
+  if (!shopState.openShops?.length) return;
+  const indicator = document.createElement("div");
+  indicator.id = "shop-indicator";
+  indicator.className = "shop-indicator";
+  indicator.innerHTML = '<span class="shop-dot"></span> Tienda abierta';
+  indicator.onclick = () => { setActiveTab("mercader"); renderShopPanel(); };
+  const panelCard = document.querySelector(".panel-card");
+  if (panelCard) panelCard.insertAdjacentElement("beforebegin", indicator);
+}
+
+function renderShopPanel() {
+  const el = document.querySelector("#shop-panel");
+  if (!el) return;
+  const openShops = shopState.openShops || [];
+  if (!openShops.length) { el.innerHTML = '<p class="helper-copy">La tienda está cerrada.</p>'; return; }
+  const allItems = [];
+  openShops.forEach(shopId => {
+    const stock = shopState.shopStock?.[shopId] || {};
+    Object.entries(stock).forEach(([itemId, itemData]) => {
+      if (itemData.qty > 0) {
+        const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
+        if (dbItem) allItems.push({ shopId, itemId, dbItem, qty: itemData.qty, price: itemData.price });
+      }
+    });
+  });
+  if (!allItems.length) { el.innerHTML = '<p class="helper-copy">El mercader no tiene nada en stock.</p>'; return; }
+  el.innerHTML = '<p class="eyebrow" style="margin-bottom:10px">Mercader</p><div style="display:grid;gap:8px">' +
+    allItems.map(({shopId, itemId, dbItem, qty, price}) => `
+      <div class="shop-item-card">
+        <div>
+          <strong>${escapeHtml(dbItem[1])}</strong>
+          <p style="color:var(--muted);font-size:.75rem">${escapeHtml(dbItem[2])} · Stock: ${qty} · ${price} PO</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <input type="number" min="1" max="${qty}" value="1" class="shop-qty-input" style="width:48px;text-align:center" />
+          <button class="small-button gold-button" data-buy-item="${itemId}" data-buy-shop="${shopId}" data-buy-price="${price}">Comprar</button>
+        </div>
+      </div>`).join("") + '</div>';
+}
+
+function renderDMShopPanel() {
+  const el = document.querySelector("#dm-shop-panel");
+  if (!el) return;
+  const shopButtons = Object.entries(SHOP_TYPES).map(([id, shop]) => {
+    const isOpen = shopState.openShops?.includes(id);
+    return `<button class="small-button ${isOpen ? 'gold-button' : ''}" data-toggle-shop="${id}" style="margin:3px">${isOpen ? '🟢' : '⚪'} ${shop.name}</button>`;
+  }).join("");
+  const stockEditor = (shopState.openShops || []).map(shopId => {
+    const shop = SHOP_TYPES[shopId];
+    const stock = shopState.shopStock?.[shopId] || {};
+    const items = shop.defaultItems.map(itemId => {
+      const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
+      if (!dbItem) return "";
+      const s = stock[itemId] || { qty: 5, price: dbItem[4] || 0 };
+      return `<div class="dm-stock-row">
+        <span style="flex:1;font-size:.8rem;color:var(--muted)">${escapeHtml(dbItem[1])}</span>
+        <input type="number" min="0" value="${s.qty}" class="dm-stock-qty" data-shop="${shopId}" data-item="${itemId}" style="width:55px;text-align:center" />
+        <input type="number" min="0" value="${s.price}" class="dm-stock-price" data-shop="${shopId}" data-item="${itemId}" style="width:65px;text-align:center" />
+      </div>`;
+    }).filter(Boolean).join("");
+    return `<div class="dm-trade-section" style="margin-top:10px">
+      <h3 style="color:var(--gold);margin-bottom:8px">${shop.name}</h3>
+      <div style="display:grid;grid-template-columns:1fr 55px 65px;gap:4px;margin-bottom:4px">
+        <span style="font-size:.6rem;color:var(--muted);text-transform:uppercase">Objeto</span>
+        <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">Stock</span>
+        <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">PO</span>
+      </div>${items}
+      <button class="small-button gold-button" data-save-shop="${shopId}" style="width:100%;margin-top:8px">Guardar</button>
+    </div>`;
+  }).join("");
+  el.innerHTML = `<div class="dm-trade-section"><h3 style="color:var(--gold);margin-bottom:10px">Tiendas</h3><div style="display:flex;flex-wrap:wrap">${shopButtons}</div></div>${stockEditor}`;
+
+  el.querySelectorAll("[data-toggle-shop]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const shopId = btn.dataset.toggleShop;
+      const ns = { ...shopState, openShops: [...(shopState.openShops || [])], shopStock: { ...(shopState.shopStock || {}) } };
+      if (ns.openShops.includes(shopId)) {
+        ns.openShops = ns.openShops.filter(s => s !== shopId);
+      } else {
+        ns.openShops.push(shopId);
+        if (!ns.shopStock[shopId]) {
+          ns.shopStock[shopId] = {};
+          SHOP_TYPES[shopId].defaultItems.forEach(itemId => {
+            const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
+            if (dbItem) ns.shopStock[shopId][itemId] = { qty: 5, price: dbItem[4] || 0 };
+          });
+        }
+      }
+      shopState = ns;
+      await saveShopState(shopState);
+      renderDMShopPanel();
+    });
+  });
+  el.querySelectorAll("[data-save-shop]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const shopId = btn.dataset.saveShop;
+      const ns = { ...shopState, shopStock: { ...(shopState.shopStock || {}) } };
+      ns.shopStock[shopId] = {};
+      el.querySelectorAll(`.dm-stock-qty[data-shop="${shopId}"]`).forEach(qi => {
+        const itemId = qi.dataset.item;
+        const pi = el.querySelector(`.dm-stock-price[data-shop="${shopId}"][data-item="${itemId}"]`);
+        ns.shopStock[shopId][itemId] = { qty: parseInt(qi.value) || 0, price: parseInt(pi?.value) || 0 };
+      });
+      shopState = ns;
+      await saveShopState(shopState);
+      showToast("Stock guardado.");
+    });
+  });
+}
+
 function renderHome() {
   // Show DM panel button if logged in as DM
   const existingDMBtn = document.querySelector("#dm-home-btn");
@@ -1249,6 +1420,7 @@ function renderPendingTrades() {
 function renderDMPanel() {
   const grid = document.querySelector("#dm-character-grid");
   if (!grid) return;
+  renderDMShopPanel();
   grid.innerHTML = state.characters.map(ch => `
     <button class="dm-char-btn" data-dm-character="${ch.id}">
       <img src="${escapeHtml(ch.portrait)}" alt="${escapeHtml(ch.name)}" />
@@ -1268,6 +1440,7 @@ function renderCharacter() {
     </div>`;
   renderInventory();
   renderPendingTrades();
+  renderShopIndicator();
 }
 function renderItemCard(entry, equipped, showEquip) {
   const [id, name, quantity, itemCategory, description] = entry;
@@ -1514,12 +1687,14 @@ function renderInventory() {
       <button class="inv-tab" data-inv-tab="tesoros">Tesoros</button>
       <button class="inv-tab" data-inv-tab="mochila">Mochila</button>
       <button class="inv-tab" data-inv-tab="envios">Comercio</button>
+      ${shopState.openShops?.length ? '<button class="inv-tab shop-tab" data-inv-tab="mercader">🟢 Mercader</button>' : ''}
     </div>
     <div class="inv-panel active" id="inv-equipo">${equipoHTML}</div>
     <div class="inv-panel" id="inv-consumibles">${consumHTML}</div>
     <div class="inv-panel" id="inv-tesoros">${tesHTML}</div>
     <div class="inv-panel" id="inv-mochila">${mochilaSections || '<p class="helper-copy">La mochila esta vacia.</p>'}</div>
-    <div class="inv-panel" id="inv-envios">${renderTradePanel(item)}</div>`;
+    <div class="inv-panel" id="inv-envios">${renderTradePanel(item)}</div>
+    <div class="inv-panel" id="inv-mercader"><div id="shop-panel"></div></div>`;
 
   // Restore active tab
   setActiveTab(activeTab);
@@ -1724,6 +1899,42 @@ document.addEventListener("click", (event) => {
     }
     document.querySelector("#sell-dialog").showModal();
     input.focus();
+    return;
+  }
+
+  // Buy from shop
+  const buyBtn = event.target.closest("[data-buy-item]");
+  if (buyBtn) {
+    const item = character();
+    if (!item) return;
+    const itemId = buyBtn.dataset.buyItem;
+    const shopId = buyBtn.dataset.buyShop;
+    const priceEach = parseInt(buyBtn.dataset.buyPrice) || 0;
+    const qtyInput = buyBtn.closest(".shop-item-card")?.querySelector(".shop-qty-input");
+    const qty = parseInt(qtyInput?.value) || 1;
+    const total = priceEach * qty;
+    if ((item.currency.po || 0) < total) { showToast("No tienes suficientes PO. Necesitas " + total + " PO."); return; }
+    // Deduct gold
+    item.currency.po -= total;
+    // Add item to inventory
+    const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
+    if (dbItem) {
+      const existing = item.inventory.find(i => i[0] === itemId);
+      if (existing) { existing[2] += qty; }
+      else { item.inventory.push([dbItem[0], dbItem[1], qty, dbItem[2], dbItem[5] || "", SLOT_BY_ITEM[dbItem[0]] || "other", dbItem[3] || 0, dbItem[4] || 0]); }
+    }
+    // Reduce stock
+    const ns = { ...shopState, shopStock: { ...(shopState.shopStock || {}) } };
+    if (ns.shopStock[shopId]?.[itemId]) {
+      ns.shopStock[shopId][itemId] = { ...ns.shopStock[shopId][itemId], qty: Math.max(0, ns.shopStock[shopId][itemId].qty - qty) };
+    }
+    shopState = ns;
+    addActivity("Compraste " + qty + "x " + (dbItem?.[1] || itemId) + " por " + total + " PO.");
+    saveState();
+    saveShopState(shopState);
+    renderInventory();
+    renderShopPanel();
+    showToast("Comprado: " + qty + "x " + (dbItem?.[1] || itemId) + " por " + total + " PO.");
     return;
   }
 
@@ -2126,6 +2337,8 @@ async function initFirestoreSync(retries = 3) {
   }
   firestoreReady = true;
   subscribeToChanges();
+  // Load shop state
+  loadShopState().then(s => { shopState = s; subscribeToShopChanges(); });
 }
 
 
