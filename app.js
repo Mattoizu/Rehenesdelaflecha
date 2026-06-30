@@ -24,27 +24,45 @@ const STATE_DOC = doc(db, "campana", "estado");
 const SHOP_TYPES = {
   herrero: {
     name: "Herrero",
-    defaultItems: ["espada-larga", "espada-corta", "hacha-mano", "hacha-batalla", "martillo-guerra", "lanza", "daga", "cimitarra", "maza", "mangual", "mangual-pesado", "arco-corto", "arco-largo", "ballesta-mano", "ballesta-ligera", "ballesta-pesada", "armadura-cuero", "armadura-cuero-tachonado", "cota-escamas", "media-armadura", "cota-malla", "armadura-placas", "coraza", "escudo", "armadura-acolchada", "pieles"],
+    // Stock realista de pueblo pequeño: pocas armas básicas, sin objetos magicos
+    defaultItems: [
+      ["espada-corta", 2], ["daga", 4], ["hacha-mano", 2], ["lanza", 2],
+      ["arco-corto", 1], ["armadura-cuero", 1], ["escudo", 1],
+    ],
   },
   boticario: {
     name: "Boticario",
-    defaultItems: ["pocion-curacion", "pocion-curacion-mayor", "antitoxina", "aceite", "vela", "incienso", "municion-magica"],
+    // Casi nada de pociones - un pueblo pequeño no tiene boticario surtido
+    defaultItems: [
+      ["pocion-curacion", 1], ["antitoxina", 1], ["aceite", 3], ["vela", 5],
+    ],
   },
   tienda_general: {
     name: "Tienda General",
-    defaultItems: ["antorcha", "racion-viaje", "cuerda-canamo", "cuerda-seda", "mochila", "bolsa", "saco", "navaja", "yesca", "linterna-bullseye", "linterna-capucha", "espejo-acero", "palanca", "martillo", "clavos-hierro", "escalera", "polea", "cadena", "candado", "garfio-escalar", "cuerda-seda"],
+    // Lo mas surtido - objetos cotidianos y baratos
+    defaultItems: [
+      ["antorcha", 10], ["racion-viaje", 10], ["cuerda-canamo", 3], ["mochila", 2],
+      ["saco", 3], ["navaja", 2], ["yesca", 4], ["clavos-hierro", 5], ["candado", 1],
+    ],
   },
   mercader_magico: {
     name: "Mercader Mágico",
-    defaultItems: ["pocion-curacion-superior", "pocion-curacion-suprema", "pergamino-conjuro", "arma-mas-1", "armadura-mas-1", "pocion-trepar", "pocion-respirar-agua", "anillo-natacion", "varita-deteccion-magica", "varita-secretos", "varita-proyectiles-magicos"],
+    // No deberia existir en pueblos pequeños - dejar vacio o casi
+    defaultItems: [
+      ["pergamino-conjuro", 1],
+    ],
   },
   establos: {
     name: "Establos",
-    defaultItems: ["caballo-montar", "caballo-guerra", "poni", "mula", "camello", "silla-montar", "alforjas", "manta"],
+    defaultItems: [
+      ["poni", 1], ["mula", 1], ["silla-montar", 1],
+    ],
   },
   taberna: {
     name: "Taberna",
-    defaultItems: ["racion-viaje", "antorcha", "vela"],
+    defaultItems: [
+      ["racion-viaje", 8], ["vela", 4],
+    ],
   },
 };
 
@@ -1088,7 +1106,10 @@ function renderShopIndicator() {
   indicator.id = "shop-indicator";
   indicator.className = "shop-indicator";
   indicator.innerHTML = '<span class="shop-dot"></span> Tienda abierta';
-  indicator.onclick = () => { setActiveTab("mercader"); renderShopPanel(); };
+  indicator.onclick = () => {
+    renderShopPanel();
+    document.querySelector("#shop-dialog").showModal();
+  };
   const panelCard = document.querySelector(".panel-card");
   if (panelCard) panelCard.insertAdjacentElement("beforebegin", indicator);
 }
@@ -1133,10 +1154,10 @@ function renderDMShopPanel() {
   const stockEditor = (shopState.openShops || []).map(shopId => {
     const shop = SHOP_TYPES[shopId];
     const stock = shopState.shopStock?.[shopId] || {};
-    const items = shop.defaultItems.map(itemId => {
+    const items = shop.defaultItems.map(([itemId, defaultQty]) => {
       const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
       if (!dbItem) return "";
-      const s = stock[itemId] || { qty: 5, price: dbItem[4] || 0 };
+      const s = stock[itemId] || { qty: defaultQty, price: dbItem[4] || 0 };
       return `<div class="dm-stock-row">
         <span style="flex:1;font-size:.8rem;color:var(--muted)">${escapeHtml(dbItem[1])}</span>
         <input type="number" min="0" value="${s.qty}" class="dm-stock-qty" data-shop="${shopId}" data-item="${itemId}" style="width:55px;text-align:center" />
@@ -1165,9 +1186,9 @@ function renderDMShopPanel() {
         ns.openShops.push(shopId);
         if (!ns.shopStock[shopId]) {
           ns.shopStock[shopId] = {};
-          SHOP_TYPES[shopId].defaultItems.forEach(itemId => {
+          SHOP_TYPES[shopId].defaultItems.forEach(([itemId, defaultQty]) => {
             const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
-            if (dbItem) ns.shopStock[shopId][itemId] = { qty: 5, price: dbItem[4] || 0 };
+            if (dbItem) ns.shopStock[shopId][itemId] = { qty: defaultQty, price: dbItem[4] || 0 };
           });
         }
       }
@@ -1687,14 +1708,13 @@ function renderInventory() {
       <button class="inv-tab" data-inv-tab="tesoros">Tesoros</button>
       <button class="inv-tab" data-inv-tab="mochila">Mochila</button>
       <button class="inv-tab" data-inv-tab="envios">Comercio</button>
-      ${shopState.openShops?.length ? '<button class="inv-tab shop-tab" data-inv-tab="mercader">🟢 Mercader</button>' : ''}
     </div>
     <div class="inv-panel active" id="inv-equipo">${equipoHTML}</div>
     <div class="inv-panel" id="inv-consumibles">${consumHTML}</div>
     <div class="inv-panel" id="inv-tesoros">${tesHTML}</div>
     <div class="inv-panel" id="inv-mochila">${mochilaSections || '<p class="helper-copy">La mochila esta vacia.</p>'}</div>
     <div class="inv-panel" id="inv-envios">${renderTradePanel(item)}</div>
-    <div class="inv-panel" id="inv-mercader"><div id="shop-panel"></div></div>`;
+`;
 
   // Restore active tab
   setActiveTab(activeTab);
@@ -2234,6 +2254,9 @@ document.querySelector("#sell-confirm").addEventListener("click", () => {
 });
 document.querySelector("#sell-cancel").addEventListener("click", () => {
   document.querySelector("#sell-dialog").close();
+});
+document.querySelector("#shop-dialog-close").addEventListener("click", () => {
+  document.querySelector("#shop-dialog").close();
 });
 
 
