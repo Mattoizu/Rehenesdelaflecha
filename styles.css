@@ -1467,3 +1467,35 @@ button[data-edit-item] { font-size: .82rem; }
   border-bottom: 1px solid rgba(75,48,41,.2);
 }
 .dm-stock-row:last-of-type { border-bottom: none; }
+
+/* ── DM character buttons (en el panel DM) ────────────────────────── */
+.dm-char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(75,48,41,.5);
+  border-radius: 14px;
+  background: rgba(16,11,11,.5);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  aspect-ratio: auto;
+}
+.dm-char-btn:hover {
+  border-color: var(--gold-dark);
+  background: rgba(123,87,42,.12);
+}
+.dm-char-btn img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+}
+.dm-char-btn span {
+  color: #f4d898;
+  font-size: .82rem;
+  font-weight: 700;
+  text-align: center;
+}

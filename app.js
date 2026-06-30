@@ -2344,20 +2344,15 @@ async function initFirestoreSync(retries = 3) {
 
 // ── Auth handlers (event delegation to avoid null issues) ─────────
 document.addEventListener("click", async (e) => {
-  console.log("Click en:", e.target.id, e.target.tagName);
   if (e.target.id === "auth-login-btn" || e.target.closest("#auth-login-btn")) {
-    console.log("Login button clicked");
     const email = document.querySelector("#auth-email").value.trim();
     const password = document.querySelector("#auth-password").value;
     const err = document.querySelector("#auth-error");
-    console.log("Email:", email, "Password length:", password.length);
     if (!email || !password) { err.textContent = "Completa todos los campos."; return; }
     try {
-      console.log("Trying signIn...");
       await signInWithEmailAndPassword(auth, email, password);
       err.textContent = "";
     } catch(e2) {
-      console.log("Auth error:", e2.code, e2.message);
       err.textContent = e2.code === "auth/invalid-credential" ? "Email o contraseña incorrectos." : "Error: " + e2.message;
     }
   }
