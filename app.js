@@ -60,8 +60,11 @@ const SHOP_TYPES = {
   },
   taberna: {
     name: "Taberna",
+    // El Old Boar Inn de Garon - sencillo pero con lo basico cubierto
     defaultItems: [
-      ["racion-viaje", 8], ["vela", 4],
+      ["cerveza-garon", 99], ["vino-barato", 20], ["comida-pobre", 20],
+      ["comida-comun", 10], ["habitacion-comun", 10], ["habitacion-decente", 4],
+      ["racion-viaje", 6],
     ],
   },
 };
@@ -692,6 +695,14 @@ const ITEM_DATABASE = [
   ['manual-ejercicios-corporales', 'Manual de ejercicios corporales', 'Equipo', 5, 0, 'Muy raro. Leer en 48 horas: Fuerza aumenta permanentemente en 2 (max 24).', 'DMG'],
   ['manual-salud', 'Manual de salud', 'Equipo', 5, 0, 'Muy raro. Leer en 48 horas: Constitucion aumenta permanentemente en 2 (max 24).', 'DMG'],
   ['manual-agilidad', 'Manual de agilidad', 'Equipo', 5, 0, 'Muy raro. Leer en 48 horas: Destreza aumenta permanentemente en 2 (max 24).', 'DMG'],
+
+  // ── Comida, bebida y alojamiento (Old Boar Inn, Oakhurst) ────────
+  ['cerveza-garon', 'Jarra de cerveza', 'Consumible', 1, 0.04, 'Cerveza simple y espumosa que sirve Garon. Lo que toma todo el pueblo.', 'PHB'],
+  ['vino-barato', 'Copa de vino corriente', 'Consumible', 1, 0.2, 'Vino sencillo, algo agrio. Lo unico que ofrece Garon aparte de cerveza.', 'PHB'],
+  ['comida-pobre', 'Plato sencillo de Garon', 'Consumible', 1, 0.3, 'Sopa de papas, pan duro y algo de tocino. Llena el estomago, nada mas.', 'PHB'],
+  ['comida-comun', 'Estofado del Jabali Viejo', 'Consumible', 1, 0.3, 'El plato del dia: estofado de carne con verduras de la huerta. Decente para un pueblo como Oakhurst.', 'PHB'],
+  ['habitacion-comun', 'Cama en el cuarto comun', 'Consumible', 0, 0.5, 'Una manta y un rincon en el cuarto compartido sobre la taberna. Ronquidos incluidos.', 'PHB'],
+  ['habitacion-decente', 'Habitacion propia (Old Boar Inn)', 'Consumible', 0, 2, 'Lo mejor que ofrece Garon: una habitacion con puerta, una cama y una vela. Nada lujoso, pero privado.', 'PHB'],
 ];
 
 // Items that belong in the "Mochila" tab (Historia/Utilidad)
