@@ -2512,6 +2512,11 @@ function goToLinkedCharacterIfAny() {
     activeCharacterId = linked.id;
     renderCharacter();
     showView("character-view");
+    // Force-close auth screen and dialog in case it's still showing
+    const authEl = document.querySelector("#auth-screen");
+    if (authEl) authEl.style.display = "none";
+    const dlg = document.querySelector("#pin-dialog");
+    if (dlg?.open) dlg.close();
   }
 }
 
