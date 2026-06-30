@@ -319,7 +319,7 @@ function mergeRemoteState(saved) {
   return { characters, activity: saved.activity || {} };
 }
 const EMPTY_CURRENCY = { pc: 0, pp: 0, pe: 0, po: 0, ppt: 0 };
-const CURRENCY_LABELS = { pc: "PC|Cobre", pp: "PP|Plata", pe: "PE|Electrum", po: "PO|Oro", ppt: "PPT|Platino" };
+const CURRENCY_LABELS = { pc: "PC|Cobre", pp: "PP|Plata", po: "PO|Oro", ppt: "PPT|Platino" };
 const SLOT_LABELS = {
   "main-hand": "Mano principal", "off-hand": "Mano secundaria", "two-hands": "Dos manos",
   armor: "Armadura", shield: "Escudo", focus: "Foco", head: "Cabeza", neck: "Cuello",
@@ -1679,7 +1679,7 @@ function renderInventory() {
   const totalCoins = Object.values(item.currency || {}).reduce((s, v) => s + (v || 0), 0);
   const coinWeight = totalCoins / 50;
   // Order by value: copper < silver < electrum < gold < platinum
-  const CURRENCY_ORDER = ["pc", "pp", "pe", "po", "ppt"];
+  const CURRENCY_ORDER = ["pc", "pp", "po", "ppt"];
   // Add conversion table toggle
   const coinWeightElParent = document.querySelector("#coin-weight-total")?.parentElement;
   const existingToggle = document.querySelector("#coin-conversion-table");
@@ -1699,13 +1699,12 @@ function renderInventory() {
     table.className = "hidden"; table.style.cssText = "margin-top:6px";
     table.innerHTML = `
       <div class="coin-table-wrap"><table class="coin-table">
-        <thead><tr><th>Moneda</th><th>PC</th><th>PP</th><th>PE</th><th>PO</th><th>PPT</th></tr></thead>
+        <thead><tr><th>Moneda</th><th>PC</th><th>PP</th><th>PO</th><th>PPT</th></tr></thead>
         <tbody>
-          <tr><td>1 PC</td><td>1</td><td>1/10</td><td>1/50</td><td>1/100</td><td>1/1000</td></tr>
-          <tr><td>1 PP</td><td>10</td><td>1</td><td>1/5</td><td>1/10</td><td>1/100</td></tr>
-          <tr><td>1 PE</td><td>50</td><td>5</td><td>1</td><td>1/2</td><td>1/20</td></tr>
-          <tr><td>1 PO</td><td>100</td><td>10</td><td>2</td><td>1</td><td>1/10</td></tr>
-          <tr><td>1 PPT</td><td>1000</td><td>100</td><td>20</td><td>10</td><td>1</td></tr>
+          <tr><td>1 PC</td><td>1</td><td>1/10</td><td>1/100</td><td>1/1000</td></tr>
+          <tr><td>1 PP</td><td>10</td><td>1</td><td>1/10</td><td>1/100</td></tr>
+          <tr><td>1 PO</td><td>100</td><td>10</td><td>1</td><td>1/10</td></tr>
+          <tr><td>1 PPT</td><td>1000</td><td>100</td><td>10</td><td>1</td></tr>
         </tbody>
       </table></div>`;
     coinWeightElParent.appendChild(toggleBtn);
