@@ -1171,7 +1171,10 @@ function renderDMShopPanel() {
         <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">Stock</span>
         <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">PO</span>
       </div>${items}
-      <button class="small-button gold-button" data-save-shop="${shopId}" style="width:100%;margin-top:8px">Guardar</button>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="small-button gold-button" data-save-shop="${shopId}" style="flex:1">Guardar</button>
+        <button class="small-button danger-button" data-reset-shop="${shopId}" style="flex:1">Restablecer stock</button>
+      </div>
     </div>`;
   }).join("");
   el.innerHTML = `<div class="dm-trade-section"><h3 style="color:var(--gold);margin-bottom:10px">Tiendas</h3><div style="display:flex;flex-wrap:wrap">${shopButtons}</div></div>${stockEditor}`;
@@ -1210,6 +1213,21 @@ function renderDMShopPanel() {
       shopState = ns;
       await saveShopState(shopState);
       showToast("Stock guardado.");
+    });
+  });
+  el.querySelectorAll("[data-reset-shop]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const shopId = btn.dataset.resetShop;
+      const ns = { ...shopState, shopStock: { ...(shopState.shopStock || {}) } };
+      ns.shopStock[shopId] = {};
+      SHOP_TYPES[shopId].defaultItems.forEach(([itemId, defaultQty]) => {
+        const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
+        if (dbItem) ns.shopStock[shopId][itemId] = { qty: defaultQty, price: dbItem[4] || 0 };
+      });
+      shopState = ns;
+      await saveShopState(shopState);
+      renderDMShopPanel();
+      showToast("Stock restablecido a valores por defecto.");
     });
   });
 }
