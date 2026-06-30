@@ -843,7 +843,7 @@ const WEIGHT_BY_ITEM = {
 
 const initialCharacters = [
   {
-    id: "arthas", name: "Arthas Menethil", player: "Checo", initials: "AM", identity: "Paladin humano variante",
+    id: "arthas", name: "Arthas Menethil", player: "Checo", initials: "AM", identity: "Paladin humano variante", background: "Soldado",
     portrait: "portrait-arthas.jpg",
     appearance: "Humano alto y de porte noble. Cabello blanco ondulado, lentes finos, armadura oscura ornamentada y capa violeta. Su espada ancestral emite energia purpura.",
     story: "Caballero de una orden paladina. Sobrevivio a unas ruinas profundas al tomar una espada ancestral vinculada con una entidad silenciosa.",
@@ -881,7 +881,7 @@ const initialCharacters = [
     memories: ["Naciste en una casa noble menor y creciste bajo ideales estrictos de disciplina, honor y devocion.", "A los diecisiete anos juraste proteger al reino de horrores antiguos ocultos bajo fortalezas y ciudades enterradas.", "En una expedicion, tus companeros perdieron la razon y moriste casi por completo rodeado de criaturas. La espada del altar te pregunto si deseabas vivir.", "Regresaste como el unico sobreviviente. Tus juramentos siguen intactos, pero el vinculo con la entidad dentro del arma se alimenta con cada batalla.", "Calcryx te derribo con su aliento helado antes de que el grupo lograra llevarla viva ante Yusdrayl.", "Un critico bien puesto ayudo a bajar al sacerdote dragon fallido, aunque la criatura siguio levantandose hasta arder."],
   },
   {
-    id: "miguel-angel", name: "Miguel Angel", player: "Koko", initials: "MA", identity: "Clerigo de la Guerra, enano",
+    id: "miguel-angel", name: "Miguel Angel", player: "Koko", initials: "MA", identity: "Clerigo de la Guerra, enano", background: "Soldado",
     portrait: "portrait-miguel-angel.jpg",
     appearance: "Enano robusto de barba negra, lentes y sombrero marron. Lleva armadura pesada grabada, escudo y un martillo que brilla con luz dorada.",
     story: "Busca justicia contra una iglesia corrupta. Porta su martillo predilecto, un collar heredado de su padre y un sombrero que le quedaba demasiado bien como para abandonarlo.",
@@ -921,7 +921,7 @@ const initialCharacters = [
     memories: ["El sacerdote que te crio fue asesinado y la iglesia corrupta utilizo el crimen para culparte.", "Descubriste que esa misma institucion contrato a tu padre para un trabajo sucio y fue responsable de su muerte.", "Bajo tu barba llevas un collar, el ultimo recuerdo de tu padre. Tu escudo porta el simbolo de tu deidad como una promesa de justicia.", "Tu sombrero no es un misterio profundo: lo encontraste, se veia genial y te lo quedaste.", "Tu martillo personal se llama Jesucristo.", "Tu critico dejo aturdida a Calcryx, aunque su aliento helado te mando a 0 PG poco despues.", "Resolviste rapidamente el acertijo de la puerta dragon con la respuesta: las estrellas.", "Caiste en el pozo con espinas al seguir las huellas por el camino normal."],
   },
   {
-    id: "nilux", name: "Nilux", player: "Vasito", initials: "NI", identity: "Explorador elfo de los bosques",
+    id: "nilux", name: "Nilux", player: "Vasito", initials: "NI", identity: "Explorador elfo de los bosques", background: "Huerfano",
     portrait: "portrait-nilux.jpg",
     appearance: "Elfo de los bosques delgado, de cabello oscuro y expresion concentrada. Usa cuero oscuro, capa verde, arco largo y el Carcaj de Vaelor.",
     story: "Arquero criado entre los Edena Ruh, una troupe errante. Porta el Carcaj de Vaelor y busca escribir su propia historia.",
@@ -961,7 +961,7 @@ const initialCharacters = [
     memories: ["Creciste entre los Edena Ruh: musicos, actores y comerciantes ambulantes que recorrian el continente de feria en feria.", "Vaelor, viejo arquero y jefe de escoltas, te enseno a disparar para sobrevivir: escuchar el bosque, moverte y no perseguir sombras.", "Vaelor te entrego su viejo carcaj de cuero oscuro. Cada corte y remiendo recuerda una noche en que alguien regreso vivo.", "Los Edena Ruh te regalaron un libro de historias con palabras de aliento en su ultima pagina cuando partiste a crear tu propia aventura.", "Tu percepcion te vuelve especialmente valioso frente a trampas.", "Encendiste el orbe musical de la sala 7 y quedaste encantado varias veces hasta que el grupo logro destruirlo.", "Terminas la sesion con agotamiento nivel 1 por el vaiven de carreras causado por el encanto."],
   },
   {
-    id: "galahad", name: "Galahad", player: "Rodrigo", initials: "GA", identity: "Guerrero humano",
+    id: "galahad", name: "Galahad", player: "Rodrigo", initials: "GA", identity: "Guerrero humano", background: "Forastero",
     portrait: "portrait-galahad.jpg",
     appearance: "Guerrero humano atletico de cabello negro largo y armadura oscura. Lleva capa roja desgastada, espada de dos manos y marcas encendidas de Belfegor en el brazo.",
     story: "Busca rescatar a su hermana Angel, raptada por el senor demonio Belfegor para drenar su energia.",
@@ -995,7 +995,7 @@ const initialCharacters = [
     memories: ["Tras anos de entrenamiento emprendiste la busqueda de tu hermana Angel.", "Belfegor la rapto para drenar su energia, acumular poder y perseguir el dominio absoluto.", "Sabes que el rey enviara asesinos para detenerte. Piensas abrirte paso con fuerza fisica y espada hasta alcanzar tu objetivo.", "La sangre de Belfegor dejo una cicatriz quemada en tu cuerpo que altera brevemente tu movimiento o salto.", "Dejaste inconsciente a Calcryx con el pomo de tu espada, evitando matarla y permitiendo cumplir el trato con Yusdrayl.", "Tuviste la idea de quemar al sacerdote dragon fallido, lo que finalmente impidio que volviera a levantarse.", "Terminas la sesion con agotamiento nivel 1 por el orbe musical."],
   },
   {
-    id: "amber", name: "Amber", player: "Cris", initials: "AB", identity: "Guerrera alta elfa",
+    id: "amber", name: "Amber", player: "Cris", initials: "AB", identity: "Guerrera alta elfa", background: "Artesana gremial",
     portrait: "portrait-amber.jpg",
     appearance: "Alta elfa pelirroja con una trenza larga, armadura de cuero reforzada y capa azul. Porta la alabarda Tajo; Skully flota cerca envuelta en fuego purpura.",
     story: "Alta elfa criada por enanos, herrera, bebedora de taberna y luchadora alegre. Porta la alabarda Tajo y una calavera reanimada.",
@@ -1105,15 +1105,21 @@ function normalizeEquipped(equipped, inventory = []) {
   return [...new Set(normalized)];
 }
 function fixStoredSlots(inventory) {
-  // Fix any items with wrong slots saved in Firestore
+  // Fix any items with wrong slots saved in Firestore, and sync description from database
+  // (so updates to item descriptions in the database always reach already-owned items)
   return inventory.map(item => {
     const officialSlot = SLOT_BY_ITEM[item[0]];
+    const dbItem = ITEM_DATABASE.find(([id]) => id === item[0]);
+    let fixed = item;
     if (officialSlot && item[5] && item[5] !== officialSlot) {
-      const fixed = [...item];
+      fixed = [...fixed];
       fixed[5] = officialSlot;
-      return fixed;
     }
-    return item;
+    if (dbItem && dbItem[5] && item[4] !== dbItem[5]) {
+      fixed = [...fixed];
+      fixed[4] = dbItem[5];
+    }
+    return fixed;
   });
 }
 
@@ -1614,7 +1620,7 @@ function renderCharacter() {
     <div>
       <p class="eyebrow">Personaje de ${escapeHtml(item.player)}</p>
       <h1>${escapeHtml(item.name)}</h1>
-      <p>${escapeHtml(item.identity)}</p>
+      <p>${escapeHtml(item.identity)}${item.background ? ' · ' + escapeHtml(item.background) : ''}</p>
     </div>`;
   renderInventory();
   renderPendingTrades();
@@ -2417,6 +2423,16 @@ document.querySelector("#sell-cancel").addEventListener("click", () => {
 });
 document.querySelector("#shop-dialog-close").addEventListener("click", () => {
   document.querySelector("#shop-dialog").close();
+});
+
+document.querySelector("#link-dialog-close").addEventListener("click", () => {
+  document.querySelector("#link-dialog").close();
+});
+document.addEventListener("click", (e) => {
+  if (e.target.id === "open-link-dialog-btn") {
+    document.querySelector("#link-dialog").showModal();
+    renderDMPanel();
+  }
 });
 
 
