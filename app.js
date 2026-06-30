@@ -21,6 +21,70 @@ const auth = getAuth(firebaseApp);
 const DM_EMAIL = "matias.patapia@hotmail.com";
 const STATE_DOC = doc(db, "campana", "estado");
 // ── Tiendas ────────────────────────────────────────────────────────
+const ITEM_COIN_OVERRIDE = {
+  "cerveza-garon": "pc",
+  "vino-barato": "pp",
+  "comida-pobre": "pp",
+  "comida-comun": "pp",
+  "habitacion-comun": "pp",
+  "habitacion-decente": "po",
+};
+
+// Conversion rates relative to PC (copper): 1 PO = 100 PC, 1 PP = 10 PC, 1 PE = 50 PC, 1 PPT = 1000 PC
+const COIN_VALUE_IN_PC = { pc: 1, pp: 10, pe: 50, po: 100, ppt: 1000 };
+// Practical change-making order: skip electrum (pe) since it's rarely used for change
+const CHANGE_ORDER = ["pc", "pp", "po", "ppt"];
+const COIN_ORDER = ["pc", "pp", "pe", "po", "ppt"]; // ascending value, includes pe for wealth calc
+
+// Attempt to pay `totalCostInTargetCoin` (in the shop's listed coin) using the character's currency.
+// Prefers exact denomination first; if insufficient, borrows one coin from the next higher
+// practical denomination (skipping electrum) and gives change in the next lower practical coin.
+function attemptSmartPayment(currency, totalCostInTargetCoin, targetCoin) {
+  const amountPC = totalCostInTargetCoin * COIN_VALUE_IN_PC[targetCoin];
+  const totalWealthPC = COIN_ORDER.reduce((sum, c) => sum + (currency[c] || 0) * COIN_VALUE_IN_PC[c], 0);
+  if (totalWealthPC < amountPC) return null; // can't afford
+
+  const newCurrency = { ...currency };
+
+  // First try exact coin
+  const exactHave = newCurrency[targetCoin] || 0;
+  if (exactHave >= totalCostInTargetCoin) {
+    newCurrency[targetCoin] = exactHave - totalCostInTargetCoin;
+    return newCurrency;
+  }
+
+  let remaining = amountPC - exactHave * COIN_VALUE_IN_PC[targetCoin];
+  newCurrency[targetCoin] = 0;
+
+  const targetIdx = CHANGE_ORDER.indexOf(targetCoin);
+  for (let i = targetIdx + 1; i < CHANGE_ORDER.length && remaining > 0; i++) {
+    const higherCoin = CHANGE_ORDER[i];
+    const higherValue = COIN_VALUE_IN_PC[higherCoin];
+    while ((newCurrency[higherCoin] || 0) > 0 && remaining > 0) {
+      newCurrency[higherCoin] -= 1;
+      remaining -= higherValue;
+      if (remaining < 0) {
+        const changeOwed = -remaining;
+        const lowerCoin = CHANGE_ORDER[i - 1];
+        const lowerValue = COIN_VALUE_IN_PC[lowerCoin];
+        const changeInLower = Math.floor(changeOwed / lowerValue);
+        const changeRemainderPC = changeOwed % lowerValue;
+        newCurrency[lowerCoin] = (newCurrency[lowerCoin] || 0) + changeInLower;
+        if (changeRemainderPC > 0) newCurrency.pc = (newCurrency.pc || 0) + changeRemainderPC;
+        remaining = 0;
+      }
+    }
+  }
+  return remaining <= 0 ? newCurrency : null;
+}
+
+function defaultCoinFor(price, itemId) {
+  if (itemId && ITEM_COIN_OVERRIDE[itemId]) return ITEM_COIN_OVERRIDE[itemId];
+  if (price <= 1) return "pc";
+  if (price < 10) return "pp";
+  return "po";
+}
+
 const SHOP_TYPES = {
   herrero: {
     name: "Herrero",
@@ -697,12 +761,12 @@ const ITEM_DATABASE = [
   ['manual-agilidad', 'Manual de agilidad', 'Equipo', 5, 0, 'Muy raro. Leer en 48 horas: Destreza aumenta permanentemente en 2 (max 24).', 'DMG'],
 
   // ── Comida, bebida y alojamiento (Old Boar Inn, Oakhurst) ────────
-  ['cerveza-garon', 'Jarra de cerveza', 'Consumible', 1, 0.04, 'Cerveza simple y espumosa que sirve Garon. Lo que toma todo el pueblo.', 'PHB'],
-  ['vino-barato', 'Copa de vino corriente', 'Consumible', 1, 0.2, 'Vino sencillo, algo agrio. Lo unico que ofrece Garon aparte de cerveza.', 'PHB'],
-  ['comida-pobre', 'Plato sencillo de Garon', 'Consumible', 1, 0.3, 'Sopa de papas, pan duro y algo de tocino. Llena el estomago, nada mas.', 'PHB'],
-  ['comida-comun', 'Estofado del Jabali Viejo', 'Consumible', 1, 0.3, 'El plato del dia: estofado de carne con verduras de la huerta. Decente para un pueblo como Oakhurst.', 'PHB'],
-  ['habitacion-comun', 'Cama en el cuarto comun', 'Consumible', 0, 0.5, 'Una manta y un rincon en el cuarto compartido sobre la taberna. Ronquidos incluidos.', 'PHB'],
-  ['habitacion-decente', 'Habitacion propia (Old Boar Inn)', 'Consumible', 0, 2, 'Lo mejor que ofrece Garon: una habitacion con puerta, una cama y una vela. Nada lujoso, pero privado.', 'PHB'],
+  ['cerveza-garon', 'Jarra de cerveza', 'Consumible', 1, 4, 'Cerveza simple y espumosa que sirve Garon. Lo que toma todo el pueblo.', 'PHB'],
+  ['vino-barato', 'Copa de vino corriente', 'Consumible', 1, 2, 'Vino sencillo, algo agrio. Lo unico que ofrece Garon aparte de cerveza.', 'PHB'],
+  ['comida-pobre', 'Plato sencillo de Garon', 'Consumible', 1, 2, 'Sopa de papas, pan duro y algo de tocino. Llena el estomago, nada mas.', 'PHB'],
+  ['comida-comun', 'Estofado del Jabali Viejo', 'Consumible', 1, 3, 'El plato del dia: estofado de carne con verduras de la huerta. Decente para un pueblo como Oakhurst.', 'PHB'],
+  ['habitacion-comun', 'Cama en el cuarto comun', 'Consumible', 0, 5, 'Una manta y un rincon en el cuarto compartido sobre la taberna. Ronquidos incluidos.', 'PHB'],
+  ['habitacion-decente', 'Habitacion propia (Old Boar Inn)', 'Consumible', 0, 1, 'Lo mejor que ofrece Garon: una habitacion con puerta, una cama y una vela. Nada lujoso, pero privado.', 'PHB'],
 ];
 
 // Items that belong in the "Mochila" tab (Historia/Utilidad)
@@ -1136,21 +1200,21 @@ function renderShopPanel() {
     Object.entries(stock).forEach(([itemId, itemData]) => {
       if (itemData.qty > 0) {
         const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
-        if (dbItem) allItems.push({ shopId, itemId, dbItem, qty: itemData.qty, price: itemData.price });
+        if (dbItem) allItems.push({ shopId, itemId, dbItem, qty: itemData.qty, price: itemData.price, coin: itemData.coin || 'po' });
       }
     });
   });
   if (!allItems.length) { el.innerHTML = '<p class="helper-copy">El mercader no tiene nada en stock.</p>'; return; }
   el.innerHTML = '<p class="eyebrow" style="margin-bottom:10px">Mercader</p><div style="display:grid;gap:8px">' +
-    allItems.map(({shopId, itemId, dbItem, qty, price}) => `
+    allItems.map(({shopId, itemId, dbItem, qty, price, coin}) => `
       <div class="shop-item-card">
         <div>
           <strong>${escapeHtml(dbItem[1])}</strong>
-          <p style="color:var(--muted);font-size:.75rem">${escapeHtml(dbItem[2])} · Stock: ${qty} · ${price} PO</p>
+          <p style="color:var(--muted);font-size:.75rem">${escapeHtml(dbItem[2])} · Stock: ${qty} · ${price} ${(coin||'po').toUpperCase()}</p>
         </div>
         <div style="display:flex;align-items:center;gap:6px">
           <input type="number" min="1" max="${qty}" value="1" class="shop-qty-input" style="width:48px;text-align:center" />
-          <button class="small-button gold-button" data-buy-item="${itemId}" data-buy-shop="${shopId}" data-buy-price="${price}">Comprar</button>
+          <button class="small-button gold-button" data-buy-item="${itemId}" data-buy-shop="${shopId}" data-buy-price="${price}" data-buy-coin="${coin||'po'}">Comprar</button>
         </div>
       </div>`).join("") + '</div>';
 }
@@ -1168,19 +1232,26 @@ function renderDMShopPanel() {
     const items = shop.defaultItems.map(([itemId, defaultQty]) => {
       const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
       if (!dbItem) return "";
-      const s = stock[itemId] || { qty: defaultQty, price: dbItem[4] || 0 };
+      const s = stock[itemId] || { qty: defaultQty, price: dbItem[4] || 0, coin: "po" };
+      const coin = s.coin || "po";
       return `<div class="dm-stock-row">
         <span style="flex:1;font-size:.8rem;color:var(--muted)">${escapeHtml(dbItem[1])}</span>
-        <input type="number" min="0" value="${s.qty}" class="dm-stock-qty" data-shop="${shopId}" data-item="${itemId}" style="width:55px;text-align:center" />
-        <input type="number" min="0" value="${s.price}" class="dm-stock-price" data-shop="${shopId}" data-item="${itemId}" style="width:65px;text-align:center" />
+        <input type="number" min="0" value="${s.qty}" class="dm-stock-qty" data-shop="${shopId}" data-item="${itemId}" style="width:48px;text-align:center" />
+        <input type="number" min="0" value="${s.price}" class="dm-stock-price" data-shop="${shopId}" data-item="${itemId}" style="width:50px;text-align:center" />
+        <select class="dm-stock-coin" data-shop="${shopId}" data-item="${itemId}" style="width:54px;font-size:.65rem;padding:2px">
+          <option value="pc" ${coin==='pc'?'selected':''}>PC</option>
+          <option value="pp" ${coin==='pp'?'selected':''}>PP</option>
+          <option value="po" ${coin==='po'?'selected':''}>PO</option>
+        </select>
       </div>`;
     }).filter(Boolean).join("");
     return `<div class="dm-trade-section" style="margin-top:10px">
       <h3 style="color:var(--gold);margin-bottom:8px">${shop.name}</h3>
-      <div style="display:grid;grid-template-columns:1fr 55px 65px;gap:4px;margin-bottom:4px">
+      <div style="display:grid;grid-template-columns:1fr 48px 50px 54px;gap:4px;margin-bottom:4px">
         <span style="font-size:.6rem;color:var(--muted);text-transform:uppercase">Objeto</span>
         <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">Stock</span>
-        <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">PO</span>
+        <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">Precio</span>
+        <span style="font-size:.6rem;color:var(--muted);text-align:center;text-transform:uppercase">Moneda</span>
       </div>${items}
       <div style="display:flex;gap:6px;margin-top:8px">
         <button class="small-button gold-button" data-save-shop="${shopId}" style="flex:1">Guardar</button>
@@ -1202,7 +1273,10 @@ function renderDMShopPanel() {
           ns.shopStock[shopId] = {};
           SHOP_TYPES[shopId].defaultItems.forEach(([itemId, defaultQty]) => {
             const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
-            if (dbItem) ns.shopStock[shopId][itemId] = { qty: defaultQty, price: dbItem[4] || 0 };
+            if (dbItem) {
+              const price = dbItem[4] || 0;
+              ns.shopStock[shopId][itemId] = { qty: defaultQty, price, coin: defaultCoinFor(price, itemId) };
+            }
           });
         }
       }
@@ -1219,7 +1293,8 @@ function renderDMShopPanel() {
       el.querySelectorAll(`.dm-stock-qty[data-shop="${shopId}"]`).forEach(qi => {
         const itemId = qi.dataset.item;
         const pi = el.querySelector(`.dm-stock-price[data-shop="${shopId}"][data-item="${itemId}"]`);
-        ns.shopStock[shopId][itemId] = { qty: parseInt(qi.value) || 0, price: parseInt(pi?.value) || 0 };
+        const ci = el.querySelector(`.dm-stock-coin[data-shop="${shopId}"][data-item="${itemId}"]`);
+        ns.shopStock[shopId][itemId] = { qty: parseInt(qi.value) || 0, price: parseInt(pi?.value) || 0, coin: ci?.value || "po" };
       });
       shopState = ns;
       await saveShopState(shopState);
@@ -1233,7 +1308,10 @@ function renderDMShopPanel() {
       ns.shopStock[shopId] = {};
       SHOP_TYPES[shopId].defaultItems.forEach(([itemId, defaultQty]) => {
         const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
-        if (dbItem) ns.shopStock[shopId][itemId] = { qty: defaultQty, price: dbItem[4] || 0 };
+        if (dbItem) {
+          const price = dbItem[4] || 0;
+          ns.shopStock[shopId][itemId] = { qty: defaultQty, price, coin: defaultCoinFor(price, itemId) };
+        }
       });
       shopState = ns;
       await saveShopState(shopState);
@@ -1958,13 +2036,14 @@ document.addEventListener("click", (event) => {
     if (!item) return;
     const itemId = buyBtn.dataset.buyItem;
     const shopId = buyBtn.dataset.buyShop;
-    const priceEach = parseInt(buyBtn.dataset.buyPrice) || 0;
+    const priceEach = parseFloat(buyBtn.dataset.buyPrice) || 0;
+    const coin = buyBtn.dataset.buyCoin || "po";
     const qtyInput = buyBtn.closest(".shop-item-card")?.querySelector(".shop-qty-input");
     const qty = parseInt(qtyInput?.value) || 1;
     const total = priceEach * qty;
-    if ((item.currency.po || 0) < total) { showToast("No tienes suficientes PO. Necesitas " + total + " PO."); return; }
-    // Deduct gold
-    item.currency.po -= total;
+    const newCurrency = attemptSmartPayment(item.currency, total, coin);
+    if (!newCurrency) { showToast("No tienes suficiente dinero para esta compra."); return; }
+    item.currency = newCurrency;
     // Add item to inventory
     const dbItem = ITEM_DATABASE.find(([id]) => id === itemId);
     if (dbItem) {
@@ -1978,7 +2057,7 @@ document.addEventListener("click", (event) => {
       ns.shopStock[shopId][itemId] = { ...ns.shopStock[shopId][itemId], qty: Math.max(0, ns.shopStock[shopId][itemId].qty - qty) };
     }
     shopState = ns;
-    addActivity("Compraste " + qty + "x " + (dbItem?.[1] || itemId) + " por " + total + " PO.");
+    addActivity("Compraste " + qty + "x " + (dbItem?.[1] || itemId) + " por " + total + " " + coin.toUpperCase() + ".");
     saveState();
     saveShopState(shopState);
     renderInventory();
