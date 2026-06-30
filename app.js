@@ -314,6 +314,7 @@ function mergeRemoteState(saved) {
         !(stored.rejectedTradeIds || []).includes(t.id)
       ),
       rejectedTradeIds: stored.rejectedTradeIds ?? [],
+      linkedEmail: stored.linkedEmail ?? null,
     };
   });
   return { characters, activity: saved.activity || {} };
@@ -1558,6 +1559,33 @@ function renderDMPanel() {
       <span>${escapeHtml(ch.name)}</span>
     </button>`).join("");
 
+  // Account linking section
+  const linkEl = document.querySelector("#dm-link-panel");
+  if (linkEl) {
+    linkEl.innerHTML = state.characters.map(ch => `
+      <div class="dm-summary-row">
+        <img src="${escapeHtml(ch.portrait)}" alt="" />
+        <div class="dm-summary-info" style="flex-direction:row;align-items:center;gap:8px">
+          <strong style="min-width:80px">${escapeHtml(ch.name)}</strong>
+          <input type="email" class="dm-link-input" data-link-char="${ch.id}" placeholder="email del jugador..." value="${escapeHtml(ch.linkedEmail || '')}" style="flex:1;font-size:.78rem;padding:6px 8px" />
+          <button class="small-button gold-button" data-save-link="${ch.id}" style="padding:6px 10px;font-size:.7rem">Vincular</button>
+        </div>
+      </div>`).join("");
+
+    linkEl.querySelectorAll("[data-save-link]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const chId = btn.dataset.saveLink;
+        const input = linkEl.querySelector(`[data-link-char="${chId}"]`);
+        const email = input.value.trim().toLowerCase();
+        const ch = state.characters.find(c => c.id === chId);
+        if (!ch) return;
+        ch.linkedEmail = email || null;
+        saveState();
+        showToast(email ? `${ch.name} vinculado a ${email}` : `Vinculación de ${ch.name} eliminada`);
+      });
+    });
+  }
+
   // Group summary table
   const summaryEl = document.querySelector("#dm-group-summary");
   if (summaryEl) {
@@ -2450,12 +2478,26 @@ onAuthStateChanged(auth, (user) => {
   const appEl = document.querySelector("#app-screen");
   if (authEl) authEl.style.display = "none";
   if (appEl) appEl.style.display = "";
+  window._loggedInEmail = user ? user.email : null;
   if (!window._firestoreLoaded) {
     window._firestoreLoaded = false;
     renderHome();
     initFirestoreSync();
+  } else if (user && !window._isDM) {
+    // Already loaded and a player just logged in - go straight to their character
+    goToLinkedCharacterIfAny();
   }
 });
+
+function goToLinkedCharacterIfAny() {
+  if (!window._loggedInEmail || window._isDM) return;
+  const linked = state.characters.find(c => c.linkedEmail?.toLowerCase() === window._loggedInEmail.toLowerCase());
+  if (linked) {
+    activeCharacterId = linked.id;
+    renderCharacter();
+    showView("character-view");
+  }
+}
 
 // Show app immediately for all users, login only optional for DM
 const authEl = document.querySelector("#auth-screen");
@@ -2480,6 +2522,7 @@ async function initFirestoreSync(retries = 3) {
     window._lastAppliedTs = data.updatedAt || Date.now();
     window._firestoreLoaded = true;
     renderHome();
+    goToLinkedCharacterIfAny();
     if (activeCharacterId) renderCharacter();
   } else if (retries > 0) {
     // Retry shortly in case of transient network issue — never fall back silently to stale localStorage
