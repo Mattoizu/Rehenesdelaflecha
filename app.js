@@ -347,9 +347,9 @@ const ITEM_DATABASE = [
   ['flecha-magica', 'Flecha +1', 'Equipo', 0.05, 25, '+1 a impactar y al dano. Hallada en aljaba de esqueleto. Zona 5.', 'Ciudadela Sombria'],
   ['zafiro-pequeno', 'Zafiro pequeno (10 PO)', 'Tesoro', 0.05, 10, 'Piedra preciosa azul intenso. Habia cinco en el barril de mephits. Zona 12.', 'Ciudadela Sombria'],
   ['ficha-pluma-quaal', 'Ficha de pluma de Quaal (arbol)', 'Tesoro', 0.1, 75, 'Objeto magico: invoca un arbol grande. Pertenecia a Yusdrayl. Zona 15.', 'Ciudadela Sombria'],
-  ['pergamino-abrir', 'Pergamino de abrir', 'Consumible', 0.1, 50, 'Nivel 2: abre cerraduras o desbloquea objetos cerrados magicamente. Zona 15.', 'Ciudadela Sombria'],
-  ['pergamino-armadura-mago', 'Pergamino de armadura de mago', 'Consumible', 0.1, 50, 'Nivel 1: CA 13 + Destreza para el objetivo durante 8 horas. Zona 15.', 'Ciudadela Sombria'],
-  ['pergamino-trepar', 'Pergamino de trepar cual aracnido', 'Consumible', 0.1, 50, 'Nivel 2: el objetivo puede escalar paredes y techos durante 1 hora. Zona 15.', 'Ciudadela Sombria'],
+  ['pergamino-abrir', 'Pergamino de abrir', 'Consumible', 0.1, 50, 'Nivel 2 arcano: abre cerraduras o desbloquea objetos cerrados magicamente. Zona 15. Nadie del grupo puede usarlo actualmente (lista de mago/hechicero/bardo). Considerar vender.', 'Ciudadela Sombria'],
+  ['pergamino-armadura-mago', 'Pergamino de armadura de mago', 'Consumible', 0.1, 50, 'Nivel 1 arcano: CA 13 + Destreza para el objetivo durante 8 horas. Zona 15. Nadie del grupo puede usarlo actualmente (lista de mago/hechicero). Considerar vender.', 'Ciudadela Sombria'],
+  ['pergamino-trepar', 'Pergamino de trepar cual aracnido', 'Consumible', 0.1, 50, 'Nivel 2 arcano: el objetivo puede escalar paredes y techos durante 1 hora. Zona 15. Nadie del grupo puede usarlo actualmente (lista de mago/hechicero/brujo). Considerar vender.', 'Ciudadela Sombria'],
   ['elixir-salud', 'Elixir de salud (3 dosis)', 'Consumible', 0.5, 120, 'Cada dosis elimina: ceguera, sordera, paralisis o veneno. Zona 15.', 'Ciudadela Sombria'],
   ['figurita-jade-pequena', 'Figurita de jade de dragon (15 PO)', 'Tesoro', 0.2, 15, 'Figura menuda de jade con forma de dragon. Cuatro sobre el altar + una quinta en el pozo. Zona 21.', 'Ciudadela Sombria'],
   ['figurita-jade-grande', 'Figurita de jade de dragon (20 PO)', 'Tesoro', 0.5, 20, 'Figurita de jade mayor, en el nido de Calcryx. Zona 35.', 'Ciudadela Sombria'],
@@ -360,16 +360,16 @@ const ITEM_DATABASE = [
   ['jarra-plata-enana', 'Jarra de plata de manufactura enana (50 PO)', 'Tesoro', 1, 50, 'Jarra de plata con trabajo fino enano. Contiene vino goblin asqueroso. Zona 32.', 'Ciudadela Sombria'],
   ['anillo-karakas', 'Anillo de oro de Karakas (10 PO)', 'Tesoro', 0.1, 10, 'Anillo de oro con nombre de Karakas grabado en el dedo del explorador muerto. Zona 30.', 'Ciudadela Sombria'],
   ['piedra-preciosa-25', 'Piedra preciosa (25 PO)', 'Tesoro', 0.05, 25, 'Gema hallada entre los restos de los exploradores. Habia tres (25 PO cada una). Zona 30.', 'Ciudadela Sombria'],
-  ['pergamino-fuego-faerico', 'Pergamino de fuego faerico', 'Consumible', 0.1, 50, 'Nivel 1: rodea de luz faerica a criaturas u objetos. Da ventaja en ataques contra ellos. 1 minuto. Zona 41.', 'Ciudadela Sombria'],
-  ['pergamino-retirada', 'Pergamino de retirada expeditiva', 'Consumible', 0.1, 50, 'Nivel 1: accion adicional para correr o saltar durante 10 minutos. Zona 41.', 'Ciudadela Sombria'],
+  ['pergamino-fuego-faerico', 'Pergamino de fuego faerico', 'Consumible', 0.1, 50, 'Nivel 1: rodea de luz faerica a criaturas u objetos. Da ventaja en ataques contra ellos. 1 minuto. Zona 41. Nadie del grupo puede usarlo actualmente (lista de bardo/druida/brujo). Considerar vender.', 'Ciudadela Sombria'],
+  ['pergamino-retirada', 'Pergamino de retirada expeditiva', 'Consumible', 0.1, 50, 'Nivel 1 arcano: accion adicional para correr o saltar durante 10 minutos. Zona 41. Nadie del grupo puede usarlo actualmente (lista de mago/hechicero/brujo). Considerar vender.', 'Ciudadela Sombria'],
   ['estatua-agata-corellon', 'Estatua de agata de Corellon Larethian (30 PO)', 'Tesoro', 0.5, 30, 'Estatua delicada de agata que representa a la deidad elfa Corellon Larethian. Zona 42.', 'Ciudadela Sombria'],
   ['daga-ceremonial', 'Daga ceremonial (125 PO)', 'Equipo', 1, 125, 'Daga de elaboracion exquisita con decoracion ceremonial. Del sacerdote dragon.', 'Ciudadela Sombria'],
   ['anillo-plata-sacerdote', 'Anillo de plata (15 PO)', 'Tesoro', 0.1, 15, 'Anillo de plata ornamentado. Habia dos en el sarcofago del sacerdote dragon.', 'Ciudadela Sombria'],
   ['amuleto-plata-sacerdote', 'Amuleto de plata (15 PO)', 'Tesoro', 0.2, 15, 'Amuleto de plata con motivos draconicos. Hallado en el sarcofago del sacerdote dragon.', 'Ciudadela Sombria'],
-  ['pergamino-orden-imperiosa', 'Pergamino de orden imperiosa', 'Consumible', 0.1, 50, 'Nivel 1: criatura objetivo obedece una orden de una sola palabra si falla salvacion de SAB CD 13.', 'Ciudadela Sombria'],
-  ['pergamino-curar-n2', 'Pergamino de curar heridas (nv 2)', 'Consumible', 0.1, 150, 'Nivel 2: restaura 2d8+3 PG. Del sarcofago del sacerdote dragon.', 'Ciudadela Sombria'],
-  ['pergamino-infligir-n2', 'Pergamino de infligir heridas (nv 2)', 'Consumible', 0.1, 150, 'Nivel 2 de contacto: inflige 4d10 de dano necrotico. Del sarcofago del sacerdote dragon.', 'Ciudadela Sombria'],
-  ['pergamino-saeta-n2', 'Pergamino de saeta guia (nv 2)', 'Consumible', 0.1, 150, 'Nivel 2: 4d6 radiante y ventaja en siguiente ataque contra el objetivo. Del sarcofago.', 'Ciudadela Sombria'],
+  ['pergamino-orden-imperiosa', 'Pergamino de orden imperiosa', 'Consumible', 0.1, 50, 'Nivel 1 divino: criatura objetivo obedece una orden de una sola palabra si falla salvacion de SAB CD 13. Puede usarlo Miguel Angel (clerigo) o Arthas (paladin, desde nivel 2).', 'Ciudadela Sombria'],
+  ['pergamino-curar-n2', 'Pergamino de curar heridas (nv 2)', 'Consumible', 0.1, 150, 'Nivel 2: restaura 2d8+3 PG. Del sarcofago del sacerdote dragon. Puede usarlo Miguel Angel (clerigo) o Nilux (explorador, desde nivel 2).', 'Ciudadela Sombria'],
+  ['pergamino-infligir-n2', 'Pergamino de infligir heridas (nv 2)', 'Consumible', 0.1, 150, 'Nivel 2 de contacto: inflige 4d10 de dano necrotico. Del sarcofago del sacerdote dragon. Solo Miguel Angel (clerigo) puede usarlo en el grupo.', 'Ciudadela Sombria'],
+  ['pergamino-saeta-n2', 'Pergamino de saeta guia (nv 2)', 'Consumible', 0.1, 150, 'Nivel 2: 4d6 radiante y ventaja en siguiente ataque contra el objetivo. Del sarcofago. Solo Miguel Angel (clerigo) puede usarlo en el grupo.', 'Ciudadela Sombria'],
   ['pocion-resistencia-fuego', 'Pocion de resistencia (fuego)', 'Consumible', 0.5, 150, 'Resistencia al dano de fuego durante 1 hora. Hallada en la sala de la vela.', 'Ciudadela Sombria'],
   ['silbato-llamador-nocturno', 'Silbato Llamador Nocturno', 'Equipo', 0.1, 0, 'Silbato de cristal con nombre en enano. Objeto magico unico. Ver apendice del libro.', 'Ciudadela Sombria'],
   ['varita-enmaranar', 'Varita de enmaranar', 'Equipo', 1, 500, 'Varita magica que lanza enmaranar. Pertenecia a Belak el Paria. Infrecuente.', 'Ciudadela Sombria'],
@@ -1557,6 +1557,25 @@ function renderDMPanel() {
       <img src="${escapeHtml(ch.portrait)}" alt="${escapeHtml(ch.name)}" />
       <span>${escapeHtml(ch.name)}</span>
     </button>`).join("");
+
+  // Group summary table
+  const summaryEl = document.querySelector("#dm-group-summary");
+  if (summaryEl) {
+    summaryEl.innerHTML = state.characters.map(ch => {
+      const weight = carriedWeight(ch);
+      const capacity = (ch.attributes?.Fuerza || 10) * 15;
+      const lastActivity = (state.activity[ch.id] || [])[0] || "Sin actividad reciente";
+      const pendingCount = (ch.pendingTrades || []).length;
+      return `<div class="dm-summary-row">
+        <img src="${escapeHtml(ch.portrait)}" alt="" />
+        <div class="dm-summary-info">
+          <strong>${escapeHtml(ch.name)}</strong>
+          <span class="dm-summary-meta">${ch.currency?.po || 0} PO · ${weight.toFixed(0)}/${capacity} lb${pendingCount ? ` · <span style="color:var(--gold)">${pendingCount} oferta${pendingCount>1?'s':''} pendiente${pendingCount>1?'s':''}</span>` : ''}</span>
+          <span class="dm-summary-activity">${escapeHtml(lastActivity)}</span>
+        </div>
+      </div>`;
+    }).join("");
+  }
 }
 
 function renderCharacter() {
@@ -1567,7 +1586,7 @@ function renderCharacter() {
     <div>
       <p class="eyebrow">Personaje de ${escapeHtml(item.player)}</p>
       <h1>${escapeHtml(item.name)}</h1>
-      <p>${escapeHtml(item.identity)} · Nivel ${item.stats?.level || 1}</p>
+      <p>${escapeHtml(item.identity)}</p>
     </div>`;
   renderInventory();
   renderPendingTrades();

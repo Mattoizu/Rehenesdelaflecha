@@ -1539,3 +1539,26 @@ button[data-edit-item] { font-size: .82rem; }
   font-weight: 700;
   letter-spacing: .02em;
 }
+
+/* ── Resumen del grupo (panel DM) ─────────────────────────────────── */
+.dm-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(75,48,41,.4);
+  border-radius: 10px;
+  background: rgba(16,11,11,.4);
+  margin-bottom: 6px;
+}
+.dm-summary-row img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.dm-summary-info { flex: 1; display: grid; gap: 2px; }
+.dm-summary-info strong { color: #f4d898; font-size: .88rem; }
+.dm-summary-meta { color: var(--gold); font-size: .72rem; font-weight: 700; }
+.dm-summary-activity { color: var(--muted); font-size: .7rem; }
