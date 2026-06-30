@@ -1562,3 +1562,36 @@ button[data-edit-item] { font-size: .82rem; }
 .dm-summary-info strong { color: #f4d898; font-size: .88rem; }
 .dm-summary-meta { color: var(--gold); font-size: .72rem; font-weight: 700; }
 .dm-summary-activity { color: var(--muted); font-size: .7rem; }
+
+/* ── Fix layout mobile ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* Fix section title row getting clipped */
+  .section-title-row {
+    padding: 12px 12px 0;
+    overflow: visible;
+  }
+  .section-title-row h2 {
+    font-size: 1.4rem;
+  }
+  /* Fix inventory tabs overflow */
+  .inv-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .inv-tabs::-webkit-scrollbar { display: none; }
+  .inv-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 10px 12px;
+    font-size: .65rem;
+  }
+  /* Fix panel card not overflowing screen */
+  .panel-card {
+    margin: 0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  /* Add bottom padding so content isn't hidden behind nav */
+  main { padding-bottom: 90px; }
+}

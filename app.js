@@ -1340,13 +1340,16 @@ function renderHome() {
   if (window._isDM) {
     dmBtn.textContent = "Panel DM";
     dmBtn.onclick = () => showView("dm-view");
-  } else {
-    dmBtn.textContent = "DM";
+    document.body.appendChild(dmBtn);
+  } else if (!window._loggedInEmail) {
+    // Only show "Cuenta" button if not logged in
+    dmBtn.textContent = "Cuenta";
     dmBtn.onclick = () => {
       document.querySelector("#auth-screen").style.display = "";
     };
+    document.body.appendChild(dmBtn);
   }
-  document.body.appendChild(dmBtn);
+  // If logged in as player, no button shown
   document.querySelector("#character-grid").innerHTML = state.characters.map((item) => {
     const firstName = escapeHtml(item.name.split(" ")[0]);
     const weight = carriedWeight(item);
